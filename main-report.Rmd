@@ -1,0 +1,130 @@
+---
+title: "Your Report Title Here"
+subtitle: "Project Briefing Report"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output:
+  word_document:
+    toc: true
+    toc_depth: 3
+    fig_caption: true
+    fig_width: 6.5
+    fig_height: 4.5
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.path = "figures/generated/"
+)
+
+# Load packages
+library(tidyverse)
+library(knitr)
+```
+
+# Executive Summary
+
+Brief overview of the report's key findings and recommendations. Write this section last after completing the analysis.
+
+# Introduction
+
+## Background
+
+Provide context for the study. What is the problem or question being addressed? Why does it matter?
+
+## Objectives
+
+The objectives of this report are to:
+
+1. First objective here
+2. Second objective here
+3. Third objective here
+
+# Methods
+
+## Study Area
+
+Describe where the work was conducted.
+```{r study-area-map, fig.cap="Map of the study area."}
+# Example: include a pre-made diagram
+# knitr::include_graphics("figures/diagrams/study-area-map.png")
+```
+
+## Data Collection
+
+Describe how data were collected, including dates, equipment, and protocols.
+
+## Data Analysis
+
+Describe the analytical methods used. All analyses were conducted in R version `r getRversion()`.
+
+# Results
+
+## Summary Statistics
+```{r load-data}
+# Example: load your CSV data
+# data <- read_csv("data/processed/your-data.csv")
+
+# Placeholder data for demonstration
+data <- data.frame(
+  site = c("Site A", "Site B", "Site C"),
+  mean_value = c(23.4, 31.2, 28.7),
+  sd_value = c(4.2, 5.1, 3.8)
+)
+```
+```{r summary-table}
+kable(data, 
+      col.names = c("Site", "Mean", "SD"),
+      caption = "Summary statistics by site.",
+      digits = 1)
+```
+
+## Main Findings
+
+Present your key results here. Reference figures and tables as needed.
+```{r results-figure, fig.cap="Comparison of mean values across study sites."}
+ggplot(data, aes(x = site, y = mean_value)) +
+  geom_col(fill = "steelblue") +
+  geom_errorbar(aes(ymin = mean_value - sd_value, 
+                    ymax = mean_value + sd_value),
+                width = 0.2) +
+  labs(x = "Site", y = "Mean Value") +
+  theme_minimal()
+```
+
+# Discussion
+
+## Interpretation
+
+What do the results mean? How do they relate to the objectives?
+
+## Limitations
+
+Acknowledge any limitations of the study or analysis.
+
+## Recommendations
+
+Based on the findings, what actions or next steps are recommended?
+
+# Conclusions
+
+Summarise the main findings and their implications.
+
+# References
+
+Include relevant citations here.
+
+# Appendices {-}
+```{r child="appendices/appendix-a-project-alpha.Rmd", eval=FALSE}
+# Set eval=TRUE when appendix file exists
+```
+
+## Appendix A: Supplementary Data
+
+Additional tables or figures that support the main report.
+
+## Appendix B: Project Briefing Notes
+
+Detailed briefing notes for individual projects.
