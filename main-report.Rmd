@@ -1,7 +1,7 @@
 ---
-title: "Your Report Title Here"
-subtitle: "Project Briefing Report"
-author: "Your Name"
+title: "Summary of research and findings from the Pacific Salmon Strategy Initiative"
+author: "DFO Science Pacific Region"
+editor: "Cory Lagasse, Joe Enns, Nicholas Brown, Isobel Pearsall"
 date: "`r Sys.Date()`"
 output:
   word_document:
@@ -11,6 +11,7 @@ output:
     fig_width: 6.5
     fig_height: 4.5
 ---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = FALSE,
@@ -26,97 +27,152 @@ library(knitr)
 
 # Executive Summary
 
-Brief overview of the report's key findings and recommendations. Write this section last after completing the analysis.
+Brief overview of the report's key findings and recommendations.
 
 # Introduction
 
 ## Background
 
-Provide context for the study. What is the problem or question being addressed? Why does it matter?
+-   Overview of PSSI with a specific focus on funding programs and objectives for DFO Science branch
 
-## Objectives
+    -   overarching objectives of PSSI and importance of research to support rebuilding of Pacific salmon
 
-The objectives of this report are to:
+    -   myriad stressors on Pacific salmon and various responses across the Pacific region
 
-1. First objective here
-2. Second objective here
-3. Third objective here
+    -   Importance of evidence-based decision-making to recover and manage salmon
 
-# Methods
+-   Timelines and process for selection of research projects, conducting field work and analysis, reporting
 
-## Study Area
+    -   Initial workshop held in 2022
 
-Describe where the work was conducted.
-```{r study-area-map, fig.cap="Map of the study area."}
-# Example: include a pre-made diagram
-# knitr::include_graphics("figures/diagrams/study-area-map.png")
+    -   research progress and objectives summarized in Science bulletin
+
+## Purpose
+
+Describe the scope and purpose of the report.
+
+1.  Provide an overview of outcomes and research findings from projects led by DFO Science as part of the PSSI
+2.  Synthesize findings across research and management themes to better understand stressors on Pacific salmon, how populations are responding, and potential management interventions
+3.  Identify knowledge gaps and priority work areas to support future decision-making and rebuilding of Pacific salmon
+
+# Research Areas
+
+Describe the studies, extent, and characteristics of research and monitoring conducted as part of PSSI.
+
+Present conceptual diagram and research categories showing linkages between research areas, salmon ecology, and management decisions
+
+```{r study-area-map, fig.cap="Focus categories for research."}
+
+# Example: include a pre-made diagram # 
+knitr::include_graphics("figures/focus_categories_clip.png")
+
 ```
 
-## Data Collection
+## Stressors and Responses
 
-Describe how data were collected, including dates, equipment, and protocols.
+### Freshwater Stressors
 
-## Data Analysis
+### Marine Stressors
 
-Describe the analytical methods used. All analyses were conducted in R version `r getRversion()`.
+## Assessments
 
-# Results
+### Life Cycle Assessment: Follow the Fish
 
-## Summary Statistics
-```{r load-data}
-# Example: load your CSV data
-# data <- read_csv("data/processed/your-data.csv")
+### Fisheries Science Advisory Reports
 
-# Placeholder data for demonstration
-data <- data.frame(
-  site = c("Site A", "Site B", "Site C"),
-  mean_value = c(23.4, 31.2, 28.7),
-  sd_value = c(4.2, 5.1, 3.8)
-)
-```
-```{r summary-table}
-kable(data, 
-      col.names = c("Site", "Mean", "SD"),
-      caption = "Summary statistics by site.",
-      digits = 1)
-```
+### Climate Change Vulnerability
 
-## Main Findings
+## Hatchery Science
 
-Present your key results here. Reference figures and tables as needed.
-```{r results-figure, fig.cap="Comparison of mean values across study sites."}
-ggplot(data, aes(x = site, y = mean_value)) +
-  geom_col(fill = "steelblue") +
-  geom_errorbar(aes(ymin = mean_value - sd_value, 
-                    ymax = mean_value + sd_value),
-                width = 0.2) +
-  labs(x = "Site", y = "Mean Value") +
-  theme_minimal()
-```
+### Genetics
 
-# Discussion
+### Fish Health
 
-## Interpretation
-
-What do the results mean? How do they relate to the objectives?
-
-## Limitations
-
-Acknowledge any limitations of the study or analysis.
-
-## Recommendations
-
-Based on the findings, what actions or next steps are recommended?
-
-# Conclusions
-
-Summarise the main findings and their implications.
+## Fisheries Monitoring and Harvest Methods
 
 # References
 
-Include relevant citations here.
+Include relevant citations from report body here.
 
-# Appendices {-}
+\newpage
+
+# Project Reports
+
+Group projects by division, research theme, region, or...?
+
+## Report Template
+
+### Project Title and ID
+
+### Highlights 
+
+• The main idea of the project
+
+• Key findings
+
+• Implications of these findings for salmon and decision-makers
+
+For a more technical audience, but still as plain language as possible
+
+### Background
+
+• The relevant biological, environmental, and/or management context
+
+• What knowledge gap or demand were you trying to fill?
+
+• Collaboration and partner relationships
+
+### Methods and Findings
+
+• Main methods used
+
+• Products and tools produced
+
+• Advancements in methodology, technology, and application
+
+• Advancements in communication and knowledge transfer
+
+• Key results and information generated
+
+### Insights
+
+• What this project has added to knowledge about salmon populations, health, or ecosystems.
+
+-   How this project informs salmon management:
+
+    -   decisions
+
+    -   policy guidance
+
+    -   trade-offs
+
+    -   planning
+
+-   Addition of knowledge to understanding:
+
+    -   limiting factors/stressors/threats/ pathways of effects/risks
+
+    -   biologically significant thresholds
+
+    -   cumulative impacts
+
+-   Sources of uncertainty
+
+### Next Steps
+
+• Remaining knowledge gaps and recommendations for future studies
+
+• How can/should the project findings be operationalized for salmon conservation and management?
+
+### Tables and Figures
+
+### References
+
+\newpage
+
+
+# Appendices {.unnumbered}
+
 ```{r child="appendices/appendix-a-project-alpha.Rmd", eval=FALSE}
 # Set eval=TRUE when appendix file exists
 ```
@@ -124,7 +180,3 @@ Include relevant citations here.
 ## Appendix A: Supplementary Data
 
 Additional tables or figures that support the main report.
-
-## Appendix B: Project Briefing Notes
-
-Detailed briefing notes for individual projects.
