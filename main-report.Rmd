@@ -1,7 +1,7 @@
 ---
 title: "Summary of research and findings from the Pacific Salmon Strategy Initiative"
 author: "DFO Science Pacific Region"
-editor: "Cory Lagasse, Joe Enns, Nicholas Brown, Isobel Pearsall"
+editor: "Cory Lagasse, Joe Enns, Nicholas Brown, Isobel Pearsall, Ann-Marie Huang, Diana Dobson"
 date: "`r Sys.Date()`"
 output:
   word_document:
@@ -30,23 +30,25 @@ library(knitr)
 
 Brief overview of the report's key findings and recommendations.
 
+\newpage
+
 # Introduction
 
 The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million towards habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific Salmon. The multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitat, support sustainable fishing opportunities while reducing impacts on vulnerable stocks, and build capacity among partners to achieve better outcomes for Pacific salmon ([DFO 2025](https://www.dfo-mpo.gc.ca/campaign-campagne/pss-ssp/index-eng.html)). Supporting these aims were investments in scientific research focused on improving our understanding of salmon and their ecosystems to inform effective decision-making and rebuilding.
 
 Beginning in 2022, new research programs and capacity were established within the Pacific Region Science branch as part of the PSSI. Following a DFO workshop that identified priority research areas [@lagasse2024], multi-year research projects were developed in support of two Science-led PSSI sub-initiatives: Improved Understanding of Salmon Ecosystems, and Science to Support Hatchery Modernization. Projects spanned across the four research divisions of the Science branch covering freshwater and marine domains, hatchery and fishery management advice, and simulation modelling to genetic and physiological studies.
 
-Collaborative and inter-disciplinary approaches were an important theme for research programs, recognizing the importance of cooperation among scientists, managers, stakeholders, and Indigenous groups to achieve desired outcomes for Pacific salmon [@lagasse2024; @buxton2021]. Pacific salmon are managed under a complex, multi-jurisdictional framework and are subject to a variety of threats throughout their life-cycle stemming from natural and anthropogenic causes. To accurately assess and understand status and drivers of productivity across the many conservation units of salmon in the Pacific region therefore requires a diverse range of studies and approaches undertaken cooperatively across organizations and informed by management questions and priority information needs. Synthesis and communication of findings is also important to share insights and advice relevant to decision-making.
+Collaborative and inter-disciplinary approaches were an important theme for research programs, recognizing the importance of cooperation among scientists, managers, stakeholders, and Indigenous groups to achieve desired outcomes for Pacific salmon [@lagasse2024; @buxton2021]. Pacific salmon are managed under a complex, multi-jurisdictional framework and are subject to a variety of threats throughout their life-cycle stemming from natural and anthropogenic causes. To accurately assess and understand status and drivers of productivity across the many conservation units of salmon in the Pacific region requires a diverse range of studies and approaches undertaken cooperatively across organizations and informed by management questions and priority information needs. Synthesis and communication of findings is also important to share insights and advice relevant to decision-making.
 
 This report provides an overview of the outcomes and research findings of DFO Science initiatives funded by the PSSI. The purpose of this report is to:
 
 1.  Provide summary reports covering \~49 research projects related to Pacific salmon, their ecosystems, and management decisions.
 
-2.  Synthesize findings across research and management themes to better understand stressors on Pacific salmon, how populations are responding, and potential management interventions.
+2.  Synthesize findings within research themes to highlight key insights and advice.
 
 3.  Identify knowledge gaps and priority research questions to support future decision-making and rebuilding of Pacific salmon.
 
-# Research Areas
+# Research Themes
 
 Describe the scope, extent, and characteristics of research and monitoring conducted as part of PSSI.
 
@@ -61,29 +63,211 @@ knitr::include_graphics("figures/focus_categories_clip.png")
 
 ## Stressors and Responses
 
-### Freshwater Stressors
+### Freshwater Stressors (JE)
 
-### Marine Stressors
+Summarize research undertaken and key findings focused on freshwater ecosystems. Projects and themes include:
+
+-   Risk assessment and mitigation of aquatic invasive species
+
+    -   Understanding threats of freshwater AIS (Thomas Therriault)
+
+    -   Survival and predation on Okanagan Chinook (Tommy Pontbriand)
+
+    -   Monitoring of Smallmouth bass in Cultus Lake (Daniel Doutaz)
+
+-   Research on freshwater toxins and their effects on salmon, particulalrly 6PPD-Q
+
+    -   Identifying tire-related toxic hotspots (Lisa Loseto)
+
+-   Physiological and mechanistic studies to link environmental conditions with survival and productivity
+
+    -   Mechanistic modelling linking hydrology to habitat quality (Sean Naman)
+
+    -   Physiological studies to understand cumulative impacts on salmon survival (David Patterson)
+
+    -   Effects of redd scour on WCVI Chinook (Diana McHugh)
+
+-   Broad-scale spatial and statistical modelling to characterize cumulative threats to freshwater habitat
+
+    -   Geospatial indicators of cumulative threats to stream habitat (Josie Iacarella)
+
+    -   Effects of forest harvest of salmon productivity (BCSRIF, Maria Kuruvilla)
+
+    -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
+
+### Marine Stressors (IP/NB)
+
+Summarize research and key findings related to marine stressors. Projects and themes include:
+
+-   Oceanographic studies monitoring marine conditions to understand their influence on salmon productivity
+
+    -   Zooplankton and krill monitoring (Akash Sastri)
+
+    -   Hypoxia and temperature within Vancouver Island fjords (Laura Bianucci)
+
+    -   Acoustic monitoring of salmon and salmon prey (Stephane Gauthier)
+
+    -   Monitoring harmful algal biotoxins (Andrew Ross)
+
+-   Research and monitoring on marine ecosystems and predators
+
+    -   eDNA monitoring in WCVI (Christoph Deeg)
+
+    -   Quantifying salmon predation by sea lions (Cameron Freshwater)
 
 ## Assessments
 
-### Life Cycle Assessment: Follow the Fish
+### Life Cycle Assessment: Follow the Fish (IP)
 
-### Stock Assessment: Fisheries Science Advisory Reports
+Provide an overview of the follow the fish program, how risk assessments and limiting factors (RAMS) were used to guide research priorities, key insights, and next steps to support rebuilding of WCVI Chinook salmon.
 
-### Climate Change Vulnerability
+### Stock Assessment: Fisheries Science Advisory Reports (AMH)
 
-## Hatchery Science
+Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks that occurred during PSSI and FSARs that were completed or are still underway.
+
+Include a table or figure with list of FSARs.
+
+### Climate Change Vulnerability (CL)
+
+Summarize research and key findings focused on understanding the long-term implications of climate change for Pacific salmon. Projects and themes include:
+
+-   Paleontology studies examining changes in productivity and their implications for Pacific salmon
+
+    -   Using sediment core to identify changes at the bottom of the food web in BC coastal waters (Sophia Johannessen)
+
+<!-- -->
+
+-   Climate modelling to downscale global climate models for marine and freshwater salmon habitats
+
+    -   Development of high-resolution climate change freshwater hazard data (BCSRIF, Markus Schnorbus)
+
+    -   Climate downscaling for salmon in marine areas (Di Wan)
+
+-   Life cycle modelling to understand effects of climate change on salmon productivity
+
+    -   Effects of marine and freshwater variables on salmon population dynamics (Jan Finke, Travis Tai)
+
+-   Characterizing genetic adaptation potential
+
+    -   Adaptive genetic variation and climate change resilience in Canadian Pacific Salmon (Tim Healy)
+
+-   Quantitative assessments of climate change exposure and vulnerability
+
+    -   Climate vulnerability indicators for salmon (Cory Lagasse)
+
+    -   PSF climate change exposure assessment (BCSRIF, Stephanie Peacock)
+
+### Cumulative Effects
+
+Use separate section here to describe cumulative effects work advanced as part of PSSI, or keep under freshwater stressors section?
+
+## Hatchery Science (CL/SEP)
+
+Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
 ### Genetics
 
+Summarize research and key findings from genetics projects. Research questions (from SEP):
+
+-   What are the differences between hatchery and natural origin fish?
+
+-   Why do these differences occur and what are the mechanisms behind them?
+
+-   What factors affect long-term population fitness?
+
+Projects and themes include:
+
+-   Developing and operationalizing modern genetic methods for stock identification and assessment
+
+    -   Continuation/expansion of PBT programs (Eric Rondeau)
+
+    -   Improving stock delineation in Chum salmon by characterizing genome-wide genetic variation (Anna Tigano)
+
+    -   Rapid broodstock screening for improved genetic management of Pacific salmon (Kyle Wellband)
+
+-   Evaluating genetic differences among hatchery and wild populations, and their implications for fitness
+
+    -   Fitness effects of hatchery enhancement and relative reproductive success (Tim Healy)
+
+    -   Epigenetic variation and inheritance in hatchery and natural origin Chinook and Coho salmon (Tim Healy, Kyle Wellband)
+
+    -   Genetic variation linked to early maturation in male Chinook salmon
+
 ### Fish Health
 
-## Fisheries Monitoring and Harvest Methods
+Summarize research and key findings from fish health projects. Research questions (from SEP):
+
+-   How can we better assess and track fish condition and stress?
+
+-   How do we advance and modernize diagnostic and health-management practices?
+
+-   How can new molecular and technological tools help us detect issues early and inform decision-making?
+
+Projects and themes include:
+
+-   New diagnostic and monitoring tools for fish health
+
+    -   Expanding and modernizing the finfish diagnostic lab (Amy Long)
+
+    -   Developing a proactive, modernized approach to ensure optimal health and condition (Karia Kaukinen, Kristi Miller)
+
+    -   Using scales to monitor chronic stress in Chinook and Coho salmon (Stewart Johnson)
+
+    -   Application of nanopore technology for detection and characterization of pathogens (BCSRIF, Ahmed Siah)
+
+-   Evaluating factors determining fish health and disease prevalence
+
+    -   Using broodstock data to understand factors that affect BKD rates (Amy Long)
+
+    -   Factors influencing IHNV in sockeye salmon (Kyle Garver)
+
+    -   Modeling interactions of environmental, biological, and infectious factors at the Quinsam river hatchery (Simon Jones)
+
+-   Effects of rearing practices and diet on hatchery fish survival
+
+    -   Optimizing feeds for hatchery production of Pacific salmon (Erika Eliason)
+
+    -   Predicting Chinook reproductive success based on adult thiamine levels (Erika Eliason)
+
+    -   Causes and consequences of vateritic otoliths in hatchery-reared Coho salmon (BCSRIF, Leigh Gaffney)
+
+## Fisheries Monitoring and Harvest Methods (NB/CL/FM)
+
+Describe the harvest transformation pillar of PSSI, DFO Science sub-initiatives, and key areas of monitoring and research. Projects and themes include:
+
+-   Enhancements to recreational monitoring
+
+    -   MSF reference fishery (Erin Rechisky)
+
+    -   Creel monitoring capacity improvements (Natalie Fuller)
+
+    -   First Nations-led catch monitoring on the Central Coast (BCSRIF, Megan Adams)
+
+-   Research on release mortality and best practices for recreational fisheries
+
+    -   Mortality of released Pacific Salmon in marine recreational fishery (BCSRIF, Scott Hinch)
+
+    -   FRIM - short-term holding and respirometry studies (BCSRIF, SFIB)
+
+-   Bycatch monitoring in commercial fisheries
+
+    -   Salmon bycatch monitoring in the trawl fishery (Cory Lagasse)
+
+-   Selective harvest methods and monitoring to support adaptive management
+
+    -   Computer vision for adaptive management of terminal salmon fisheries (BCSRIF, Will Atlas)
+
+    -   Fish trap pilot study (BCSRIF, Derek Leboeuf)
+
+## Data Management (Shelee's group)
+
+Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
 
 # References
 
 Include relevant citations from report body here.
+
+<div id="refs"></div>
 
 \newpage
 
@@ -156,6 +340,8 @@ For a more technical audience, but still as plain language as possible
 • How can/should the project findings be operationalized for salmon conservation and management?
 
 ### References
+
+Literature cited in the project report.
 
 \newpage
 
