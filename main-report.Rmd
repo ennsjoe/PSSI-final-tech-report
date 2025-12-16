@@ -10,6 +10,7 @@ output:
     fig_caption: true
     fig_width: 6.5
     fig_height: 4.5
+bibliography: references.json
 ---
 
 ```{r setup, include=FALSE}
@@ -31,33 +32,23 @@ Brief overview of the report's key findings and recommendations.
 
 # Introduction
 
-## Background
+The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million towards habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific Salmon. The multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitat, support sustainable fishing opportunities while reducing impacts on vulnerable stocks, and build capacity among partners to achieve better outcomes for Pacific salmon ([DFO 2025](https://www.dfo-mpo.gc.ca/campaign-campagne/pss-ssp/index-eng.html)). Supporting these aims were investments in scientific research focused on improving our understanding of salmon and their ecosystems to inform effective decision-making and rebuilding.
 
--   Overview of PSSI with a specific focus on funding programs and objectives for DFO Science branch
+Beginning in 2022, new research programs and capacity were established within the Pacific Region Science branch as part of the PSSI. Following a DFO workshop that identified priority research areas [@lagasse2024], multi-year research projects were developed in support of two Science-led PSSI sub-initiatives: Improved Understanding of Salmon Ecosystems, and Science to Support Hatchery Modernization. Projects spanned across the four research divisions of the Science branch covering freshwater and marine domains, hatchery and fishery management advice, and simulation modelling to genetic and physiological studies.
 
-    -   overarching objectives of PSSI and importance of research to support rebuilding of Pacific salmon
+Collaborative and inter-disciplinary approaches were an important theme for research programs, recognizing the importance of cooperation among scientists, managers, stakeholders, and Indigenous groups to achieve desired outcomes for Pacific salmon [@lagasse2024; @buxton2021]. Pacific salmon are managed under a complex, multi-jurisdictional framework and are subject to a variety of threats throughout their life-cycle stemming from natural and anthropogenic causes. To accurately assess and understand status and drivers of productivity across the many conservation units of salmon in the Pacific region therefore requires a diverse range of studies and approaches undertaken cooperatively across organizations and informed by management questions and priority information needs. Synthesis and communication of findings is also important to share insights and advice relevant to decision-making.
 
-    -   myriad stressors on Pacific salmon and various responses across the Pacific region
+This report provides an overview of the outcomes and research findings of DFO Science initiatives funded by the PSSI. The purpose of this report is to:
 
-    -   Importance of evidence-based decision-making to recover and manage salmon
+1.  Provide summary reports covering \~49 research projects related to Pacific salmon, their ecosystems, and management decisions.
 
--   Timelines and process for selection of research projects, conducting field work and analysis, reporting
+2.  Synthesize findings across research and management themes to better understand stressors on Pacific salmon, how populations are responding, and potential management interventions.
 
-    -   Initial workshop held in 2022
-
-    -   research progress and objectives summarized in Science bulletin
-
-## Purpose
-
-Describe the scope and purpose of the report.
-
-1.  Provide an overview of outcomes and research findings from projects led by DFO Science as part of the PSSI
-2.  Synthesize findings across research and management themes to better understand stressors on Pacific salmon, how populations are responding, and potential management interventions
-3.  Identify knowledge gaps and priority work areas to support future decision-making and rebuilding of Pacific salmon
+3.  Identify knowledge gaps and priority research questions to support future decision-making and rebuilding of Pacific salmon.
 
 # Research Areas
 
-Describe the studies, extent, and characteristics of research and monitoring conducted as part of PSSI.
+Describe the scope, extent, and characteristics of research and monitoring conducted as part of PSSI.
 
 Present conceptual diagram and research categories showing linkages between research areas, salmon ecology, and management decisions
 
@@ -78,7 +69,7 @@ knitr::include_graphics("figures/focus_categories_clip.png")
 
 ### Life Cycle Assessment: Follow the Fish
 
-### Fisheries Science Advisory Reports
+### Stock Assessment: Fisheries Science Advisory Reports
 
 ### Climate Change Vulnerability
 
@@ -104,7 +95,7 @@ Group projects by division, research theme, region, or...?
 
 ### Project Title and ID
 
-### Highlights 
+### Highlights
 
 • The main idea of the project
 
@@ -164,12 +155,9 @@ For a more technical audience, but still as plain language as possible
 
 • How can/should the project findings be operationalized for salmon conservation and management?
 
-### Tables and Figures
-
 ### References
 
 \newpage
-
 
 # Appendices {.unnumbered}
 
