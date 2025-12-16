@@ -104,7 +104,7 @@ Group projects by division, research theme, region, or...?
 
 ### Project Title and ID
 
-### Highlights 
+### Highlights
 
 • The main idea of the project
 
@@ -169,7 +169,6 @@ For a more technical audience, but still as plain language as possible
 ### References
 
 \newpage
-
 
 # Appendices {.unnumbered}
 
