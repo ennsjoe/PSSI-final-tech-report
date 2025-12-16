@@ -1,0 +1,120 @@
+[
+    {
+        "author": [
+            {
+                "family": "Lagasse",
+                "given": "Cory R."
+            },
+            {
+                "family": "Christina A. Czember"
+            },
+            {
+                "family": "Ann-Marie Huang"
+            },
+            {
+                "family": "Diana Dobson"
+            }
+        ],
+        "collection-title": "Can. Man. Rep. Fish. Aquat. Sci.",
+        "id": "lagasse2024",
+        "issued": {
+            "date-parts": [
+                [
+                    2024
+                ]
+            ]
+        },
+        "key": "2DCZKA5U",
+        "language": "en",
+        "libraryid": "1",
+        "number": "3267",
+        "oclc": "1419284954",
+        "providerkey": "2509FBBE-5BB0-44C4-B119-6083A81ED673",
+        "publisher-place": "Nanaimo, BC",
+        "source": "Open WorldCat",
+        "title": "DFO Pacific Salmon Science Workshop 2022: addressing conservation and management challenges now and into the future",
+        "type": "report"
+    },
+    {
+        "DOI": "10.1111/CSP2.329",
+        "ISSN": "25784854",
+        "accessed": {
+            "date-parts": [
+                [
+                    2023,
+                    5,
+                    26
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Buxton",
+                "given": "Rachel T."
+            },
+            {
+                "family": "Nyboer",
+                "given": "Elizabeth A."
+            },
+            {
+                "family": "Pigeon",
+                "given": "Karine E."
+            },
+            {
+                "family": "Raby",
+                "given": "Graham D."
+            },
+            {
+                "family": "Rytwinski",
+                "given": "Trina"
+            },
+            {
+                "family": "Gallagher",
+                "given": "Austin J."
+            },
+            {
+                "family": "Schuster",
+                "given": "Richard"
+            },
+            {
+                "family": "Lin",
+                "given": "Hsien Yung"
+            },
+            {
+                "family": "Fahrig",
+                "given": "Lenore"
+            },
+            {
+                "family": "Bennett",
+                "given": "Joseph R."
+            },
+            {
+                "family": "Cooke",
+                "given": "Steven J."
+            },
+            {
+                "family": "Roche",
+                "given": "Dominique G."
+            }
+        ],
+        "container-title": "Conservation Science and Practice",
+        "id": "buxton2021",
+        "issue": "2",
+        "issued": {
+            "date-parts": [
+                [
+                    2021,
+                    2,
+                    1
+                ]
+            ]
+        },
+        "key": "LXTR7PTZ",
+        "libraryid": "1",
+        "providerkey": "2509FBBE-5BB0-44C4-B119-6083A81ED673",
+        "publisher": "Blackwell",
+        "title": "Avoiding wasted research resources in conservation science",
+        "type": "article-journal",
+        "volume": "3"
+    }
+]
