@@ -4,17 +4,24 @@
 library(ggplot2)
 library(readxl)
 library(dplyr)
+library(png)
 
 # --- Configuration ---
 SALMON_COLOR <- "#5d8a7a"
 OUTPUT_DIR <- "output"
 INPUT_FILE <- "data/raw/Stressor_Response_Data.xlsx"
+SALMON_ICON <- "data/raw/salmon_icon.png"
 
 # --- Helper: Create curved text as individual rotated letters ---
-curved_text <- function(text, radius, center_angle, letter_spacing = 5, 
+curved_text <- function(text, radius, center_angle, letter_spacing = NULL, 
                         above = TRUE, size = 4, color = SALMON_COLOR) {
   chars <- strsplit(toupper(text), "")[[1]]
   n <- length(chars)
+  
+  # Dynamic spacing: shorter text = wider spacing, longer text = tighter
+  if (is.null(letter_spacing)) {
+    letter_spacing <- max(2.5, min(6, 60 / n))
+  }
   
   # Calculate angle for each character (centered on center_angle)
   total_span <- (n - 1) * letter_spacing
@@ -52,15 +59,15 @@ create_project_diagram <- function(project_no, title, measured_modelled_variable
   # Build text data for all arcs
   text_layers <- rbind(
     # Upper arcs (above center, text curves upward)
-    curved_text(response_type, radius = 2.6, center_angle = 90, letter_spacing = 4, above = TRUE, size = 5),
-    curved_text(salmon_response, radius = 2.2, center_angle = 90, letter_spacing = 4, above = TRUE, size = 5),
-    curved_text("SALMON RESPONSE", radius = 1.8, center_angle = 90, letter_spacing = 3.5, above = TRUE, size = 4),
+    curved_text(response_type, radius = 2.6, center_angle = 90, above = TRUE, size = 5),
+    curved_text(salmon_response, radius = 2.2, center_angle = 90, above = TRUE, size = 5),
+    curved_text("SALMON RESPONSE", radius = 1.8, center_angle = 90, above = TRUE, size = 4),
     
     # Lower arcs (below center, text curves downward)
-    curved_text(stressor_threat_category, radius = 1.8, center_angle = 270, letter_spacing = 3.5, above = FALSE, size = 4),
-    curved_text("THREAT CATEGORIES", radius = 2.2, center_angle = 270, letter_spacing = 3, above = FALSE, size = 4),
-    curved_text(DFO_mgmt_decision, radius = 2.6, center_angle = 270, letter_spacing = 3, above = FALSE, size = 4),
-    curved_text(DFO_division, radius = 3.0, center_angle = 270, letter_spacing = 3, above = FALSE, size = 4)
+    curved_text(stressor_threat_category, radius = 1.8, center_angle = 270, above = FALSE, size = 4),
+    curved_text("STRESSOR", radius = 2.2, center_angle = 270, above = FALSE, size = 4),
+    curved_text(DFO_mgmt_decision, radius = 2.6, center_angle = 270, above = FALSE, size = 4),
+    curved_text(DFO_division, radius = 3.0, center_angle = 270, above = FALSE, size = 4)
   )
   
   # Create center circle coordinates
@@ -69,13 +76,25 @@ create_project_diagram <- function(project_no, title, measured_modelled_variable
     y = 1.2 * sin(seq(0, 2*pi, length.out = 100))
   )
   
+  # Load salmon icon if exists
+  salmon_img <- NULL
+  if (file.exists(SALMON_ICON)) {
+    salmon_img <- readPNG(SALMON_ICON)
+  }
+  
   # Build the plot
   p <- ggplot() +
     
     # Center circle
     geom_polygon(data = circle_data, aes(x, y), 
-                 fill = SALMON_COLOR, color = SALMON_COLOR) +
-    
+                 fill = SALMON_COLOR, color = SALMON_COLOR)
+  
+  # Add salmon icon overlay if loaded
+  if (!is.null(salmon_img)) {
+    p <- p + annotation_raster(salmon_img, xmin = -0.9, xmax = 0.9, ymin = -0.9, ymax = 0.9)
+  }
+  
+  p <- p +
     # Curved text (individual rotated letters)
     geom_text(data = text_layers,
               aes(x = x, y = y, label = label, angle = angle),
@@ -132,9 +151,9 @@ test_diagram <- function() {
     measured_modelled_variable = "Temperature, Flow",
     salmon_response = "Physiology",
     response_type = "Population",
-    stressor_threat_category = "Habitat Loss",
-    DFO_mgmt_decision = "Habitat Protection",
-    DFO_division = "Ecosystem Management"
+    stressor_threat_category = "Threat Category",
+    DFO_mgmt_decision = "DFO Management Decision",
+    DFO_division = "DFO Division"
   )
   
   filename <- file.path(OUTPUT_DIR, "test_diagram.png")
