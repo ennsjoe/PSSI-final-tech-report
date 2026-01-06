@@ -109,7 +109,7 @@ knitr::include_graphics("figures/focus_categories_clip.png")
 
 ### Template / Guiding Questions
 
-Context
+Research Goals
 
 -   What were the key objectives of this research theme?
 
@@ -215,11 +215,11 @@ Summarize research and key findings related to building understanding of marine 
 
 -   These new assessments can be applied in planning and decision-making to contextualize risks and benefits….
 
-**Synopsis**
+**Research Goals**
 
-The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages. Climate change emerged as a key theme during the PSSI Science planning workshop and was a central element of the Improved Understanding of Salmon Ecosystems sub-initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning (Macdonald et al 2024). This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
+The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems sub-initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
 
-Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, modern genotyping, life-cycle modelling, and vulnerability risk assessments. Collectively, these studies reveal important details about the implications of climate change for Pacific salmon that can allow us to understand and anticipate current and future changes.
+Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures [@schoen2017; @chittenden2009; @crozier2025]. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, modern genotyping, life-cycle modelling, and vulnerability risk assessments. Collectively, these studies reveal important details about the implications of climate change for Pacific salmon that can allow us to understand and anticipate current and future changes.
 
 **Downscaled climate modelling**
 
@@ -229,7 +229,7 @@ Within freshwater habitats, the Pacific Climate Impacts Consortium (PCIC) has de
 
 Within marine areas, regional oceanographic models developed by the Ocean Science division project changes in salinity, temperature, and biogeochemistry for waters across the continental shelf of British Columbia. While these models have recently been applied to understand how climate change will affect habitat availability for groundfish and other marine species, applying them towards the assessment of climate change vulnerability for Pacific salmon is more challenging…  Given the importance of marine survival to the productivity of Pacific salmon, this is an important area for further research….
 
-**Climate change vulnerability assessments**
+**Vulnerability assessments**
 
 For the purposes of Pacific salmon management, projecting future environmental conditions is only helpful if we can predict how Pacific salmon will respond to those changes. Climate change vulnerability assessments apply a diverse range of methods to consider how the combined exposure and sensitivity of a species or population determines the risks they face from climate change. While such assessments have been applied to thousands of different species at regional and global scales, including to Pacific salmon in the continental US, it is only recently and with support from PSSI that these studies have been applied to Pacific salmon in Canada.
 
@@ -249,7 +249,7 @@ Further understanding thresholds and tipping points, and how these differ among 
 
 Changes in the frequency of extreme events, such as flooding, marine heat-waves, and droughts, are difficult to accurately model and assess but are important determinants of salmon survival
 
-Incorporating climate vulnerability information into decision-making and planning frameworks
+Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
 
 ## Assessments
 
