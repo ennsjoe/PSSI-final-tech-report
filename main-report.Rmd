@@ -24,6 +24,7 @@ knitr::opts_chunk$set(
 # Load packages
 library(tidyverse)
 library(knitr)
+library(gt)
 ```
 
 # Executive Summary
@@ -90,7 +91,7 @@ This report provides an overview of the outcomes and research findings of DFO Sc
 
 1.  Provide summary reports covering 49 research projects related to Pacific salmon, their ecosystems, and management decisions.
 
-2.  Synthesize findings within research themes to highlight key insights and advice.
+2.  Synthesize findings within research themes to highlight key insights and advice. Research themes group projects within PSSI sub-initiatives (Improved Understanding of Salmon Ecosystems, and Science to support hatchery modernization), ecosystem types, and research goals.
 
 3.  Identify knowledge gaps and priority research questions to support future decision-making and rebuilding of Pacific salmon.
 
@@ -108,6 +109,18 @@ knitr::include_graphics("figures/focus_categories_clip.png")
 ```
 
 ### Template / Guiding Questions
+
+```{r associated-projects-table}
+
+gt(tribble(
+  ~Title, ~Type,
+  "Example A", "DFO Science",
+  "Example B", "BCSRIF")) |>
+  tab_header(
+    title = md("**Associated Projects**")
+  )
+
+```
 
 Research Goals
 
@@ -199,7 +212,9 @@ Summarize research and key findings related to building understanding of marine 
 
     -   Quantifying salmon predation by sea lions (Cameron Freshwater)
 
-### C. Climate Change Vulnerability (CL)
+### C. Salmon Population Monitoring
+
+### D. Climate Change Vulnerability (CL)
 
 **Highlights**
 
@@ -269,9 +284,6 @@ Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks t
 
 Include a table or figure with list of FSARs.
 
-### D. Cumulative Effects
-
-Use separate section here to describe cumulative effects work advanced as part of PSSI, or keep under freshwater stressors section?
 
 ## Hatchery Science (CL/SEP)
 
@@ -371,7 +383,7 @@ Describe the harvest transformation pillar of PSSI, DFO Science sub-initiatives,
 
     -   Fish trap pilot study (BCSRIF, Derek Leboeuf)
 
-## Data Management (Shelee's group)
+## Data Management and Mobilization
 
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
 
