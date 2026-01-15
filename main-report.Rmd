@@ -25,6 +25,15 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(knitr)
 library(gt)
+library(DBI)
+library(RSQLite)
+library(here)
+
+# Source helper functions
+source(here("helper-functions.R"))
+
+# Rebuild database from CSV each time (ensures latest data)
+init_database(overwrite = TRUE)
 ```
 
 # Executive Summary
@@ -189,6 +198,28 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
     -   Effects of forest harvest of salmon productivity (BCSRIF, Maria Kuruvilla)
 
     -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
+    
+```{r freshwater-ecosystem-projects}
+con <- get_db_connection()
+freshwater_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Freshwater ecosystems'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+freshwater_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
 
 ### B. Marine ecosystems (IP/NB)
 
@@ -211,8 +242,52 @@ Summarize research and key findings related to building understanding of marine 
     -   eDNA monitoring in WCVI (Christoph Deeg)
 
     -   Quantifying salmon predation by sea lions (Cameron Freshwater)
+    
+```{r marine-ecosystem-projects}
+con <- get_db_connection()
+marine_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Marine ecosystems'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+marine_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
 
 ### C. Salmon population monitoring
+
+```{r salmon-population-projects}
+con <- get_db_connection()
+s_monitor_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Salmon population monitoring'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+s_monitor_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
 
 ### D. Climate change vulnerability (CL)
 
@@ -266,6 +341,28 @@ Changes in the frequency of extreme events, such as flooding, marine heat-waves,
 
 Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
 
+```{r climate-projects}
+con <- get_db_connection()
+climate_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Climate change vulnerabiliity'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+climate_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
+
 ## Assessments
 
 Context for assessments section
@@ -276,7 +373,51 @@ Context for assessments section
 
 Provide an overview of the follow the fish program, how risk assessments and limiting factors (RAMS) were used to guide research priorities, key insights, and next steps to support rebuilding of WCVI Chinook salmon.
 
+```{r ftf-projects}
+con <- get_db_connection()
+ftf_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Assessments'
+    AND section = 'Life cycle assessment - Follow The Fish'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ftf_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
+
 #### Bottlenecks to survival (IP)
+
+```{r bottleneck-projects}
+con <- get_db_connection()
+bottleneck_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Assessments'
+    AND section = 'Life cycle assessment - Bottlenecks to survival'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+bottleneck_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
 
 ### B. Fisheries Science Advisory Reports (AMH)
 
@@ -316,6 +457,28 @@ Projects and themes include:
 
     -   Genetic variation linked to early maturation in male Chinook salmon
 
+```{r genetics-projects}
+con <- get_db_connection()
+genetics_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Science to support hatchery modernization'
+    AND section = 'Genetics'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+genetics_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
+
 ### B. Fish health and hatchery practices
 
 Summarize research and key findings from fish health projects. Research questions (from SEP):
@@ -354,6 +517,27 @@ Projects and themes include:
 
     -   Causes and consequences of vateritic otoliths in hatchery-reared Coho salmon (BCSRIF, Leigh Gaffney)
 
+```{r health-projects}
+con <- get_db_connection()
+health_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Science to support hatchery modernization'
+    AND section = 'Fish health and hatchery practices'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+health_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
 
 ## Fishery monitoring and harvest techniques (NB/CL/FM)
 
@@ -383,19 +567,129 @@ Describe the harvest transformation pillar of PSSI, DFO Science sub-initiatives,
 
     -   Fish trap pilot study (BCSRIF, Derek Leboeuf)
 
+```{r fishery-projects}
+con <- get_db_connection()
+fishery_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Fishery monitoring and harvest techniques'
+    AND section = 'Fishery monitoring and harvest techniques'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+fishery_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
+
 ## Data management and tools
 
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
 
 ### A. Data and modelling to support decision making
 
+```{r data-projects}
+con <- get_db_connection()
+data_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Data management and tools'
+    AND section = 'Data and modelling to support decision making'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+data_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
+
 ### B. Innovation and technical developments
+
+```{r innovation-projects}
+con <- get_db_connection()
+innovation_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Data management and tools'
+    AND section = 'Innovation and technical developments'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+innovation_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
 
 ## Restoration and recovery
 
 ### A. Recovery and rebuilding Programs
 
+```{r recovery-projects}
+con <- get_db_connection()
+recovery_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Restoration and recovery'
+    AND section = 'Recovery and rebuilding programs'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+recovery_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
+
 ### B. Restoration prioritization
+
+```{r restoration-projects}
+con <- get_db_connection()
+restoration_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Restoration and recovery'
+    AND section = 'Restoration prioritization'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+restoration_projects %>%
+  rename(
+    `Project Number` = project_number,
+    Source = source,
+    Title = project_title
+  ) %>%
+  gt() %>%
+  tab_header(title = md("**Associated Projects**"))
+```
 
 # References
 
