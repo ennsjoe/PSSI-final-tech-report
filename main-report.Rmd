@@ -316,7 +316,7 @@ Projects and themes include:
 
     -   Genetic variation linked to early maturation in male Chinook salmon
 
-### B. Fish health
+### B. Fish health and hatchery practices
 
 Summarize research and key findings from fish health projects. Research questions (from SEP):
 
@@ -354,7 +354,6 @@ Projects and themes include:
 
     -   Causes and consequences of vateritic otoliths in hatchery-reared Coho salmon (BCSRIF, Leigh Gaffney)
 
-### C. Hatchery practices
 
 ## Fishery monitoring and harvest techniques (NB/CL/FM)
 
