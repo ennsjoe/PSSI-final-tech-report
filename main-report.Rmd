@@ -154,11 +154,11 @@ Next Steps
 
 -   Remaining knowledge gaps and recommendations for future studies
 
-## Understanding Salmon Ecosystems
+## Understanding salmon ecosystems
 
 Context for this section
 
-### A. Freshwater Ecosystems (JE)
+### A. Freshwater ecosystems (JE)
 
 Summarize research undertaken and key findings focused on freshwater ecosystems. Projects and themes include:
 
@@ -190,7 +190,7 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
     -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
 
-### B. Marine Ecosystems (IP/NB)
+### B. Marine ecosystems (IP/NB)
 
 Summarize research and key findings related to building understanding of marine ecosystems and key stressors. Projects and themes include:
 
@@ -212,9 +212,9 @@ Summarize research and key findings related to building understanding of marine 
 
     -   Quantifying salmon predation by sea lions (Cameron Freshwater)
 
-### C. Salmon Population Monitoring
+### C. Salmon population monitoring
 
-### D. Climate Change Vulnerability (CL)
+### D. Climate change vulnerability (CL)
 
 **Highlights**
 
@@ -270,22 +270,21 @@ Incorporating climate vulnerability information into decision-making and plannin
 
 Context for assessments section
 
-### A. Life Cycle Assessment Approaches
+### A. Life cycle assessment
 
 #### Follow the Fish (IP)
 
 Provide an overview of the follow the fish program, how risk assessments and limiting factors (RAMS) were used to guide research priorities, key insights, and next steps to support rebuilding of WCVI Chinook salmon.
 
-#### Bottlenecks to Survival (IP)
+#### Bottlenecks to survival (IP)
 
-### B. Stock Assessment: Fisheries Science Advisory Reports (AMH)
+### B. Fisheries Science Advisory Reports (AMH)
 
 Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks that occurred during PSSI and FSARs that were completed or are still underway. Describe emergent themes, trends, or challenges across FSARs and stocks that were assessed.
 
 Include a table or figure with list of FSARs.
 
-
-## Hatchery Science (CL/SEP)
+## Science to support hatchery modernization (CL/SEP)
 
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
@@ -317,13 +316,13 @@ Projects and themes include:
 
     -   Genetic variation linked to early maturation in male Chinook salmon
 
-### B. Fish Health
+### B. Fish health
 
 Summarize research and key findings from fish health projects. Research questions (from SEP):
 
 -   How can we better assess and track fish condition and stress?
 
--   How do we advance and modernize diagnostic and health-management practices?
+-   How do we advance aFish health and hatchery best practicesnd modernize diagnostic and health-management practices?
 
 -   How can new molecular and technological tools help us detect issues early and inform decision-making?
 
@@ -355,7 +354,9 @@ Projects and themes include:
 
     -   Causes and consequences of vateritic otoliths in hatchery-reared Coho salmon (BCSRIF, Leigh Gaffney)
 
-## Fisheries Monitoring and Harvest Methods (NB/CL/FM)
+### C. Hatchery practices
+
+## Fishery monitoring and harvest techniques (NB/CL/FM)
 
 Describe the harvest transformation pillar of PSSI, DFO Science sub-initiatives, and key areas of monitoring and research. Projects and themes include:
 
@@ -383,9 +384,19 @@ Describe the harvest transformation pillar of PSSI, DFO Science sub-initiatives,
 
     -   Fish trap pilot study (BCSRIF, Derek Leboeuf)
 
-## Data Management and Mobilization
+## Data management and tools
 
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
+
+### A. Data and modelling to support decision making
+
+### B. Innovation and technical developments
+
+## Restoration and recovery
+
+### A. Recovery and rebuilding Programs
+
+### B. Restoration prioritization
 
 # References
 
