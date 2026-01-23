@@ -198,7 +198,7 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
     -   Effects of forest harvest of salmon productivity (BCSRIF, Maria Kuruvilla)
 
     -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
-    
+
 ```{r freshwater-ecosystem-projects}
 con <- get_db_connection()
 freshwater_projects <- dbGetQuery(con, "
@@ -242,7 +242,7 @@ Summarize research and key findings related to building understanding of marine 
     -   eDNA monitoring in WCVI (Christoph Deeg)
 
     -   Quantifying salmon predation by sea lions (Cameron Freshwater)
-    
+
 ```{r marine-ecosystem-projects}
 con <- get_db_connection()
 marine_projects <- dbGetQuery(con, "
