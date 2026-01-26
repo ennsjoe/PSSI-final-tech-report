@@ -1,0 +1,113 @@
+
+## Project `r project$project_id`: `r project$project_title`
+ 
+```{r, results='asis'}
+# Display project metadata box
+metadata_items <- c()
+
+if (!is.na(project$project_leads) && nchar(project$project_leads) > 0) {
+ metadata_items <- c(metadata_items, paste0("**Project Leads:** ", project$project_leads))
+}
+
+if (!is.na(project$collaborators) && nchar(project$collaborators) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Collaborators:** ", project$collaborators))
+}
+
+if (!is.na(project$location) && nchar(project$location) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Location:** ", project$location))
+}
+
+if (!is.na(project$salmon_species) && nchar(project$salmon_species) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Species:** ", project$salmon_species))
+}
+
+if (!is.na(project$conservation_unit) && nchar(project$conservation_unit) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Conservation Unit:** ", project$conservation_unit))
+}
+
+if (length(metadata_items) > 0) {
+  cat(paste(metadata_items, collapse = " | "), "\n\n")
+}
+```
+
+```{r, results='asis'}
+# Highlights
+if (!is.na(project$highlights) && nchar(project$highlights) > 0) {
+  cat("### Highlights\n\n")
+  cat(project$highlights, "\n\n")
+}
+```
+
+```{r, results='asis'}
+# Background
+if (!is.na(project$background) && nchar(project$background) > 0) {
+  cat("### Background\n\n")
+  cat(project$background, "\n\n")
+}
+```
+
+```{r, results='asis'}
+# Methods and Findings
+has_methods <- !is.na(project$methods_findings) && nchar(project$methods_findings) > 0
+has_fieldwork <- !is.na(project$field_work) && nchar(project$field_work) > 0
+has_samples <- !is.na(project$samples) && nchar(project$samples) > 0
+
+if (has_methods || has_fieldwork || has_samples) {
+  cat("### Methods and Findings\n\n")
+  
+  if (has_methods) {
+    cat(project$methods_findings, "\n\n")
+  }
+  
+  if (has_fieldwork) {
+    cat("**Field Work:**\n\n", project$field_work, "\n\n")
+  }
+  
+  if (has_samples) {
+    cat("**Samples Collected/Analyzed:**\n\n", project$samples, "\n\n")
+  }
+}
+```
+
+```{r, results='asis'}
+# Insights
+if (!is.na(project$insights) && nchar(project$insights) > 0) {
+  cat("### Insights\n\n")
+  cat(project$insights, "\n\n")
+}
+```
+
+```{r, results='asis'}
+# Next Steps
+if (!is.na(project$next_steps) && nchar(project$next_steps) > 0) {
+  cat("### Next Steps\n\n")
+  cat(project$next_steps, "\n\n")
+}
+```
+
+```{r, results='asis'}
+# Outputs and Products
+outputs <- c()
+
+if (!is.na(project$publications) && nchar(project$publications) > 0) {
+  outputs <- c(outputs, paste0("**Publications:**\n\n", project$publications))
+}
+
+if (!is.na(project$datasets) && nchar(project$datasets) > 0) {
+  outputs <- c(outputs, paste0("**Datasets:**\n\n", project$datasets))
+}
+
+if (!is.na(project$code_software) && nchar(project$code_software) > 0 && 
+    !grepl("Not applicable", project$code_software, ignore.case = TRUE)) {
+  outputs <- c(outputs, paste0("**Code/Software:**\n\n", project$code_software))
+}
+
+if (!is.na(project$communications) && nchar(project$communications) > 0) {
+  outputs <- c(outputs, paste0("**Communications:**\n\n", project$communications))
+}
+
+if (length(outputs) > 0) {
+  cat("### Outputs and Products\n\n")
+  cat(paste(outputs, collapse = "\n\n"), "\n\n")
+}
+```
