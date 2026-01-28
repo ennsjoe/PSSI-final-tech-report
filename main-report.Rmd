@@ -5,6 +5,7 @@ editor: "Cory Lagasse, Joe Enns, Nicholas Brown, Isobel Pearsall, Ann-Marie Huan
 date: "`r Sys.Date()`"
 output:
   word_document:
+    reference_doc: templates/reference-doc.docx
     toc: true
     toc_depth: 3
     fig_caption: true

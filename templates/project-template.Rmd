@@ -134,6 +134,8 @@ if (!is.na(project$next_steps) && nchar(project$next_steps) > 0) {
 # References
 if (!is.na(project$references) && nchar(project$references) > 0) {
   cat("#### References\n\n")
-  cat(project$references, "\n\n")
+  cat("::: {custom-style=\"Bibliography\"}\n")
+  cat(project$references, "\n")
+  cat(":::\n\n")
 }
 ```
