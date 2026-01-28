@@ -1,5 +1,5 @@
 
-## Project `r project$project_id`: `r project$project_title`
+### Project `r project$project_id`: \n\n `r project$project_title`
  
 ```{r, results='asis'}
 # Display project metadata box
@@ -46,14 +46,14 @@ if (!is.na(project$cu) && nchar(project$cu) > 0) {
 }
 
 if (length(metadata_items) > 0) {
-  cat(paste(metadata_items, collapse = " \n "), "\n\n")
+  cat(paste(metadata_items, collapse = " \n\n "), "\n\n")
 }
 ```
 
 ```{r, results='asis'}
 # Highlights
 if (!is.na(project$highlights) && nchar(project$highlights) > 0) {
-  cat("### Highlights\n\n")
+  cat("#### Highlights\n\n")
   cat(project$highlights, "\n\n")
 }
 ```
@@ -61,7 +61,7 @@ if (!is.na(project$highlights) && nchar(project$highlights) > 0) {
 ```{r, results='asis'}
 # Background
 if (!is.na(project$background) && nchar(project$background) > 0) {
-  cat("### Background\n\n")
+  cat("#### Background\n\n")
   cat(project$background, "\n\n")
 }
 ```
@@ -69,7 +69,7 @@ if (!is.na(project$background) && nchar(project$background) > 0) {
 ```{r, results='asis'}
 # Methods and Findings
 if (!is.na(project$methods_findings) && nchar(project$methods_findings) > 0) {
-  cat("### Methods and Findings\n\n")
+  cat("#### Methods and Findings\n\n")
   cat(project$methods_findings, "\n\n")
 }
 ```
@@ -83,7 +83,7 @@ if (dir.exists(fig_dir)) {
                           full.names = TRUE, ignore.case = TRUE)
   
   if (length(img_files) > 0) {
-    cat("### Tables and Figures\n\n")
+    cat("#### Tables and Figures\n\n")
     
     # Parse captions
     captions <- NULL
@@ -109,7 +109,7 @@ if (dir.exists(fig_dir)) {
     }
   }
 } else if (!is.na(project$tables_figures) && nchar(project$tables_figures) > 0) {
-  cat("### Tables and Figures\n\n")
+  cat("#### Tables and Figures\n\n")
   cat(project$tables_figures, "\n\n")
 }
 ```
@@ -117,7 +117,7 @@ if (dir.exists(fig_dir)) {
 ```{r, results='asis'}
 # Insights
 if (!is.na(project$insights) && nchar(project$insights) > 0) {
-  cat("### Insights\n\n")
+  cat("#### Insights\n\n")
   cat(project$insights, "\n\n")
 }
 ```
@@ -125,7 +125,7 @@ if (!is.na(project$insights) && nchar(project$insights) > 0) {
 ```{r, results='asis'}
 # Next Steps
 if (!is.na(project$next_steps) && nchar(project$next_steps) > 0) {
-  cat("### Next Steps\n\n")
+  cat("#### Next Steps\n\n")
   cat(project$next_steps, "\n\n")
 }
 ```
@@ -133,7 +133,7 @@ if (!is.na(project$next_steps) && nchar(project$next_steps) > 0) {
 ```{r, results='asis'}
 # References
 if (!is.na(project$references) && nchar(project$references) > 0) {
-  cat("### References\n\n")
+  cat("#### References\n\n")
   cat(project$references, "\n\n")
 }
 ```
