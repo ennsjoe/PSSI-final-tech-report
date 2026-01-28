@@ -1,256 +1,314 @@
-# =============================================================================
-# Extract PSSI Word Document Forms to CSV
-# =============================================================================
-# This script reads .docx files containing PSSI project reporting forms
-# and extracts the form data into a CSV spreadsheet.
-#
-# Required packages: here, xml2, dplyr, stringr, purrr
-# =============================================================================
-
-# Install packages if needed
-required_packages <- c("here", "xml2", "dplyr", "stringr", "purrr", "DBI", "RSQLite")
-new_packages <- required_packages[!(required_packages %in% installed.packages()[,"Package"])]
-if(length(new_packages)) install.packages(new_packages)
-
-library(here)
 library(xml2)
 library(dplyr)
-library(stringr)
 library(purrr)
+library(tibble)
+library(stringr)
 library(DBI)
 library(RSQLite)
+library(here)
 
-# Word XML namespaces
-NS <- c(w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main")
+# --- Configuration ---
+INPUT_DIR  <- here("data", "word_docs")
+OUTPUT_CSV <- here("data", "processed", "pssi_form_data.csv")
+OUTPUT_DB  <- here("output", "projects.db")
 
-# Placeholder text patterns to treat as NA
-PLACEHOLDER_PATTERNS <- c(
-  "Click or tap here to enter text",
-  "Click or tap here to enter text.",
-  "click or tap here to enter text"
+# Fields to extract - labels as they appear in the document
+# Format: "label_in_document" = "output_field_name"
+FIELD_LABELS <- c(
+  "Project ID (number)" = "project_id",
+  "Project ID" = "project_id",
+  "Project Title" = "project_title",
+  "Project Leads" = "project_leads",
+  "Collaborations and External Partners" = "collaborations",
+  "Location (if applicable)" = "location",
+  "Location" = "location",
+  "Salmon species (if applicable)" = "species",
+  "Salmon species" = "species",
+  "Waterbodies (if applicable)" = "waterbodies",
+  "Waterbodies" = "waterbodies",
+  "Life history phases (if applicable)" = "life_history",
+  "Life history phases" = "life_history",
+  "Region" = "region",
+  "Stock (if applicable)" = "stock",
+  "Stock" = "stock",
+  "Population (if applicable)" = "population",
+  "Population" = "population",
+  "Conservation Unit (if applicable)" = "cu",
+  "Conservation Unit" = "cu",
+  "Highlights" = "highlights",
+  "Background" = "background",
+  "Methods and Findings" = "methods_findings",
+  "Insights" = "insights",
+  "Next Steps" = "next_steps",
+  "Tables and Figures" = "tables_figures",
+  "References" = "references"
 )
 
-#' Get all text from an XML node, preserving paragraph breaks
-get_text <- function(node) {
-  # Find all paragraphs
-  paragraphs <- xml_find_all(node, ".//w:p", NS)
-  
-  if (length(paragraphs) == 0) {
-    # Fallback: just get all text nodes
-    text_nodes <- xml_find_all(node, ".//w:t", NS)
-    return(paste(xml_text(text_nodes), collapse = ""))
-  }
-  
-  # Extract text from each paragraph using a for loop (safer than sapply with XML)
-  para_texts <- character(length(paragraphs))
-  for (i in seq_along(paragraphs)) {
-    text_nodes <- xml_find_all(paragraphs[[i]], ".//w:t", NS)
-    para_texts[i] <- paste(xml_text(text_nodes), collapse = "")
-  }
-  
-  # Filter out empty paragraphs and join with double newline (markdown paragraph break)
-  para_texts <- para_texts[nchar(trimws(para_texts)) > 0]
-  paste(para_texts, collapse = "\n\n")
-}
+# Output field names (unique values from FIELD_LABELS)
+OUTPUT_FIELDS <- unique(FIELD_LABELS)
 
-#' Get text without preserving paragraph breaks (for single-value fields)
-get_text_simple <- function(node) {
-  text_nodes <- xml_find_all(node, ".//w:t", NS)
-  paste(xml_text(text_nodes), collapse = "")
-}
+# Word XML namespace
+W_NS <- c(w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main")
 
-#' Normalize whitespace in text (preserves paragraph breaks)
-normalize <- function(text) {
-  # Normalize multiple newlines to double newline (paragraph break)
-  text <- gsub("\\r\\n", "\n", text)  # Windows line endings
-  text <- gsub("\\n{3,}", "\n\n", text)  # Max 2 newlines
-  # Normalize spaces (but not newlines)
-  text <- gsub("[ \\t]+", " ", text)
-  # Trim leading/trailing whitespace
-  trimws(text)
-}
-
-#' Clean a value - return NA if blank or placeholder text
-#' 
-#' @param value The text value to clean
-#' @return Cleaned value or NA if blank/placeholder
-clean_value <- function(value) {
-  if (is.null(value)) return(NA_character_)
+# ----------------------------------------------------------
+# Helper: Fix encoding issues (UTF-8 mojibake)
+# ----------------------------------------------------------
+fix_encoding <- function(text) {
+  if (is.na(text)) return(NA_character_)
   
-  # Normalize whitespace (preserving paragraph breaks)
-  cleaned <- normalize(value)
-  
-  # Return NA if empty
-  if (nchar(cleaned) == 0) {
-    return(NA_character_)
-  }
-  
-  # Check for placeholder text (case-insensitive)
-  for (pattern in PLACEHOLDER_PATTERNS) {
-    if (grepl(pattern, cleaned, ignore.case = TRUE)) {
-      # Remove the placeholder text
-      cleaned <- gsub(pattern, "", cleaned, ignore.case = TRUE)
-    }
-  }
-  
-  # Normalize again after removal
-  cleaned <- normalize(cleaned)
-  
-  # Check if empty after removal
-  if (nchar(cleaned) == 0) {
-    return(NA_character_)
-  }
-  
-  return(cleaned)
-}
-
-#' Extract form data from a single PSSI Word document
-#'
-#' @param docx_path Path to the .docx file
-#' @return A named list with extracted field values
-extract_form_data <- function(docx_path) {
-  
-  # Create temp directory and unzip
-  temp_dir <- tempfile()
-  dir.create(temp_dir)
-  on.exit(unlink(temp_dir, recursive = TRUE))
-  
-  unzip(docx_path, exdir = temp_dir)
-  
-  # Read document.xml
-  doc_xml <- read_xml(file.path(temp_dir, "word", "document.xml"))
-  
-  # Initialize results
-  results <- list(
-    source_file = basename(docx_path)
+  # Common UTF-8 mojibake patterns when UTF-8 is read as Latin-1
+  replacements <- c(
+    "Ã©" = "é",
+    "Ã¨" = "è",
+    "Ã " = "à",
+    "Ã¢" = "â",
+    "Ã®" = "î",
+    "Ã´" = "ô",
+    "Ã»" = "û",
+    "Ã§" = "ç",
+    "Ã‰" = "É",
+    "Ã€" = "À",
+    "Ã'" = "Ñ",
+    "Ã±" = "ñ",
+    "Ã¼" = "ü",
+    "Ã¶" = "ö",
+    "Ã¤" = "ä",
+    "â€™" = "'",
+    "â€œ" = "'",
+    "â€" = "'",
+    "â€" = "—",
+    "â€" = "–",
+    "â€¦" = "…"
   )
   
-  # Find all tables
-  tables <- xml_find_all(doc_xml, "//w:tbl", NS)
-  
-  # Process Table 3: General Project Info (usually index 3)
-  if (length(tables) >= 3) {
-    table <- tables[[3]]
-    rows <- xml_find_all(table, ".//w:tr", NS)
-    
-    # Row 2 (index 2): values for Project ID and Title
-    if (length(rows) >= 2) {
-      row_text <- normalize(get_text(rows[[2]]))
-      # Extract project ID (4 digits at start)
-      match <- str_match(row_text, "^(\\d{4})\\s*(.+)$")
-      if (!is.na(match[1, 2])) {
-        results$project_id <- clean_value(match[1, 2])
-        results$project_title <- clean_value(match[1, 3])
-      }
-    }
-    
-    # Row 4 (index 4): values for Project Leads and Collaborators
-    if (length(rows) >= 4) {
-      row_text <- normalize(get_text(rows[[4]]))
-      # Split at organization patterns
-      dfo_parts <- str_split(row_text, "\\(DFO\\)\\s*")[[1]]
-      if (length(dfo_parts) >= 2) {
-        leads <- paste(head(dfo_parts, -1), "(DFO)", sep = "")
-        results$project_leads <- clean_value(paste(leads, collapse = " "))
-        results$collaborators <- clean_value(tail(dfo_parts, 1))
-      }
-    }
-    
-    # Row 6 (index 6): Location value
-    if (length(rows) >= 6) {
-      results$location <- clean_value(get_text(rows[[6]]))
-    }
+  result <- text
+  for (pattern in names(replacements)) {
+    result <- str_replace_all(result, fixed(pattern), replacements[pattern])
   }
   
-  # Process Table 4: Geographic & Stock Info
-  if (length(tables) >= 4) {
-    table <- tables[[4]]
-    rows <- xml_find_all(table, ".//w:tr", NS)
-    
-    # Row 2: Salmon species and Waterbodies values
-    if (length(rows) >= 2) {
-      row_text <- normalize(get_text(rows[[2]]))
-      if (str_detect(row_text, "Chinook")) {
-        results$salmon_species <- clean_value("Chinook")
-        waterbodies <- str_remove(row_text, "^Chinook\\s*")
-        if (nchar(waterbodies) > 0) results$waterbodies <- clean_value(waterbodies)
-      }
-    }
-    
-    # Row 4: Life history and Region values
-    if (length(rows) >= 4) {
-      row_text <- normalize(get_text(rows[[4]]))
-      if (str_detect(row_text, "Okanagan") && str_detect(row_text, "population")) {
-        idx <- str_locate(row_text, "Okanagan")[1, "start"]
-        idx <- tail(str_locate_all(row_text, "Okanagan")[[1]][, "start"], 1)
-        results$life_history_phases <- clean_value(str_sub(row_text, 1, idx - 1))
-        results$region <- clean_value(str_sub(row_text, idx))
-      }
-    }
-    
-    # Row 6: Stock and Population values
-    if (length(rows) >= 6) {
-      row_text <- normalize(get_text(rows[[6]]))
-      if (str_detect(row_text, "Canadian Okanagan")) {
-        results$stock <- clean_value("Canadian Okanagan")
-        results$population <- clean_value("Canadian Okanagan")
-      }
-    }
-    
-    # Row 8: Conservation Unit value
-    if (length(rows) >= 8) {
-      results$conservation_unit <- clean_value(get_text(rows[[8]]))
-    }
+  return(result)
+}
+
+# ----------------------------------------------------------
+# Helper: Extract text from XML node preserving line breaks
+# ----------------------------------------------------------
+extract_text_with_breaks <- function(node, ns = W_NS) {
+  if (is.na(node) || is.null(node)) return(NA_character_)
+  
+  
+  # Find all paragraph elements
+  paragraphs <- xml_find_all(node, ".//w:p", ns = ns)
+  
+  if (length(paragraphs) == 0) {
+    # No paragraphs, try to get any text
+    text <- xml_text(node)
+    text <- fix_encoding(text)
+    return(if (nchar(trimws(text)) == 0) NA_character_ else trimws(text))
   }
   
-  # Process Table 6: Project Outputs (single column format)
-  if (length(tables) >= 6) {
-    table <- tables[[6]]
-    rows <- xml_find_all(table, ".//w:tr", NS)
+  para_texts <- map_chr(paragraphs, function(p) {
+    # Get all text runs and breaks within the paragraph
+    runs <- xml_find_all(p, ".//w:r", ns = ns)
     
-    output_fields <- list(
-      publications = "scientific publications",
-      datasets = "datasets generated",
-      dataset_locations = "dataset locations",
-      code_software = "code, programs",
-      communications = "communication",
-      field_work = "field work",
-      samples = "samples collected",
-      capital_assets = "capital assets"
-    )
+    if (length(runs) == 0) return("")
     
-    for (i in seq_along(rows)) {
-      row_text <- tolower(normalize(get_text(rows[[i]])))
+    run_texts <- map_chr(runs, function(r) {
+      # Get all children (text and breaks)
+      children <- xml_children(r)
       
-      for (field_name in names(output_fields)) {
-        pattern <- output_fields[[field_name]]
-        if (str_detect(row_text, pattern) && i < length(rows)) {
-          # Next row is the value
-          value <- clean_value(get_text(rows[[i + 1]]))
-          if (!is.na(value) && is.null(results[[field_name]])) {
-            results[[field_name]] <- str_sub(value, 1, 3000)
+      parts <- map_chr(children, function(child) {
+        child_name <- xml_name(child)
+        if (child_name == "t") {
+          return(xml_text(child))
+        } else if (child_name == "br") {
+          return("\n")
+        } else if (child_name == "tab") {
+          return("\t")
+        }
+        return("")
+      })
+      
+      paste(parts, collapse = "")
+    })
+    
+    paste(run_texts, collapse = "")
+  })
+  
+  # Join paragraphs with double newline
+  result <- paste(para_texts, collapse = "\n\n")
+  
+  # Clean up excessive whitespace while preserving intentional breaks
+  result <- str_replace_all(result, "\n{3,}", "\n\n")
+  result <- trimws(result)
+  
+  # Fix encoding issues
+  result <- fix_encoding(result)
+  
+  if (nchar(result) == 0) NA_character_ else result
+}
+
+# ----------------------------------------------------------
+# Extract Content Controls (w:sdt elements) from document.xml
+# ----------------------------------------------------------
+extract_content_controls <- function(doc_xml, ns = W_NS) {
+  
+  # Find all structured document tags (Content Controls)
+  sdt_nodes <- xml_find_all(doc_xml, "//w:sdt", ns = ns)
+  
+  if (length(sdt_nodes) == 0) {
+    message("  No Content Controls found")
+    return(list())
+  }
+  
+  message("  Found ", length(sdt_nodes), " Content Control(s)")
+  
+  results <- list()
+  
+  for (sdt in sdt_nodes) {
+    # Get properties
+    sdt_pr <- xml_find_first(sdt, ".//w:sdtPr", ns = ns)
+    
+    # Try to get tag or alias
+    tag_node <- xml_find_first(sdt_pr, ".//w:tag", ns = ns)
+    alias_node <- xml_find_first(sdt_pr, ".//w:alias", ns = ns)
+    
+    tag_val <- if (!is.na(tag_node)) xml_attr(tag_node, "val") else NA
+    alias_val <- if (!is.na(alias_node)) xml_attr(alias_node, "val") else NA
+    
+    # Get content
+    sdt_content <- xml_find_first(sdt, ".//w:sdtContent", ns = ns)
+    content_text <- extract_text_with_breaks(sdt_content, ns)
+    
+    # Skip placeholder text
+    if (!is.na(content_text) && 
+        str_detect(content_text, "^Click or tap here to enter text\\.?$")) {
+      content_text <- NA_character_
+    }
+    
+    # Store with available identifiers
+    if (!is.na(tag_val) || !is.na(alias_val)) {
+      key <- if (!is.na(tag_val)) tag_val else alias_val
+      results[[key]] <- content_text
+    }
+  }
+  
+  return(results)
+}
+
+# ----------------------------------------------------------
+# Extract content from tables based on label matching
+# Handles both adjacent cell patterns AND header row/value row patterns
+# ----------------------------------------------------------
+extract_from_tables <- function(doc_xml, ns = W_NS) {
+  
+  tables <- xml_find_all(doc_xml, "//w:tbl", ns = ns)
+  
+  if (length(tables) == 0) {
+    message("  No tables found")
+    return(list())
+  }
+  
+  message("  Found ", length(tables), " table(s)")
+  
+  results <- list()
+  
+  for (tbl in tables) {
+    rows <- xml_find_all(tbl, ".//w:tr", ns = ns)
+    
+    # Pattern 1: Header row followed by value row
+    # Check consecutive row pairs for header-value pattern
+    if (length(rows) >= 2) {
+      for (r in 1:(length(rows) - 1)) {
+        header_row <- rows[[r]]
+        value_row <- rows[[r + 1]]
+        
+        header_cells <- xml_find_all(header_row, ".//w:tc", ns = ns)
+        value_cells <- xml_find_all(value_row, ".//w:tc", ns = ns)
+        
+        # Check if this looks like a header-value pair
+        # Headers typically have same number of cells as values
+        if (length(header_cells) >= 1 && length(header_cells) == length(value_cells)) {
+          for (i in seq_along(header_cells)) {
+            header_text <- extract_text_with_breaks(header_cells[[i]], ns)
+            value_text <- extract_text_with_breaks(value_cells[[i]], ns)
+            
+            if (!is.na(header_text)) {
+              # Clean header for matching
+              header_clean <- str_trim(header_text)
+              header_clean <- str_remove_all(header_clean, "^\\*+|\\*+$")
+              header_clean <- str_trim(header_clean)
+              
+              # Check if this matches a known field label
+              if (header_clean %in% names(FIELD_LABELS)) {
+                field_name <- FIELD_LABELS[[header_clean]]
+                
+                # Skip if value is also a known header (this is a header row, not value row)
+                value_clean <- str_trim(value_text)
+                value_clean <- str_remove_all(value_clean, "^\\*+|\\*+$")
+                value_clean <- str_trim(value_clean)
+                
+                if (!is.na(value_text) && 
+                    !str_detect(value_text, "^Click or tap here to enter text\\.?$") &&
+                    !(value_clean %in% names(FIELD_LABELS))) {
+                  # Only set if not already found (first match wins)
+                  if (is.null(results[[field_name]])) {
+                    results[[field_name]] <- value_text
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
-  }
-  
-  # Process narrative tables (Highlights, Background, etc.)
-  narrative_fields <- list(
-    highlights = 7,
-    background = 8,
-    methods_findings = 9,
-    insights = 10,
-    next_steps = 11
-  )
-  
-  for (field_name in names(narrative_fields)) {
-    table_idx <- narrative_fields[[field_name]]
-    if (table_idx <= length(tables)) {
-      table <- tables[[table_idx]]
-      text <- clean_value(get_text(table))
-      if (!is.na(text) && is.null(results[[field_name]])) {
-        results[[field_name]] <- str_sub(text, 1, 3000)
+    
+    # Pattern 2: Adjacent cells in same row (label | value)
+    for (row in rows) {
+      cells <- xml_find_all(row, ".//w:tc", ns = ns)
+      
+      if (length(cells) >= 2) {
+        # Check pairs of adjacent cells for label-value patterns
+        for (i in 1:(length(cells) - 1)) {
+          label_text <- extract_text_with_breaks(cells[[i]], ns)
+          value_text <- extract_text_with_breaks(cells[[i + 1]], ns)
+          
+          if (!is.na(label_text)) {
+            # Clean label for matching
+            label_clean <- str_trim(label_text)
+            label_clean <- str_remove_all(label_clean, "^\\*+|\\*+$")
+            label_clean <- str_trim(label_clean)
+            
+            # Check if this matches a known field label
+            if (label_clean %in% names(FIELD_LABELS)) {
+              field_name <- FIELD_LABELS[[label_clean]]
+              
+              # Check that value is not also a header
+              value_clean <- str_trim(value_text)
+              value_clean <- str_remove_all(value_clean, "^\\*+|\\*+$")
+              value_clean <- str_trim(value_clean)
+              
+              # Skip placeholder text and skip if value is another header
+              if (!is.na(value_text) && 
+                  !str_detect(value_text, "^Click or tap here to enter text\\.?$") &&
+                  !(value_clean %in% names(FIELD_LABELS))) {
+                # Only set if not already found
+                if (is.null(results[[field_name]])) {
+                  results[[field_name]] <- value_text
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      # Also handle single-cell rows that might be section content
+      if (length(cells) == 1) {
+        cell_text <- extract_text_with_breaks(cells[[1]], ns)
+        if (!is.na(cell_text) && nchar(cell_text) > 100) {
+          # This might be a content cell following a header
+          # Store temporarily for later matching
+          results[[paste0("_content_", length(results))]] <- cell_text
+        }
       }
     }
   }
@@ -258,125 +316,288 @@ extract_form_data <- function(docx_path) {
   return(results)
 }
 
-
-#' Extract form data from all Word documents in a folder
-#'
-#' @param folder_path Path to folder containing .docx files
-#' @param output_csv Path for output CSV file (default: "pssi_form_data.csv")
-#' @param output_db Path for output SQLite database (default: NULL, no database)
-#' @param table_name Name of table in database (default: "projects")
-#' @return Data frame with extracted data
-extract_all_forms <- function(folder_path, 
-                              output_csv = "pssi_form_data.csv",
-                              output_db = NULL,
-                              table_name = "projects") {
+# ----------------------------------------------------------
+# Extract section content based on headings
+# ----------------------------------------------------------
+extract_section_content <- function(doc_xml, ns = W_NS) {
   
-  # Find all .docx files (excluding temp files starting with ~$)
+  results <- list()
+  
+  # Section markers to look for
+  sections <- c(
+    "Highlights" = "highlights",
+    "Background" = "background",
+    "Methods and Findings" = "methods_findings",
+    "Insights" = "insights",
+    "Next Steps" = "next_steps",
+    "Tables and Figures" = "tables_figures",
+    "References" = "references"
+  )
+  
+  # Get all paragraphs and tables in document order
+  body <- xml_find_first(doc_xml, "//w:body", ns = ns)
+  if (is.na(body)) return(results)
+  
+  # Find table cells that contain section content
+  # These are typically single-cell tables following section headers
+  tables <- xml_find_all(doc_xml, "//w:tbl", ns = ns)
+  
+  for (tbl in tables) {
+    rows <- xml_find_all(tbl, ".//w:tr", ns = ns)
+    
+    for (row in rows) {
+      cells <- xml_find_all(row, ".//w:tc", ns = ns)
+      
+      # Single cell tables often contain the main content
+      if (length(cells) == 1) {
+        cell_text <- extract_text_with_breaks(cells[[1]], ns)
+        
+        if (!is.na(cell_text) && nchar(cell_text) > 50) {
+          # Try to identify which section this belongs to
+          # by checking content patterns
+          
+          # Highlights typically start with bullet points about main idea
+          if (str_detect(cell_text, regex("main idea|Key findings|implications", ignore_case = TRUE)) &&
+              is.null(results[["highlights"]])) {
+            results[["highlights"]] <- cell_text
+          }
+          # Background discusses context and knowledge gaps
+          else if (str_detect(cell_text, regex("knowledge gap|context|collaboration", ignore_case = TRUE)) &&
+                   is.null(results[["background"]])) {
+            results[["background"]] <- cell_text
+          }
+          # Methods section
+          else if (str_detect(cell_text, regex("method|sample|analyz|CTD|core", ignore_case = TRUE)) &&
+                   nchar(cell_text) > 500 &&
+                   is.null(results[["methods_findings"]])) {
+            results[["methods_findings"]] <- cell_text
+          }
+          # Insights about management and salmon
+          else if (str_detect(cell_text, regex("management|salmon|inform|ecosystem", ignore_case = TRUE)) &&
+                   !str_detect(cell_text, regex("method|CTD|sample", ignore_case = TRUE)) &&
+                   nchar(cell_text) > 100 && nchar(cell_text) < 2000 &&
+                   is.null(results[["insights"]])) {
+            results[["insights"]] <- cell_text
+          }
+          # Next steps
+          else if (str_detect(cell_text, regex("next step|future|recommend|ongoing", ignore_case = TRUE)) &&
+                   is.null(results[["next_steps"]])) {
+            results[["next_steps"]] <- cell_text
+          }
+          # References with citations
+          else if (str_detect(cell_text, regex("\\d{4}\\.|doi:|Journal|Can\\.|pp\\.", ignore_case = TRUE)) &&
+                   is.null(results[["references"]])) {
+            results[["references"]] <- cell_text
+          }
+        }
+      }
+    }
+  }
+  
+  return(results)
+}
+
+# ----------------------------------------------------------
+# Main extraction function for a single document
+# ----------------------------------------------------------
+extract_docx_content <- function(docx_path) {
+  
+  filename <- basename(docx_path)
+  message("\nProcessing: ", filename)
+  
+  # Create temp directory and unzip
+  temp_dir <- tempfile()
+  dir.create(temp_dir)
+  on.exit(unlink(temp_dir, recursive = TRUE))
+  
+  tryCatch({
+    unzip(docx_path, exdir = temp_dir)
+  }, error = function(e) {
+    message("  ERROR: Could not unzip file - ", e$message)
+    return(NULL)
+  })
+  
+  # Load document.xml with explicit UTF-8 encoding
+  doc_path <- file.path(temp_dir, "word", "document.xml")
+  if (!file.exists(doc_path)) {
+    message("  ERROR: document.xml not found")
+    return(NULL)
+  }
+  
+  doc_xml <- read_xml(doc_path, encoding = "UTF-8")
+  
+  # Initialize results with all fields as NA
+  results <- setNames(
+    as.list(rep(NA_character_, length(OUTPUT_FIELDS))),
+    OUTPUT_FIELDS
+  )
+  
+  # Method 1: Extract from Content Controls
+  cc_data <- extract_content_controls(doc_xml)
+  for (name in names(cc_data)) {
+    if (name %in% OUTPUT_FIELDS && !is.na(cc_data[[name]])) {
+      results[[name]] <- cc_data[[name]]
+    }
+  }
+  
+  # Method 2: Extract from tables (label-value pairs)
+  table_data <- extract_from_tables(doc_xml)
+  for (name in names(table_data)) {
+    # Only use table data if Content Control did not have it
+    if (name %in% OUTPUT_FIELDS && is.na(results[[name]]) && !is.na(table_data[[name]])) {
+      results[[name]] <- table_data[[name]]
+    }
+  }
+  
+  # Method 3: Extract section content by pattern matching
+  section_data <- extract_section_content(doc_xml)
+  for (name in names(section_data)) {
+    if (name %in% OUTPUT_FIELDS && is.na(results[[name]]) && !is.na(section_data[[name]])) {
+      results[[name]] <- section_data[[name]]
+    }
+  }
+  
+  # Count extracted fields
+  extracted_count <- sum(!is.na(unlist(results)))
+  message("  Extracted ", extracted_count, " of ", length(OUTPUT_FIELDS), " fields")
+  
+  # Build output tibble
+  df <- tibble(
+    source_file = filename,
+    extraction_date = as.character(Sys.Date())
+  ) %>%
+    bind_cols(as_tibble(results))
+  
+  return(df)
+}
+
+# ----------------------------------------------------------
+# Process all documents in directory
+# ----------------------------------------------------------
+extract_all_forms <- function(input_dir = INPUT_DIR,
+                              output_csv = OUTPUT_CSV,
+                              output_db = OUTPUT_DB) {
+  
+  # Find all Word documents
   docx_files <- list.files(
-    folder_path,
+    input_dir,
     pattern = "\\.docx$",
     full.names = TRUE,
     ignore.case = TRUE
-  ) %>%
-    .[!str_detect(basename(.), "^~\\$")]
-  
-  if (length(docx_files) == 0) {
-    stop("No .docx files found in: ", folder_path)
-  }
-  
-  message("Found ", length(docx_files), " Word document(s) to process\n")
-  
-  # Extract data from each file
-  all_data <- map(docx_files, function(f) {
-    message("Processing: ", basename(f))
-    tryCatch({
-      data <- extract_form_data(f)
-      n_fields <- sum(sapply(data, function(x) !is.null(x) && !is.na(x) && nchar(x) > 0)) - 1
-      message("  -> Extracted ", n_fields, " fields")
-      data
-    }, error = function(e) {
-      message("  Error: ", e$message)
-      list(source_file = basename(f), error = e$message)
-    })
-  })
-  
-  # Convert to data frame
-  result_df <- bind_rows(all_data)
-  
-  # Define preferred column order
-  col_order <- c(
-    "source_file", "project_id", "project_title", "project_leads", "collaborators",
-    "location", "salmon_species", "waterbodies", "life_history_phases", "region",
-    "stock", "population", "conservation_unit", "publications", "datasets",
-    "dataset_locations", "code_software", "communications", "field_work", "samples",
-    "capital_assets", "highlights", "background", "methods_findings", "insights",
-    "next_steps", "error"
   )
   
-  # Reorder columns (keeping any extras at the end)
-  existing_cols <- col_order[col_order %in% names(result_df)]
-  extra_cols <- setdiff(names(result_df), col_order)
-  result_df <- result_df %>% select(all_of(c(existing_cols, extra_cols)))
+  # Exclude temp files (start with ~$)
+  docx_files <- docx_files[!grepl("^~\\$", basename(docx_files))]
   
-  # Write to CSV
-  write.csv(result_df, output_csv, row.names = FALSE, na = "")
-  message("\nCSV saved to: ", output_csv)
+  message("Found ", length(docx_files), " Word document(s) in: ", input_dir)
   
-  # Write to SQLite database if path provided
-  if (!is.null(output_db)) {
-    # Create output directory if needed
-    db_dir <- dirname(output_db)
-    if (!dir.exists(db_dir)) {
-      dir.create(db_dir, recursive = TRUE)
-    }
-    
-    # Connect to database (creates if doesn't exist)
-    con <- dbConnect(SQLite(), output_db)
-    on.exit(dbDisconnect(con), add = TRUE)
-    
-    # Write table (overwrite if exists)
-    dbWriteTable(con, table_name, result_df, overwrite = TRUE)
-    
-    message("Database saved to: ", output_db)
-    message("  Table: ", table_name)
-    message("  Rows: ", nrow(result_df))
+  if (length(docx_files) == 0) {
+    stop("No Word documents found in: ", input_dir)
   }
   
-  return(result_df)
+  # Process each document
+  results <- map(docx_files, extract_docx_content)
+  results <- compact(results)  # Remove NULLs
+  
+  if (length(results) == 0) {
+    stop("No data extracted from any documents")
+  }
+  
+  # Combine all results
+  combined <- bind_rows(results)
+  
+  # Save to CSV with UTF-8 BOM for Excel compatibility
+  dir.create(dirname(output_csv), recursive = TRUE, showWarnings = FALSE)
+  
+  # Write with UTF-8 BOM for better Excel compatibility
+  con <- file(output_csv, "w", encoding = "UTF-8")
+  writeChar("\uFEFF", con, eos = NULL)  # Write BOM
+  close(con)
+  write.table(combined, output_csv, row.names = FALSE, na = "", 
+              sep = ",", quote = TRUE, fileEncoding = "UTF-8", append = TRUE)
+  message("\nCSV saved to: ", output_csv)
+  
+  # Save to SQLite
+  dir.create(dirname(output_db), recursive = TRUE, showWarnings = FALSE)
+  con <- dbConnect(SQLite(), output_db)
+  on.exit(dbDisconnect(con), add = TRUE)
+  dbWriteTable(con, "projects", combined, overwrite = TRUE)
+  message("Database saved to: ", output_db)
+  
+  # Summary
+  message("\n=== EXTRACTION SUMMARY ===")
+  message("Documents processed: ", nrow(combined))
+  message("Fields per document: ", ncol(combined) - 2)  # Exclude source_file and extraction_date
+  
+  # Show field coverage
+  field_coverage <- combined %>%
+    select(-source_file, -extraction_date) %>%
+    summarise(across(everything(), ~sum(!is.na(.) & . != ""))) %>%
+    tidyr::pivot_longer(everything(), names_to = "field", values_to = "count") %>%
+    mutate(percent = round(count / nrow(combined) * 100, 1))
+  
+  message("\nField coverage:")
+  for (i in 1:nrow(field_coverage)) {
+    message("  ", field_coverage$field[i], ": ", 
+            field_coverage$count[i], "/", nrow(combined),
+            " (", field_coverage$percent[i], "%)")
+  }
+  
+  return(combined)
 }
 
-
-# =============================================================================
-# USAGE EXAMPLES
-# =============================================================================
-
-# To process a single file:
-# result <- extract_form_data(here("data", "word_docs", "your_document.docx"))
-
-# To process all files in a folder:
-# all_data <- extract_all_forms(
-#   folder_path = here("data", "word_docs"),
-#   output_csv = here("data", "processed", "pssi_form_data.csv"),
-#   output_db = here("output", "projects.db"),
-#   table_name = "projects"
-# )
-
-# =============================================================================
-# RUN EXTRACTION
-# =============================================================================
-
-# Create output directories if they don't exist
-if (!dir.exists(here("data", "processed"))) {
-  dir.create(here("data", "processed"), recursive = TRUE)
+# ----------------------------------------------------------
+# Diagnostic function to inspect a single document
+# ----------------------------------------------------------
+inspect_document <- function(docx_path) {
+  
+  message("Inspecting: ", basename(docx_path))
+  
+  temp_dir <- tempfile()
+  dir.create(temp_dir)
+  on.exit(unlink(temp_dir, recursive = TRUE))
+  
+  unzip(docx_path, exdir = temp_dir)
+  
+  doc_path <- file.path(temp_dir, "word", "document.xml")
+  doc_xml <- read_xml(doc_path, encoding = "UTF-8")
+  
+  # Count Content Controls
+  sdt_nodes <- xml_find_all(doc_xml, "//w:sdt", ns = W_NS)
+  message("\nContent Controls found: ", length(sdt_nodes))
+  
+  if (length(sdt_nodes) > 0) {
+    message("\nContent Control details:")
+    for (i in seq_along(sdt_nodes)) {
+      sdt_pr <- xml_find_first(sdt_nodes[[i]], ".//w:sdtPr", ns = W_NS)
+      tag_node <- xml_find_first(sdt_pr, ".//w:tag", ns = W_NS)
+      alias_node <- xml_find_first(sdt_pr, ".//w:alias", ns = W_NS)
+      
+      tag_val <- if (!is.na(tag_node)) xml_attr(tag_node, "val") else "(none)"
+      alias_val <- if (!is.na(alias_node)) xml_attr(alias_node, "val") else "(none)"
+      
+      sdt_content <- xml_find_first(sdt_nodes[[i]], ".//w:sdtContent", ns = W_NS)
+      preview <- str_trunc(xml_text(sdt_content), 50)
+      
+      message("  [", i, "] tag='", tag_val, "' alias='", alias_val, "' content='", preview, "'")
+    }
+  }
+  
+  # Count tables
+  tables <- xml_find_all(doc_xml, "//w:tbl", ns = W_NS)
+  message("\nTables found: ", length(tables))
+  
+  # Show table structure
+  for (i in seq_along(tables)) {
+    rows <- xml_find_all(tables[[i]], ".//w:tr", ns = W_NS)
+    cells_per_row <- map_int(rows, ~length(xml_find_all(.x, ".//w:tc", ns = W_NS)))
+    message("  Table ", i, ": ", length(rows), " rows, cells per row: ", 
+            paste(head(cells_per_row, 5), collapse = ", "),
+            if (length(cells_per_row) > 5) "..." else "")
+  }
+  
+  invisible(NULL)
 }
-if (!dir.exists(here("output"))) {
-  dir.create(here("output"), recursive = TRUE)
-}
 
-# Extract all forms from word_docs folder
-all_data <- extract_all_forms(
-  folder_path = here("data", "word_docs"),
-  output_csv = here("data", "processed", "pssi_form_data.csv"),
-  output_db = here("output", "projects.db"),
-  table_name = "projects"
-)
+# --- Run extraction automatically when sourced ---
+extract_all_forms()
