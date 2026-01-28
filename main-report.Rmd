@@ -759,13 +759,13 @@ for (i in seq_len(nrow(projects_df))) {
 # Create a summary table of all projects
 if (nrow(projects_df) > 0) {
   projects_df %>%
-    select(project_id, project_title, project_leads, location, salmon_species) %>%
+    select(project_id, project_title, project_leads, location, species) %>%
     rename(
       `Project ID` = project_id,
       `Title` = project_title,
       `Leads` = project_leads,
       `Location` = location,
-      `Species` = salmon_species
+      `Species` = species
     ) %>%
     gt() %>%
     tab_header(

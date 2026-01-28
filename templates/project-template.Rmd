@@ -6,27 +6,47 @@
 metadata_items <- c()
 
 if (!is.na(project$project_leads) && nchar(project$project_leads) > 0) {
- metadata_items <- c(metadata_items, paste0("**Project Leads:** ", project$project_leads))
+  metadata_items <- c(metadata_items, paste0("**Project Leads:** ", project$project_leads))
 }
 
-if (!is.na(project$collaborators) && nchar(project$collaborators) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Collaborators:** ", project$collaborators))
+if (!is.na(project$collaborations) && nchar(project$collaborations) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Collaborations:** ", project$collaborations))
 }
 
 if (!is.na(project$location) && nchar(project$location) > 0) {
   metadata_items <- c(metadata_items, paste0("**Location:** ", project$location))
 }
 
-if (!is.na(project$salmon_species) && nchar(project$salmon_species) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Species:** ", project$salmon_species))
+if (!is.na(project$region) && nchar(project$region) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Region:** ", project$region))
 }
 
-if (!is.na(project$conservation_unit) && nchar(project$conservation_unit) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Conservation Unit:** ", project$conservation_unit))
+if (!is.na(project$species) && nchar(project$species) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Species:** ", project$species))
+}
+
+if (!is.na(project$waterbodies) && nchar(project$waterbodies) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Waterbodies:** ", project$waterbodies))
+}
+
+if (!is.na(project$life_history) && nchar(project$life_history) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Life History:** ", project$life_history))
+}
+
+if (!is.na(project$stock) && nchar(project$stock) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Stock:** ", project$stock))
+}
+
+if (!is.na(project$population) && nchar(project$population) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Population:** ", project$population))
+}
+
+if (!is.na(project$cu) && nchar(project$cu) > 0) {
+  metadata_items <- c(metadata_items, paste0("**Conservation Unit:** ", project$cu))
 }
 
 if (length(metadata_items) > 0) {
-  cat(paste(metadata_items, collapse = " | "), "\n\n")
+  cat(paste(metadata_items, collapse = " \n "), "\n\n")
 }
 ```
 
@@ -48,24 +68,9 @@ if (!is.na(project$background) && nchar(project$background) > 0) {
 
 ```{r, results='asis'}
 # Methods and Findings
-has_methods <- !is.na(project$methods_findings) && nchar(project$methods_findings) > 0
-has_fieldwork <- !is.na(project$field_work) && nchar(project$field_work) > 0
-has_samples <- !is.na(project$samples) && nchar(project$samples) > 0
-
-if (has_methods || has_fieldwork || has_samples) {
+if (!is.na(project$methods_findings) && nchar(project$methods_findings) > 0) {
   cat("### Methods and Findings\n\n")
-  
-  if (has_methods) {
-    cat(project$methods_findings, "\n\n")
-  }
-  
-  if (has_fieldwork) {
-    cat("**Field Work:**\n\n", project$field_work, "\n\n")
-  }
-  
-  if (has_samples) {
-    cat("**Samples Collected/Analyzed:**\n\n", project$samples, "\n\n")
-  }
+  cat(project$methods_findings, "\n\n")
 }
 ```
 
@@ -86,28 +91,17 @@ if (!is.na(project$next_steps) && nchar(project$next_steps) > 0) {
 ```
 
 ```{r, results='asis'}
-# Outputs and Products
-outputs <- c()
-
-if (!is.na(project$publications) && nchar(project$publications) > 0) {
-  outputs <- c(outputs, paste0("**Publications:**\n\n", project$publications))
+# Tables and Figures
+if (!is.na(project$tables_figures) && nchar(project$tables_figures) > 0) {
+  cat("### Tables and Figures\n\n")
+  cat(project$tables_figures, "\n\n")
 }
+```
 
-if (!is.na(project$datasets) && nchar(project$datasets) > 0) {
-  outputs <- c(outputs, paste0("**Datasets:**\n\n", project$datasets))
-}
-
-if (!is.na(project$code_software) && nchar(project$code_software) > 0 && 
-    !grepl("Not applicable", project$code_software, ignore.case = TRUE)) {
-  outputs <- c(outputs, paste0("**Code/Software:**\n\n", project$code_software))
-}
-
-if (!is.na(project$communications) && nchar(project$communications) > 0) {
-  outputs <- c(outputs, paste0("**Communications:**\n\n", project$communications))
-}
-
-if (length(outputs) > 0) {
-  cat("### Outputs and Products\n\n")
-  cat(paste(outputs, collapse = "\n\n"), "\n\n")
+```{r, results='asis'}
+# References
+if (!is.na(project$references) && nchar(project$references) > 0) {
+  cat("### References\n\n")
+  cat(project$references, "\n\n")
 }
 ```
