@@ -1,6 +1,19 @@
 
 ### Project `r project$project_id`: \n\n `r project$project_title`
  
+```{r}
+
+officer::fpar(
+     officer::run_bookmark(
+       make_bkm(project$project_id),
+       officer::ftext("\u200B")  # zero‑width space: invisible anchor text
+       #officer::ftext(paste0("[ANCHOR ", project$project_id, "]"))
+     )
+   )
+```
+
+
+
 ```{r, results='asis'}
 # Display project metadata box
 metadata_items <- c()
