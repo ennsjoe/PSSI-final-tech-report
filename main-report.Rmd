@@ -4,8 +4,8 @@ author: "DFO Science Pacific Region"
 editor: "Cory Lagasse, Joe Enns, Nicholas Brown, Isobel Pearsall, Ann-Marie Huang, Diana Dobson"
 date: "`r Sys.Date()`"
 output:
-  word_document:
-    reference_doc: templates/reference-doc.docx
+  officedown::rdocx_document:
+    reference_docx: "templates/reference-doc.docx"
     toc: true
     toc_depth: 3
     fig_caption: true
@@ -29,6 +29,9 @@ library(gt)
 library(DBI)
 library(RSQLite)
 library(here)
+library(officer)
+library(flextable) # for word doc tables
+library(officedown) #for hyperlinks, etc. in word output
 
 # Source helper functions
 source(here("helper-functions.R"))
@@ -170,6 +173,25 @@ Context for this section
 
 ### A. Freshwater ecosystems (JE)
 
+```{r freshwater-ecosystem-projects}
+con <- get_db_connection()
+freshwater_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Freshwater ecosystems'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(
+  df = freshwater_projects
+)
+
+
+```
+
 Summarize research undertaken and key findings focused on freshwater ecosystems. Projects and themes include:
 
 -   Risk assessment and mitigation of aquatic invasive species
@@ -200,27 +222,7 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
     -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
 
-```{r freshwater-ecosystem-projects}
-con <- get_db_connection()
-freshwater_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Understanding salmon ecosystems'
-    AND section = 'Freshwater ecosystems'
-  ORDER BY project_number
-")
-dbDisconnect(con)
 
-freshwater_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
-```
 
 ### B. Marine ecosystems (IP/NB)
 
@@ -256,14 +258,7 @@ marine_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-marine_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(marine_projects)
 ```
 
 ### C. Salmon population monitoring
@@ -280,14 +275,7 @@ s_monitor_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-s_monitor_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(s_monitor_projects)
 ```
 
 ### D. Climate change vulnerability (CL)
@@ -354,14 +342,7 @@ climate_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-climate_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(climate_projects)
 ```
 
 ## Assessments
@@ -386,14 +367,7 @@ ftf_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-ftf_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(ftf_projects)
 ```
 
 #### Bottlenecks to survival (IP)
@@ -410,14 +384,7 @@ bottleneck_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-bottleneck_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(bottleneck_projects)
 ```
 
 ### B. Fisheries Science Advisory Reports (AMH)
@@ -470,14 +437,7 @@ genetics_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-genetics_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(genetics_projects)
 ```
 
 ### B. Fish health and hatchery practices
@@ -530,14 +490,7 @@ health_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-health_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(health_projects)
 ```
 
 ## Fishery monitoring and harvest techniques (NB/CL/FM)
@@ -580,21 +533,96 @@ fishery_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-fishery_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(fishery_projects)
 ```
 
 ## Data management and tools
 
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
 
-### A. Data and modelling to support decision making
+### A. Improving data management and availability
+
+```{r innovation-projects}
+
+data_projects_loc <- here("data", "raw", "PSSI_data_projects.csv")
+
+data_projects_table <-read_csv(data_projects_loc) %>%
+  mutate(URL = URL_link) %>%
+  select(-URL_link)
+
+tbl_word <- data_projects_table %>%
+  mutate(
+    Title         = str_squish(Title),
+    Status        = str_squish(Status),
+    Accessibility = str_squish(Accessibility),
+    Description   = str_squish(Description),
+
+    # Stub-like column (NOT including URL)
+    Tool = paste0(
+      Title, "\n",
+      "Status: ", Status, "\n",
+      "Access: ", Accessibility
+    )
+  ) %>%
+  select(Tool, Description)
+
+ft <- flextable(tbl_word) %>%
+  set_header_labels(
+    Tool        = "Tool",
+    Description = "Description"
+  ) %>%
+
+  # Header styling
+  bold(part = "header") %>%
+  bg(part = "header", bg = "#E9EEF3") %>%
+  color(part = "header", color = "#1F2D3D") %>%
+  fontsize(part = "header", size = 11) %>%
+
+  # Stub-like styling for Tool column (body only)
+  bold(j = "Tool", part = "body") %>%
+  bg(j = "Tool", bg = "#F4F6F8", part = "body") %>%
+
+  # Alignment & readability
+  valign(valign = "top", part = "body") %>%
+  align(align = "left", part = "all") %>%
+  fontsize(size = 8, part = "body") %>%
+  padding(padding = 4, part = "all") %>%
+
+  # Widths for default Word page (Letter portrait, normal margins ≈ 6.5" usable)
+  width(j = "Tool",        width = 2.) %>%
+  width(j = "Description", width = 4.5) %>%
+
+  theme_zebra() %>%
+  set_table_properties(layout = "fixed")
+
+ft
+
+
+
+# 
+# # If you want URL to be clickable, keep a separate display column.
+# # This assumes URL is either NA or a label / URL text. Adjust as needed.
+# gt(data_projects_table) %>%
+#   cols_width(
+#     Title ~ px(200),
+#     Status ~ px(100),
+#     Accessibility ~ px(150),
+#     URL ~ px(150),
+#     Description ~ px(520)
+#   ) %>%
+#   tab_style(
+#     style = cell_text(whitespace = "normal"),
+#     locations = cells_body(columns = Description)
+#   ) %>%
+#   opt_row_striping() %>%
+#   tab_options(
+#     table.width = pct(100),
+#     data_row.padding = px(6)
+#   )
+
+```
+
+### B. Data and modelling to support decision making
 
 ```{r data-projects}
 con <- get_db_connection()
@@ -608,39 +636,10 @@ data_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-data_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(data_projects)
 ```
 
-### B. Innovation and technical developments
 
-```{r innovation-projects}
-con <- get_db_connection()
-innovation_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Data management and tools'
-    AND section = 'Innovation and technical developments'
-  ORDER BY project_number
-")
-dbDisconnect(con)
-
-innovation_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
-```
 
 ## Restoration and recovery
 
@@ -658,14 +657,7 @@ recovery_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-recovery_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(recovery_projects)
 ```
 
 ### B. Restoration prioritization
@@ -682,14 +674,7 @@ restoration_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-restoration_projects %>%
-  rename(
-    `Project Number` = project_number,
-    Source = source,
-    Title = project_title
-  ) %>%
-  gt() %>%
-  tab_header(title = md("**Associated Projects**"))
+ft_projects_table(restoration_projects)
 ```
 
 # References
@@ -752,9 +737,7 @@ for (i in seq_len(nrow(projects_df))) {
 }
 ```
 
-# Appendices {.unnumbered}
-
-## Appendix A: Project Summary Table
+# Appendix A: Project Summary Table
 
 ```{r project-summary-table}
 # Create a summary table of all projects
@@ -783,21 +766,146 @@ if (nrow(projects_df) > 0) {
   cat("*No project data available.*")
 }
 ```
-
-## Appendix B: Supplementary Data
-
-Additional tables or figures that support the main report.
-
-
-
 \newpage
 
-# Appendices {.unnumbered}
+# Appendix B: Overview of Phase 2 BCSRIF Projects
 
-```{r child="appendices/appendix-a-project-alpha.Rmd", eval=FALSE}
-# Set eval=TRUE when appendix file exists
+```{r}
+
+BCSRIF_df <- read.csv(
+  here("data", "raw", "report_project_list.csv"),
+  stringsAsFactors = FALSE,
+  na.strings = c("", "NA")
+) %>%
+  filter(source == "BCSRIF", include == "y") %>%
+  select(project_number, project_title, recipient, description, collaborators)
+
+# # Build a rich stub label so ONLY `description` remains as a body column
+# bcsrif_gt <- BCSRIF_df %>%
+#   mutate(
+#     stub = str_glue(
+#       "<b>{project_number}</b><br>",
+#       "<span style='font-size: 0.95em;'>{project_title}</span><br>",
+#       "<span style='color:#555; font-size: 0.9em;'><b>Recipient:</b> {recipient}</span><br>",
+#     ),
+#     # Clean up stray whitespace/newlines in description for nicer wrapping
+#     description = str_squish(description),
+#     collaborators = str_squish(collaborators)
+#   ) %>%
+#   select(stub, description, collaborators)
+# 
+# gt(bcsrif_gt, rowname_col = "stub") %>%
+#   # Keep only description as a visible data column
+#   cols_label(description = "Description",
+#              collaborators = "Collaborators") %>%
+# 
+#   # Label the stub area (the left “index” column)
+#   tab_stubhead(label = "Project") %>%
+# 
+#   # Interpret HTML in the stub so <br> and <b> work
+#   fmt_markdown(columns = stub) %>%
+# 
+#   # Give Description lots of room; keep stub readable
+#   cols_width(
+#     stub ~ px(320),
+#     description ~ px(560),
+#     collaborators ~ px (200)
+#   )
+
+
+
+# Build a stub-like first column ("Project") WITHOUT collaborators/description
+tbl_word <- BCSRIF_df %>%
+  mutate(
+    # Clean whitespace
+    project_title = str_squish(project_title),
+    recipient     = str_squish(recipient),
+    collaborators = str_squish(collaborators),
+    description   = str_squish(description),
+
+    # "Stub" column (project_number + title + recipient only)
+    Project = paste0(
+      project_number, "\n",
+      project_title, "\n",
+      "Recipient: ", recipient
+    )
+  ) %>%
+  select(Project, collaborators, description)
+
+ft <- flextable(tbl_word) %>%
+  set_header_labels(
+    Project = "Project",
+    collaborators = "Collaborators",
+    description = "Description"
+  ) %>%
+
+  # Make the "stub" column visually stubby (bold, slightly shaded)
+  bold(j = "Project", part = "body") %>%
+  bg(j = "Project", bg = "#F4F6F8", part = "body") %>%
+
+  # Top-align and wrap long text well in Word
+  valign(valign = "top", part = "body") %>%
+  align(align = "left", part = "all") %>%
+  fontsize(size = 10, part = "all") %>%
+
+  # Column widths (in inches) – tweak to your page layout
+  width(j = "Project",       width = 2.1) %>%
+  width(j = "collaborators", width = 1.7) %>%
+  width(j = "description",   width = 3) %>%
+
+# Keep our explicit widths (don’t let autofit override them)
+  set_table_properties(layout = "fixed")
+
+
+ft
+
 ```
 
-## Appendix A: Supplementary Data
+\newpage
+# Appendix C: Summary of DFO Science PSSI Data Projects
 
-Additional tables or figures that support the main report.
+#### 1. Salmon Tracking, Escapement, Assessment and Management Platform
+
+The Salmon Tracking, Escapement, Assessment and Management ([STREAM](https://pac-salmon.dfo-mpo.gc.ca:8443/bcsn/#/)) Platform is a new online resource that helps improve how salmon escapement information is collected, shared, and understood. [STREAM](https://pac-salmon.dfo-mpo.gc.ca:8443/bcsn/#/) brings together data, tools, and easy‑to‑use applications to support the conservation and management of Pacific salmon.
+
+Fisheries and Oceans staff require timely, consistent access to salmon data across sectors. The STREAM platform enhances the timeliness of salmon count data, standardizes the spatial organization of salmon information, and improves reporting on salmon status. This foundational information supports stock assessment biologists, fisheries managers, species at risk biologists, and other decision-makers in delivering informed, data-driven management.
+
+The platform has three main areas: entering and uploading data, learning about salmon populations, and exploring status reports (Figure 1). Through these features, users can view information about salmon populations across different regions and access data that support science, monitoring, and decision‑making.
+
+As STREAM continues to grow, additional funding would allow us to respond to user feedback, develop more tools that improve data quality, and make more information available to the public.
+
+```{r, echo=FALSE, fig.align="center", fig.cap="Figure 1 - Screen capture of the Salmon Tracking Escapement Assessment and Management (STREAM) Platform with the table of contents visible."}
+# Tables and Figures with images
+data_fig_dir <- here("figures", "data_tools_figures")
+
+if (dir.exists(data_fig_dir)) {
+
+  knitr::include_graphics(file.path(data_fig_dir, "Figure1.png"))
+  
+}
+
+```
+
+#### 2. Salmon Space
+
+[Salmon Space](https://egispi.ent.dfo-mpo.ca/apps/SalmonSpace-Espacesaumon/) is an interactive map that lets you explore salmon information across British Columbia and Yukon. You can search by location or by salmon species to find data such as salmon counts and stock status (Figure 2).
+
+There is strong public demand for access to salmon data to enhance transparency and build trust in departmental decision-making. Salmon Space provides up-to-date salmon counts and status information in an accessible format. By improving data transparency, this application strengthens trust and alignment between internal and external biologists, Indigenous partners, and the broader community of salmon stakeholders and enthusiasts.
+
+The map includes several optional layers, including census sites, conservation units, stock management units, and designatable units, allowing users to view salmon information at different scales. Data is updated weekly from the Fisheries and Oceans regional database, so the public can access recent information with confidence.
+
+Users can download both tabular and spatial data directly from the site, or customize and print map views to support reports, presentations, and research.
+
+```{r, echo=FALSE, fig.align="center", fig.cap="Figure 2 - Screen capture of Salmon Space showing the Osoyoos-Skaha-Okanagan Sockeye conservation unit (highlighted) with associated information displayed in a pop-up."}
+# Tables and Figures with images
+data_fig_dir <- here("figures", "data_tools_figures")
+
+if (dir.exists(data_fig_dir)) {
+
+  knitr::include_graphics(file.path(data_fig_dir, "Figure2.png"))
+  
+}
+
+```
+
+\newpage
