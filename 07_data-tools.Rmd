@@ -1,0 +1,68 @@
+## Data management and tools {##sec:data-management}
+
+Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
+
+### A. Improving data management and availability
+
+```{r innovation-projects}
+library(gt)
+
+data_projects_loc <- here("data", "raw", "PSSI_data_projects.csv")
+
+# Load and clean data
+data_projects_table <- read_csv(data_projects_loc) %>%
+  mutate(
+    URL          = URL_link,
+    Title        = str_squish(Title),
+    Status       = str_squish(Status),
+    Accessibility= str_squish(Accessibility),
+    Description  = str_squish(Description)
+  ) %>%
+  select(-URL_link)
+
+# Build stub-style Tool column
+tbl_word <- data_projects_table %>%
+  mutate(
+    Tool = paste0(
+      Title, "\n",
+      "Status: ", Status, "\n",
+      "Access: ", Accessibility
+    )
+  ) %>%
+  select(Tool, Description)
+
+# Render as a clean Word-friendly table
+gt(tbl_word) |>
+  tab_caption("Innovation-related tools and descriptions") |>
+  opt_row_striping() |>
+  cols_align("left") |>
+  cols_width(
+    Tool ~ px(180),
+    Description ~ px(380)
+  ) |>
+  tab_style(
+    style = cell_text(whitespace = "normal"),
+    locations = cells_body(columns = Description)
+  ) |>
+  tab_options(
+    table.width = pct(100),
+    data_row.padding = px(6)
+  )
+```
+
+### B. Data and modelling to support decision making
+
+```{r data-projects}
+con <- get_db_connection()
+data_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Data management and tools'
+    AND section = 'Data and modelling to support decision making'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+knitr::kable(data_projects)
+```

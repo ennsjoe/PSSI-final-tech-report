@@ -1,0 +1,45 @@
+# Appendix C: Summary of DFO Science PSSI Data Projects {#sec:dfo-science-project-summary}
+
+#### 1. Salmon Tracking, Escapement, Assessment and Management Platform
+
+The Salmon Tracking, Escapement, Assessment and Management ([STREAM](https://pac-salmon.dfo-mpo.gc.ca:8443/bcsn/#/)) Platform is a new online resource that helps improve how salmon escapement information is collected, shared, and understood. [STREAM](https://pac-salmon.dfo-mpo.gc.ca:8443/bcsn/#/) brings together data, tools, and easy‑to‑use applications to support the conservation and management of Pacific salmon.
+
+Fisheries and Oceans staff require timely, consistent access to salmon data across sectors. The STREAM platform enhances the timeliness of salmon count data, standardizes the spatial organization of salmon information, and improves reporting on salmon status. This foundational information supports stock assessment biologists, fisheries managers, species at risk biologists, and other decision-makers in delivering informed, data-driven management.
+
+The platform has three main areas: entering and uploading data, learning about salmon populations, and exploring status reports (Figure 1). Through these features, users can view information about salmon populations across different regions and access data that support science, monitoring, and decision‑making.
+
+As STREAM continues to grow, additional funding would allow us to respond to user feedback, develop more tools that improve data quality, and make more information available to the public.
+
+```{r, echo=FALSE, fig.align="center", fig.cap="Figure 1 - Screen capture of the Salmon Tracking Escapement Assessment and Management (STREAM) Platform with the table of contents visible."}
+# Tables and Figures with images
+data_fig_dir <- here("figures", "data_tools_figures")
+
+if (dir.exists(data_fig_dir)) {
+
+  knitr::include_graphics(file.path(data_fig_dir, "Figure1.png"))
+  
+}
+
+```
+
+#### 2. Salmon Space
+
+[Salmon Space](https://egispi.ent.dfo-mpo.ca/apps/SalmonSpace-Espacesaumon/) is an interactive map that lets you explore salmon information across British Columbia and Yukon. You can search by location or by salmon species to find data such as salmon counts and stock status (Figure 2).
+
+There is strong public demand for access to salmon data to enhance transparency and build trust in departmental decision-making. Salmon Space provides up-to-date salmon counts and status information in an accessible format. By improving data transparency, this application strengthens trust and alignment between internal and external biologists, Indigenous partners, and the broader community of salmon stakeholders and enthusiasts.
+
+The map includes several optional layers, including census sites, conservation units, stock management units, and designatable units, allowing users to view salmon information at different scales. Data is updated weekly from the Fisheries and Oceans regional database, so the public can access recent information with confidence.
+
+Users can download both tabular and spatial data directly from the site, or customize and print map views to support reports, presentations, and research.
+
+```{r, echo=FALSE, fig.align="center", fig.cap="Figure 2 - Screen capture of Salmon Space showing the Osoyoos-Skaha-Okanagan Sockeye conservation unit (highlighted) with associated information displayed in a pop-up."}
+# Tables and Figures with images
+data_fig_dir <- here("figures", "data_tools_figures")
+
+if (dir.exists(data_fig_dir)) {
+
+  knitr::include_graphics(file.path(data_fig_dir, "Figure2.png"))
+  
+}
+
+```

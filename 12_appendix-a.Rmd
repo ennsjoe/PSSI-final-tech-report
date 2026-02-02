@@ -1,0 +1,40 @@
+# Appendix A: Project Summary Table {#sec:project-summary}
+
+```{r project-summary-table}
+# Create a summary table of all projects
+if (nrow(projects_df) > 0) {
+
+  projects_df %>%
+    select(project_id, project_title, project_leads, location, species) %>%
+    rename(
+      `Project ID` = project_id,
+      `Title`      = project_title,
+      `Leads`      = project_leads,
+      `Location`   = location,
+      `Species`    = species
+    ) %>%
+    gt() %>%
+    tab_header(
+      title = md("**Summary of PSSI Research Projects**")
+    ) %>%
+    cols_width(
+      `Project ID` ~ px(80),
+      `Title`      ~ px(250),
+      `Leads`      ~ px(150),
+      `Location`   ~ px(120),
+      `Species`    ~ px(80)
+    ) %>%
+    opt_row_striping() %>%
+    tab_style(
+      style = cell_text(whitespace = "normal"),
+      locations = cells_body(columns = everything())
+    ) %>%
+    tab_options(
+      table.width = pct(100),
+      data_row.padding = px(6)
+    )
+
+} else {
+  cat("*No project data available.*")
+}
+```

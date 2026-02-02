@@ -1,0 +1,99 @@
+## Science to support hatchery modernization (CL/SEP) {##sec:hatcheries}
+
+Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
+
+### A. Genetics
+
+```{r genetics-projects}
+con <- get_db_connection()
+genetics_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Science to support hatchery modernization'
+    AND section = 'Genetics'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+knitr::kable(genetics_projects)
+```
+
+Summarize research and key findings from genetics projects. Research questions (from SEP):
+
+-   What are the differences between hatchery and natural origin fish?
+
+-   Why do these differences occur and what are the mechanisms behind them?
+
+-   What factors affect long-term population fitness?
+
+Projects and themes include:
+
+-   Developing and operationalizing modern genetic methods for stock identification and assessment
+
+    -   Continuation/expansion of PBT programs (Eric Rondeau)
+
+    -   Improving stock delineation in Chum salmon by characterizing genome-wide genetic variation (Anna Tigano)
+
+    -   Rapid broodstock screening for improved genetic management of Pacific salmon (Kyle Wellband)
+
+-   Evaluating genetic differences among hatchery and wild populations, and their implications for fitness
+
+    -   Fitness effects of hatchery enhancement and relative reproductive success (Tim Healy)
+
+    -   Epigenetic variation and inheritance in hatchery and natural origin Chinook and Coho salmon (Tim Healy, Kyle Wellband)
+
+    -   Genetic variation linked to early maturation in male Chinook salmon
+
+### B. Fish health and hatchery practices
+
+```{r health-projects}
+con <- get_db_connection()
+health_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Science to support hatchery modernization'
+    AND section = 'Fish health and hatchery practices'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+knitr::kable(health_projects)
+```
+
+Summarize research and key findings from fish health projects. Research questions (from SEP):
+
+-   How can we better assess and track fish condition and stress?
+
+-   How do we advance aFish health and hatchery best practicesnd modernize diagnostic and health-management practices?
+
+-   How can new molecular and technological tools help us detect issues early and inform decision-making?
+
+Projects and themes include:
+
+-   New diagnostic and monitoring tools for fish health
+
+    -   Expanding and modernizing the finfish diagnostic lab (Amy Long)
+
+    -   Developing a proactive, modernized approach to ensure optimal health and condition (Karia Kaukinen, Kristi Miller)
+
+    -   Using scales to monitor chronic stress in Chinook and Coho salmon (Stewart Johnson)
+
+    -   Application of nanopore technology for detection and characterization of pathogens (BCSRIF, Ahmed Siah)
+
+-   Evaluating factors determining fish health and disease prevalence
+
+    -   Using broodstock data to understand factors that affect BKD rates (Amy Long)
+
+    -   Factors influencing IHNV in sockeye salmon (Kyle Garver)
+
+    -   Modeling interactions of environmental, biological, and infectious factors at the Quinsam river hatchery (Simon Jones)
+
+-   Effects of rearing practices and diet on hatchery fish survival
+
+    -   Optimizing feeds for hatchery production of Pacific salmon (Erika Eliason)
+
+    -   Predicting Chinook reproductive success based on adult thiamine levels (Erika Eliason)
+
+    -   Causes and consequences of vateritic otoliths in hatchery-reared Coho salmon (BCSRIF, Leigh Gaffney)

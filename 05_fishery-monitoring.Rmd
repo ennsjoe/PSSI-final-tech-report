@@ -1,0 +1,42 @@
+## Fishery monitoring and harvest techniques (NB/CL/FM) {##sec:fishery-monitoring}
+
+```{r fishery-projects}
+con <- get_db_connection()
+fishery_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Fishery monitoring and harvest techniques'
+    AND section = 'Fishery monitoring and harvest techniques'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+knitr::kable(fishery_projects)
+```
+
+Describe the harvest transformation pillar of PSSI, DFO Science sub-initiatives, and key areas of monitoring and research. Projects and themes include:
+
+-   Enhancements to recreational monitoring
+
+    -   MSF reference fishery (Erin Rechisky)
+
+    -   Creel monitoring capacity improvements (Natalie Fuller)
+
+    -   First Nations-led catch monitoring on the Central Coast (BCSRIF, Megan Adams)
+
+-   Research on release mortality and best practices for recreational fisheries
+
+    -   Mortality of released Pacific Salmon in marine recreational fishery (BCSRIF, Scott Hinch)
+
+    -   FRIM - short-term holding and respirometry studies (BCSRIF, SFIB)
+
+-   Bycatch monitoring in commercial fisheries
+
+    -   Salmon bycatch monitoring in the trawl fishery (Cory Lagasse)
+
+-   Selective harvest methods and monitoring to support adaptive management
+
+    -   Computer vision for adaptive management of terminal salmon fisheries (BCSRIF, Will Atlas)
+
+    -   Fish trap pilot study (BCSRIF, Derek Leboeuf)

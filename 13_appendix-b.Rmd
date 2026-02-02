@@ -1,0 +1,52 @@
+# Appendix B: Overview of Phase 2 BCSRIF Projects {#sec:appendix-bcsrif-projects}
+
+```{r}
+library(gt)
+
+# Load and filter BCSRIF projects
+BCSRIF_df <- read.csv(
+  here("data", "raw", "report_project_list.csv"),
+  stringsAsFactors = FALSE,
+  na.strings = c("", "NA")
+) %>%
+  filter(source == "BCSRIF", include == "y") %>%
+  select(project_number, project_title, recipient, description, collaborators) %>%
+  mutate(
+    project_title = str_squish(project_title),
+    recipient     = str_squish(recipient),
+    collaborators = str_squish(collaborators),
+    description   = str_squish(description),
+
+    # Stub-like column combining key metadata
+    Project = paste0(
+      project_number, "\n",
+      project_title, "\n",
+      "Recipient: ", recipient
+    )
+  ) %>%
+  select(Project, collaborators, description)
+
+# Build a clean, Word-friendly gt table
+gt(BCSRIF_df) |>
+  tab_caption("BCSRIF Projects") |>
+  cols_label(
+    Project      = "Project",
+    collaborators = "Collaborators",
+    description   = "Description"
+  ) |>
+  cols_width(
+    Project ~ px(220),
+    collaborators ~ px(180),
+    description ~ px(380)
+  ) |>
+  opt_row_striping() |>
+  cols_align("left") |>
+  tab_style(
+    style = cell_text(whitespace = "normal"),
+    locations = cells_body(columns = everything())
+  ) |>
+  tab_options(
+    table.width = pct(100),
+    data_row.padding = px(6)
+  )
+```

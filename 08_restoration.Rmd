@@ -1,0 +1,69 @@
+## Restoration and recovery {##sec:restoration-recovery}
+
+### A. Recovery and rebuilding Programs
+
+```{r recovery-projects}
+con <- get_db_connection()
+recovery_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Restoration and recovery'
+    AND section = 'Recovery and rebuilding programs'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+knitr::kable(recovery_projects)
+```
+
+### B. Restoration prioritization
+
+```{r restoration-projects}
+con <- get_db_connection()
+restoration_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Restoration and recovery'
+    AND section = 'Restoration prioritization'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+knitr::kable(restoration_projects)
+```
+
+### Template / Guiding Questions
+
+Research Goals
+
+-   What were the key objectives of this research theme?
+
+-   How do these relate to original goals of PSSI/BCSRIF?
+
+-   What major gaps in our knowledge were being addressed?
+
+Outcomes
+
+-   What have we learned and how have we moved the dial on our scientific understanding?
+
+-   What new tools/tech/techniques have been created?
+
+-   How can these projects inform management planning/actions/policy?
+
+Engagement, Collaboration & Knowledge Transfer
+
+-   How did these projects engage with other groups? Was this effective? 
+
+-   Have new ways to ensure knowledge transfer to different audiences been developed?
+
+-   What products have been created? 
+
+Next Steps
+
+-   Major conclusions
+
+-   How could/should the project findings be operationalized for salmon conservation and management?
+
+-   Remaining knowledge gaps and recommendations for future studies
