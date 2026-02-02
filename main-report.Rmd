@@ -40,7 +40,6 @@ source(here("helper-functions.R"))
 init_database(overwrite = TRUE)
 ```
 
-
 ```{r load-project-data, include=FALSE}
 # Load project form data from CSV
 projects_df <- read.csv(
@@ -73,7 +72,7 @@ Brief overview of the report's purpose and findings.
 
 # Introduction
 
-The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million towards habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific Salmon. Over its five year span beginning in 2021, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitat, support sustainable fishing opportunities while reducing impacts on vulnerable stocks, and build capacity among partners to achieve better outcomes for Pacific salmon ([DFO 2025](https://www.dfo-mpo.gc.ca/campaign-campagne/pss-ssp/index-eng.html)). PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative. The PSSI was initially designed and managed across four pillars, each of which involved multiple sectors within DFO and included several sub-initiatives.
+The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million towards habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. Over its five year span beginning in 2021, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitat, support sustainable fishing opportunities while reducing impacts on vulnerable stocks, and build capacity among partners to achieve better outcomes for Pacific salmon ([DFO 2025](https://www.dfo-mpo.gc.ca/campaign-campagne/pss-ssp/index-eng.html)). PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative. The PSSI was initially designed and managed across four pillars, each of which involved multiple sectors within DFO and included several sub-initiatives.
 
 The conservation and stewardship pillar focused on new activities and investments supporting the long-term persistence and rebuilding of Pacific salmon populations. Key components included a doubling of the British Columbia Salmon Restoration and Innovation Fund (BCSRIF), investing in research to improve our understanding of salmon and their ecosystems, advancing integrated planning for salmon ecosystems to mitigate pressures on freshwater habitats, developing integrated rebuilding plans for vulnerable salmon populations, improving supports for salmon stewardship activities through engagement, and capacity-building with First Nations and community partners.
 
@@ -83,16 +82,13 @@ The harvest transformation pillar was intended to change how Pacific salmon fish
 
 The integration and collaboration pillar focused on strengthening collective capacity to address Pacific salmon declines by improving how DFO worked both internally and with external partners. Key objectives under this pillar were to provide capacity support to various internal and external groups involved in salmon conservation and management, to improve collaboration among federal, provincial, territorial, Indigenous, and other governments, and to prioritize salmon stocks for recovery through coordinated, cross-jurisdictional planning and decision-making processes.
 
-Supporting the pillars were investments in scientific research, both within DFO through new and expanded research projects led by the Science branch, as well as through grants and partnerships delivered externally under the second phase of BCSRIF. Within DFO Science, new research was implemented across multiple PSSI sub-initiatives that supported scientific activities across all four research divisions. The sub-initiatives 
-focused on improving our understanding of salmon and their ecosystems, informing enhancement modernization plans, supporting restoration effectiveness and prioritization, and expanded recreational fisheries monitoring. Following a DFO workshop that identified priority research areas [@lagasse2024], multi-year research projects were developed and implemented. Projects covered freshwater and marine domains, hatchery and fishery management advice, and simulation modelling to genetic and physiological studies.
+Supporting the pillars were investments in scientific research, both within DFO through new and expanded research projects led by the Science branch, as well as through grants and partnerships delivered externally under the second phase of BCSRIF. Within DFO Science, new research was implemented across multiple PSSI sub-initiatives that supported scientific activities across all four research divisions. The sub-initiatives focused on improving our understanding of salmon and their ecosystems, informing enhancement modernization plans, supporting restoration effectiveness and prioritization, and expanded recreational fisheries monitoring. Following a DFO workshop that identified priority research areas [@lagasse2024], multi-year research projects were developed and implemented. Projects covered freshwater and marine domains, hatchery and fishery management advice, and simulation modelling to genetic and physiological studies.
 
-In addition to DFO-led research projects, PSSI supported many research-oriented projects through BCSRIF phase two.  New collaborative projects focused on climate change impacts, priority salmon populations, habitat restoration effectiveness, innovative monitoring tools, and other areas related to Pacific salmon conservation [@DFO2025]. These investments enabled First Nations, academic researchers, industry, and community organizations to work alongside DFO scientists, strengthening the evidence base for management decisions while incorporating Indigenous knowledge, local observations, and novel technologies into the broader PSSI research portfolio.
+In addition to DFO-led research projects, PSSI supported many research-oriented projects through BCSRIF phase two. New collaborative projects focused on climate change impacts, priority salmon populations, habitat restoration effectiveness, innovative monitoring tools, and other areas related to Pacific salmon conservation [@DFO2025]. These investments enabled First Nations, academic researchers, industry, and community organizations to work alongside DFO scientists, strengthening the evidence base for management decisions while incorporating Indigenous knowledge, local observations, and novel technologies into the broader PSSI research portfolio.
 
 Collaborative and inter-disciplinary approaches were an important theme for research programs, recognizing the importance of cooperation among scientists, managers, stakeholders, and Indigenous groups to achieve desired outcomes for Pacific salmon [@lagasse2024; @buxton2021]. Pacific salmon are managed under a complex, multi-jurisdictional framework and are subject to a variety of threats throughout their life-cycle stemming from natural and anthropogenic causes. To accurately assess and understand status and drivers of productivity across the many conservation units of salmon in the Pacific region requires a diverse range of studies and approaches undertaken cooperatively across organizations and informed by management questions and priority information needs. Synthesis and communication of findings is also important to share insights and advice relevant to decision-making.
 
-This report provides an overview of the outcomes and findings of research projects funded by the PSSI with a focus on work led by DFO Science Pacific Region. We synthesize findings from a diverse and multi-disciplinary suite of research projects across PSSI research themes intended to advance our understanding of Pacific salmon, their ecosystems, and best practices for management. We also provide summary reports for `r n_projects` research projects led by DFO Science that were funded by PSSI, highlighting insights and next steps. Based on findings over the five years of PSSI, we identify knowledge gaps and future research priorities to support ongoing rebuilding and management of Pacific salmon.  
-
-
+This report provides an overview of the outcomes and findings of research projects funded by the PSSI with a focus on work led by DFO Science Pacific Region. We synthesize findings from a diverse and multi-disciplinary suite of research projects across PSSI research themes intended to advance our understanding of Pacific salmon, their ecosystems, and best practices for management. We also provide summary reports for `r n_projects` research projects led by DFO Science that were funded by PSSI, highlighting insights and next steps. Based on findings over the five years of PSSI, we identify knowledge gaps and future research priorities to support ongoing rebuilding and management of Pacific salmon.
 
 # Research Themes
 
@@ -254,7 +250,6 @@ Summarize research and key findings related to building understanding of marine 
 
     -   Quantifying salmon predation by sea lions (Cameron Freshwater)
 
-
 ### E. Climate change vulnerability (CL)
 
 ```{r climate-projects}
@@ -386,7 +381,6 @@ dbDisconnect(con)
 ft_projects_table(health_projects)
 ```
 
-
 Summarize research and key findings from fish health projects. Research questions (from SEP):
 
 -   How can we better assess and track fish condition and stress?
@@ -422,7 +416,6 @@ Projects and themes include:
     -   Predicting Chinook reproductive success based on adult thiamine levels (Erika Eliason)
 
     -   Causes and consequences of vateritic otoliths in hatchery-reared Coho salmon (BCSRIF, Leigh Gaffney)
-
 
 ## Fishery monitoring and harvest techniques (NB/CL/FM)
 
@@ -612,7 +605,6 @@ dbDisconnect(con)
 ft_projects_table(restoration_projects)
 ```
 
-
 ### Template / Guiding Questions
 
 Research Goals
@@ -646,7 +638,6 @@ Next Steps
 -   How could/should the project findings be operationalized for salmon conservation and management?
 
 -   Remaining knowledge gaps and recommendations for future studies
-
 
 # Summary
 
