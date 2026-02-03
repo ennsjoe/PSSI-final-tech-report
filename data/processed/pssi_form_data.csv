@@ -1275,17 +1275,397 @@ Two peer-reviewed publications are being prepared to discuss these results, whil
 
 In summary, this work has shown that the thermal tolerance of salmon can be exceeded in the southern inlets of Clayoquot Sound (particularly Tofino Inlet and especially in summer). Furthermore, the future scenario we analyzed (based on a “business as usual” scenario centered in 2055) shows an increase in the volume of waters that exceed the thermal threshold throughout Clayoquot Sound. While a less crucial stressor, we studied salinity and its potential future changes, since salmon-affecting bacteria may increase at higher salinities. We are still working on the model improvements needed to extend the analysis to oxygen conditions, which are also vital for salmon health, but observational analysis indicates that concentrations below the optimal range for salmon are ubiquitous in Clayoquot Sound.","The first next step would be to extend current analyses to other Sounds of WCVI, beyond Clayoquot Sound. But it is noteworthy that while this project has focused on temperature and oxygen, the model provides a larger set of environmental variables. Future studies could expand and deepen the analysis of existing model results, investigating the potential role of changes in other ecosystem variables currently modelled (e.g., phytoplankton, zooplankton, nutrients, etc.). Furthermore, future projects could extend the model capabilities by including the carbonate system and/or submerged aquatic vegetation modules. The former would allow for the study of ocean acidification as an environmental stressor and the latter could inform the understanding of climate change in habitat quality. Both modules are available within the modelling framework, but not yet applied to the WCVI model.
 
-Since warming temperatures and declining oxygen concentrations will be issues affecting nearshore environments utilized by Pacific salmon, it would be crucial for salmon conservation and management to consider, mitigate, and adapt to these factors as climate changes.","Figure 1: West coast Vancouver Island (WCVI) model domain. Colourscale shows the model bathymetry (in meters)
+Since warming temperatures and declining oxygen concentrations will be issues affecting nearshore environments utilized by Pacific salmon, it would be crucial for salmon conservation and management to consider, mitigate, and adapt to these factors as climate changes.","Figure 1. West coast Vancouver Island (WCVI) model domain. Colourscale shows the model bathymetry (in meters)
 
-Figure 2: Maps of Clayoquot Sound showing the percentage of the top 5m of the water column exceeding 17°C in summer (July, August and September) in the (a) simulation for 2024 and (b) future scenario. Panel (c) shows the difference between both (future scenario minus 2024 simulation), highlighting the additional percentage of the surface waters that can exceed the temperature threshold in the future scenario. 
+Figure 2. Maps of Clayoquot Sound showing the percentage of the top 5m of the water column exceeding 17°C in summer (July, August and September) in the (a) simulation for 2024 and (b) future scenario. Panel (c) shows the difference between both (future scenario minus 2024 simulation), highlighting the additional percentage of the surface waters that can exceed the temperature threshold in the future scenario. 
 
-Figure 3: Time series of the percentage of water volume that exceeds 17°C in Tofino inlet at different depth ranges and different simulations. Bold colours indicate the future scenario, while paler colours indicate the 2024 simulation. Green colours indicate the volume in the surface depth range (0 to 5 m), blue colours represent upper waters below the surface (5 to 20 m) and black/grey represent deep waters (20 to 100 m). At surface, both simulations exceed the threshold between spring and autumn, while below 5 m the threshold is exceeded mostly in the future scenario. 
+Figure 3. Time series of the percentage of water volume that exceeds 17°C in Tofino inlet at different depth ranges and different simulations. Bold colours indicate the future scenario, while paler colours indicate the 2024 simulation. Green colours indicate the volume in the surface depth range (0 to 5 m), blue colours represent upper waters below the surface (5 to 20 m) and black/grey represent deep waters (20 to 100 m). At surface, both simulations exceed the threshold between spring and autumn, while below 5 m the threshold is exceeded mostly in the future scenario. 
 
  
 
-Figure 4: Location of the CTD profiles with oxygen data from 2024. The oxygen histograms show the distribution of oxygen data for the whole 2024 year and four seasons (winter: Jan-Mar, spring: Apr-Jun, summer: Jul-Sep, and winter: Oct-Dec). The different colours show the histograms for four different depth ranges: the whole water column (blue), top 50 meters (orange), top 20 meters (yellow) and top 5 meters (purple).","Rosen, S., Bianucci, L., Jackson, J.M., Hare, A., Greengrove, C., Monks, R., Bartlett, M. and Dick, J., 2022. Seasonal near-surface hypoxia in a temperate fjord in Clayoquot Sound, British Columbia. Frontiers in Marine Science, 9, p.1000041.
+Figure 4. Location of the CTD profiles with oxygen data from 2024. The oxygen histograms show the distribution of oxygen data for the whole 2024 year and four seasons (winter: Jan-Mar, spring: Apr-Jun, summer: Jul-Sep, and winter: Oct-Dec). The different colours show the histograms for four different depth ranges: the whole water column (blue), top 50 meters (orange), top 20 meters (yellow) and top 5 meters (purple).","Rosen, S., Bianucci, L., Jackson, J.M., Hare, A., Greengrove, C., Monks, R., Bartlett, M. and Dick, J., 2022. Seasonal near-surface hypoxia in a temperate fjord in Clayoquot Sound, British Columbia. Frontiers in Marine Science, 9, p.1000041.
 
 Foreman, M.G.G., Chandler, P.C., Bianucci, L., Wan, D., Krassovski, M.V., Thupaki, P., Cooper, G. and Lin, Y., 2024. A circulation model for inlets along the central West Coast of Vancouver Island. Atmosphere-Ocean, 62(1), pp.58-89."
+"PSSI Science Project Reporting_Long_Project 2400.docx","2026-02-02","2400","Assessment of SEP Chinook and Coho broodstock ELISA screening data by modelling for explanatory variables, and yearling DFAT prevalence data by modelling for predictive variables.","Amy Long","Derek Price, DFO
+
+Ian Keith, DFO
+
+Cheryl Lynch, DFO","Pacific","Chinook salmon (Fall, Spring, and Summer)
+
+Coho salmon (Fall)",,"Juveniles, broodstock","Pacific","Puntledge, Nitinat, Coldwater River, Spius Creek, Nicola River, Chilcotin River, Chilko Ricer, Salmon River, Eagle River",,,"The study explored the relationship between parental BKD levels on individual salmon results while controlling for the impact of environmental factors such as thermal regime using previously collected data including broodstock disease levels, environmental parameters, and progenitor disease status. 
+
+BKD levels in returning adults do not demonstrate a significant association with the OD levels of their progenitors. Instead, the relationship appears to be confounded by environmental and population-level factors, including water temperature, specific watershed characteristics, and the overall BKD prevalence within the returning population.
+
+The findings reveal key knowledge gaps in understanding BKD dynamics, suggesting the need for further research to build a fuller picture of the factors influencing disease transmission and prevalence.","Renibacterium salmoninarum, the causative agent of bacterial kidney disease (BKD), is endemic to the Pacific Northwest. Infection with this bacterial pathogen can result in significant morbidity and mortality in cultured juvenile Pacific salmon. Current BKD management relies on screening brood stock using an enzyme-linked immunosorbent assay (ELISA) and excluding eggs from females exceeding the defined optical density (OD) threshold. This approach has significantly reduced the incidence of disease in both hatchery-reared juveniles and returning adult fish. The Salmonid Enhancement Program (SEP) maintains an extensive dataset that includes 16 years of ELISA broodstock screening results for many Vancouver Island and mainland Coho and Chinook stocks. 
+
+These datasets have not been previously subjected to a comprehensive epidemiological analysis to identify potential explanatory variables for BKD prevalence in stocks of concern. This project sought to address that knowledge gap by integrating ELISA data and linking broodstock ELISA values to Parental Based Tagging (PBT) information enabling stock-specific analyses. The work was conducted through a collaborative partnership among the Science Branch, SEP, and Aquaculture Management.","Methods
+
+The study explored the relationship between parental BKD levels on individual salmon results while controlling for the impact of environmental factors such as thermal regimes by incorporating various temperature metrics, such as average temperature, minimum and maximum temperatures, degree days, and the number of days within specific temperature thresholds (6°C to 10°C). While Nitinat's temperature data was based on monthly or daily mean temperatures (depending on the year), Puntledge and Spius provided daily mean, maximum, and minimum temperatures. For each stock year, temperature data were filtered to include dates that a stock occupied the hatchery, e.g. the day of first broodstock captured to the day of last juvenile release. Juveniles of Chinook stocks were released less than a year of holding at the hatchery at Puntledge and after two years at Spius, while Coho stocks were released after 1 year and 2 year but temperature measurements were calculated based on the 2 year release for Coho stocks. 
+
+Data used in the analysis was from 2014 through 2023, and was dependent on data available in E-PRO and temperature data (Table 1). Only individuals with BKD value and maturity class information were included. Incomplete data points were filtrated out in each analysis. Dam’s BKD optical density (OD) value and BKD level were attached to E-PRO records for progenies by matching progenies’ dam DNA code to the dam’s data in the report. This step was only possible for progenies with dam’s DNA code and BKD OD value. 
+
+To guide the modelling of the vertical transmission path, we collaborated with an expert panel to develop a causal diagram (Figure 1). This exercise facilitated the identification and characterization of relationships across multiple scales, including the watershed, hatchery, and individual fish levels, while specifically assessing variables for their potential to confound the results. We evaluated these factors using a mixed-effects generalized linear model framework, designating the OD from the BKD ELISA as the outcome of interest and the OD of the progenitor (the dam) as the primary predictor. Temporal variation was integrated as a random effect to account for annual fluctuations. The final model incorporated several confounding factors, most notably the specific watershed of origin. We also included terms for interactions between mean temperature—which was scaled and centered by creek—and BKD prevalence at the stock level. For the purposes of this analysis, a stock was defined as a cohort of brood fish of the same species returning to the same creek during the same season, such as Nitinat Spring Coho. While species and season were initially tested, they were excluded from the final model as they were not statistically significant and did not meet the criteria for confounders; their observed effects were largely captured by spatial and temporal variables.
+
+Research Findings
+
+The primary analysis indicates that BKD levels in returning adults do not demonstrate a significant association with the OD levels of their progenitors. Instead, the relationship appears to be confounded by environmental and population-level factors, including water temperature, specific watershed characteristics, and the overall BKD prevalence within the returning population. For instance, while the watershed variable was not statistically significant in isolation, its inclusion in the model resulted in a measurable change in the coefficient of the primary predictor, suggesting a latent environmental influence. A more notable finding was the negative association between BKD levels and scaled temperature, which suggests that OD levels generally decrease as temperatures increase. However, a significant interaction between temperature and BKD prevalence indicates a modulating effect on this relationship (Figure 2). While lower temperatures appear to provide a more suitable environment for the transmission of BKD, a higher proportion of infected individuals within a population further intensifies this effect.
+
+It is important to note, however, that the statistical model demonstrated a relatively low goodness-of-fit, indicating that a substantial portion of the variance in BKD levels remains unexplained by the variables currently under study. This suggests that the dynamics of BKD in these ecosystems are influenced by a complex array of factors—potentially including individual host immunity, varying hatchery practices, or additional environmental stressors—that were not fully captured in the present framework. Consequently, while the identified trends regarding temperature and prevalence offer valuable directional insights, they should be interpreted with caution and viewed as preliminary findings within a highly variable biological system.","The findings reveal key knowledge gaps in understanding BKD dynamics, suggesting the need for further research to build a fuller picture of the factors influencing disease transmission and prevalence. The low goodness-of-fit of the current model indicates that additional variables, such as hatchery practices, genetic diversity, or other environmental and anthropogenic stressors, may play significant roles in shaping BKD dynamics. A promising avenue for research includes the use of simulation models to assess the impact of altering management practices, such as raising or lowering the positive-negative culling threshold OD value. This approach could help predict how adjustments to culling thresholds might influence disease prevalence and population outcomes under varying environmental conditions. Research should also focus on understanding potential thresholds or tipping points where environmental conditions, such as temperature extremes, significantly influence disease prevalence and outcomes.
+
+The study’s findings can inform proactive strategies for salmon conservation and management, particularly concerning how environmental conditions affect BKD prevalence. Managers could prioritize monitoring in watersheds where conditions, including temperature and BKD prevalence, elevate disease transmission risks. Additionally, the insights from simulations examining the effect of changing the positive-negative culling threshold OD value could guide policy and operational decisions to strike a balance between limiting disease spread and optimizing population sustainability.","The findings reveal key knowledge gaps in understanding BKD dynamics, suggesting the need for further research to build a fuller picture of the factors influencing disease transmission and prevalence. The low goodness-of-fit of the current model indicates that additional variables, such as hatchery practices, genetic diversity, or other environmental and anthropogenic stressors, may play significant roles in shaping BKD dynamics. A promising avenue for research includes the use of simulation models to assess the impact of altering management practices, such as raising or lowering the positive-negative culling threshold OD value. This approach could help predict how adjustments to culling thresholds might influence disease prevalence and population outcomes under varying environmental conditions. Research should also focus on understanding potential thresholds or tipping points where environmental conditions, such as temperature extremes, significantly influence disease prevalence and outcomes.
+
+The study’s findings can inform proactive strategies for salmon conservation and management, particularly concerning how environmental conditions affect BKD prevalence. Managers could prioritize monitoring in watersheds where conditions, including temperature and BKD prevalence, elevate disease transmission risks. Additionally, the insights from simulations examining the effect of changing the positive-negative culling threshold OD value could guide policy and operational decisions to strike a balance between limiting disease spread and optimizing population sustainability.",,
+"PSSI Science Project Reporting_Long_Project 2408.docx","2026-02-02","2408","Improvement, Expansion and Modernization of Salmonid Health Diagnostic Services For Optimizing Salmonid Hatchery Health Management","Amy Long","Kyle Garver, DFO
+
+Ahmed Siah, BC Centre for Aquatic Health Sciences","Pacific","See Supplemental Table 1",,"Juveniles, broodstock","Pacific","See Supplemental Table 1",,,"The project focused on developing, validating, and implementing quantitative PCR (qPCR) assays for seven endemic fish pathogens in British Columbia to improve disease detection and support salmon health management. 
+
+Targeted surveillance revealed differences in pathogen prevalence among salmon stocks and tissues, with F. psychrophilum more frequently detected in spleen samples than kidney, alongside observed genetic diversity in isolates. For R. salmoninarum,  ELISA testing was more reliable than qPCR, with non-lethal sampling methods under ongoing evaluation.
+
+Improved diagnostic tools enhance pathogen detection and understanding of disease prevalence, aiding targeted interventions in salmon hatcheries.","Historically, Fisheries and Oceans Canada’s (DFO) Salmonid Enhancement Program (SEP) has worked closely with the Science Branch’s Aquatic Animal Health (AAH) Section to implement disease monitoring and mitigation programs aimed at reducing the impacts of endemic diseases in salmonid hatcheries. These efforts are critical for maintaining hatchery productivity and supporting broader salmon conservation and enhancement objectives. However, reductions in funding for salmon health research within both SEP and the Science Branch have limited the ability of the Finfish Diagnostic Laboratory (FDL) at the Pacific Biological Station (PBS) to modernize and adopt emerging diagnostic technologies. As a result, diagnostic capacity has not kept pace with current best practices, and opportunities for effective technology transfer between Science Branch and SEP have diminished.
+
+This project sought to address these knowledge and capacity gap by re-establishing strong linkages between SEP and the Science Branch and leveraging scientific expertise to improve, expand, and modernize the FDL. The demand driving this work is the need for timely, accurate, and advanced diagnostic information to support proactive salmonid hatchery health management. Through strengthened collaboration among SEP, BC Centre for Aquatic Health Sciences, and Science Branch, a multi-year initiative was implemented that will result in sustainable disease monitoring and mitigation, ultimately improving hatchery health outcomes across SEP facilities.","Validation and transfer of diagnostic assays for endemic pathogens
+
+In consultation with SEP veterinarians and fish health staff, the project identified seven endemic pathogens for which there was a need for improved diagnostic assays. Due to the need for high-capacity and rapid diagnostics, quantitative PCR (qPCR) assays were chosen for their accuracy and reliability. The targeted pathogens were as follows: Tetracapsuloides bryosalmonae (Bettge et al., 2009), Flavobacterium columnare (Gibbs et al., 2020), Flavobacterium psychrophilum (Ma et al., 2019; Marancik & Wiens, 2013), Renibacterium salmoninarum (Richmond & Plant, 2021), Ichthyophthirius multifiliis (Howell et al., 2019), IHNV (Purcell et al., 2013), and Nucleospora salmonis (Badil et al., 2011). Where pathogen nucleic acids were unavailable, synthetic double-stranded DNA fragments (gBlocks™) were used for validation work, e.g. limits of detection and quantification. In collaboration with BC Centre for Aquatic Health Sciences, the R. salmoninarum qPCR assay underwent interlaboratory validation in which both labs screened 170 samples. The results showed substantial agreement between labs (Cohen’s κ=0.68), confirming the reliability of assay transfer. Post-validation, assays were implemented to assist the FDL in disease investigations.
+
+To ensure effective knowledge transfer, standard operating procedures were developed by the AAH team and shared with FDL staff. Training sessions covered all aspects of assay implementation, enabling FDL personnel to independently conduct analyses. 
+
+Deployment of assays for pathogen surveillance 
+
+In addition to assay validation and technology transfer, this project also focused on collection and analysis of longitudinal data on two high-priority pathogens: F. psychrophilum and R. salmoninarum. F. psychrophilum is the causative agent of bacterial coldwater disease and infections can cause significant disease and mortality in juvenile, hatchery-reared salmonids. Identified knowledge gaps for F. psychrophilum in BC include overall prevalence in broodstock, and the linkage between female broodstock bacterial load and outbreaks in fry. While outbreaks are common at most SEP facilities rearing salmonids, outbreaks are notably acute in Harrison River Chinook salmon (HRCS). 
+
+Surveillance conducted between 2023 and 2025 determined that prevalence was approximately 40% in HRCS broodstock during 2023–2024, with a significant reduction in 2025 (χ2=12.6, p < 0.01) (Table 1). It is possible that prevalence is cyclical in this stock but additional screening is necessary. Chehalis River broodstock, reared under similar conditions, showed comparable infection rates to HRCS in 2024, suggesting genetic differences between stocks may influence outbreak intensity.
+
+Both kidney and spleen were collected to determine which tissue would be best for routine sampling. Agreement between the two tissues was slight (Cohen’s κ=0.16). The number of positive fish based on spleen results was more than double that of kidney indicating that spleen is more likely to result in a positive detection. Tissues were also streaked on bacterial agar and evaluated for growth of yellow-pigmented bacteria morphologically similar to F. psychrophilum. Using novel sequencing techniques, we identified unexpected genetic heterogeneity within F. psychrophilum isolates from BC. 
+
+In 2024, the SEP Fish Health group conducted a pilot study to evaluate the effectiveness of pre-fertilization egg disinfection in reducing bacterial loads. Unfertilized eggs from 20 HRCS females were treated in an Ovadine®:saline solution (100 ppm:0.75%) for 15 minutes. Egg disinfection is typically carried out post-fertilization; however, iodophor cannot penetrate eggs to eliminate bacteria already present within. A previous study by Lennox et al. (2023) suggested that pre-fertilization disinfection in an iodophor:saline solution may decrease intra-egg bacterial concentrations, supporting the basis for this pilot. Eggs from each female were sampled at three key stages (pre-fertilization and pre-treatment, pre-fertilization and post-treatment, and post-fertilization and post-treatment) and screened for F. psychrophilum by AAH staff. The number of positive samples decreased from eight (pre-treatment and pre-fertilization) to one (post-treatment and post-fertilization). Fish were not monitored post-hatch, so long-term effectiveness of the treatment could not be assessed, though no adverse impacts on fertilization or hatching were noted.
+
+The study was repeated in fall 2025, expanding to include all HRCS eggs as well as all chum salmon eggs at the Tenderfoot hatchery. Samples from the HRCS eggs were collected and will be analyzed using qPCR before the end of the fiscal year to further evaluate the efficacy of this treatment approach.
+
+R. salmoninarum is the causative agent of Bacterial Kidney Disease (BKD), and is vertically transmitted from female broodstock to progeny. As such, kidney is collected from spawning female broodstock and submitted to the FDL for BKD screening using an enzyme-linked immunosorbent assay (ELISA). In the current study, 637 samples were screened by ELISA and qPCR. Assay agreement was slight (Cohen’s κ=0.20), and overall, more samples were positive by ELISA as compared to qPCR. The ELISA measures bacterial antigen concentrations and serves as a proxy for previous R. salmoninarum exposure. Conversely, the qPCR measures the total amount of nucleic acid present, i.e. an active infection. Therefore, although the R. salmoninarum qPCR assay is sensitive and specific, the ELISA remains the gold standard method for broodstock screening. Longitudinal surveillance of select stocks was also conducted from 2023 through 2025 (Table 2). Prevalence, as determined by ELISA, is high at these facilities every year. Results from 2025 are pending but will be available by the end of this fiscal year. 
+
+This project also explored the use of non-lethal sampling methods for R. salmoninarum. To do so, lethal (kidney) and non-lethal (mucus, gill clip, anal fin clip, and ventral swab) samples were collected from female broodstock at Nitinat and Big Q hatcheries. All samples were screened by the qPCR assay and kidney was also screened by ELISA (Table 3). In 2024, results showed limited agreement between non-lethal samples and kidney, with mucus samples providing the highest detection rates. Given the amount of handling during the spawning process, mucus also has the highest risk of contamination. Consequently, mucus sampling was excluded in 2025, with evaluation ongoing for gill clip and anal fin sampling methods.","This project has provided new information about salmon populations and their health by generating data on the distribution and detection of various pathogens. By employing molecular diagnostic tools like qPCR, the study has documented pathogen presence in juvenile and broodstock salmon populations, contributing to an improved understanding of pathogen dynamics in these systems. The longitudinal data gathered offers insight into how pathogen prevalence varies among different salmon stocks and over multiple years.
+
+The results of the project can inform certain aspects of salmon management. For example, the findings regarding pathogen screening in broodstock populations may assist in reviewing fish movement protocols or stock enhancement practices. Additionally, evaluation of pre-fertilization egg disinfection suggests a potential approach that could be further explored as a disease prevention tool for hatcheries, particularly in relation to bacterial coldwater disease. The study also identified important considerations related to tissue type variability in pathogen detection, which highlights potential trade-offs when exploring non-lethal sampling methods screening broodstock for R. salmoninarum. These findings are relevant for hatchery planning and emphasize the importance of balancing disease mitigation efforts with the logistical and operational constraints of hatchery facilities.
+
+This research also provides additional information about factors influencing salmon health, such as stressors and potential risk pathways related to pathogen transmission, hatchery practices, and environmental conditions. While the findings highlight areas for further research or development, the project offers practical data that may aid in specific management decisions, operational guidelines, and planning for salmon conservation efforts.","The findings from this project have identified several knowledge gaps and areas for further study. With respect to R. salmoninarum, future efforts should focus on analyzing existing data to evaluate prevalence trends across different stocks over time, refining qPCR assays to improve diagnostic reliability, and optimizing non-lethal sampling methods. For F. psychrophilum, additional research is needed to investigate genomic differences among BC-specific isolates and potential influence on virulence. Continued investigation into stock- and year-specific variations in pathogen prevalence, particularly in high-risk stocks, will further clarify susceptibility patterns and inform management strategies. Additional work on evaluating the efficacy of pre-fertilization egg disinfection is necessary to assess its role as a disease prevention tool.
+
+This project also emphasizes the need for standardized diagnostic practices and improved methods for pathogen detection to reduce uncertainties in disease monitoring. Strengthening partnerships between the Science Branch and SEP is vital to hatchery health management. By improving access to advanced diagnostic technologies, and supporting the capacity of the FDL through ongoing training and collaboration, improved disease monitoring and response strategies can be developed. The integration of these findings into hatchery operations and broader conservation strategies may help address emerging risks and ultimately support salmon stock sustainability.","Table 1. Longitudinal surveillance results for Flavobacterium psychrophilum. Broodstock were classified as positive if the bacterium was re-isolated from tissue samples or if tissues tested positive by qPCR. Total prevalence was calculated as the number of unique positive broodstock identified by qPCR and/or culture divided by the total number of samples collected. Subscripts denote statistically significant differences in prevalence among years (χ2=12.6, P < 0.01). 
+
+Stock
+
+Year
+
+Total prevalence (No. screened)
+
+Harrison River
+
+2023
+
+0.43a (121)
+
+2024
+
+0.44a (122)
+
+2025
+
+0.25b (125)
+
+Chehalis River
+
+2024
+
+0.2 (60)
+
+Table 2. Longitudinal surveillance results for R. salmoninarum at select facilities. Broodstock were classified as positive if the ELISA optical density value was greater than the mean optical density of the negative control or kidney tested positive by qPCR. ELISA prevalence estimates included samples classified as ‘low level of detection’ as these samples are considered positive but are often kept by facilities. 
+
+Facility
+
+Species
+
+2023
+
+2024
+
+No. of samples
+
+ELISA prevalence
+
+qPCR prevalence
+
+No. of samples
+
+ELISA prevalence
+
+qPCR prevalence
+
+Big Q
+
+Coho
+
+30
+
+0.93
+
+0.03
+
+60
+
+0.83
+
+0.05
+
+Chehalis
+
+Coho
+
+30
+
+0.93
+
+0.13
+
+60
+
+1
+
+0.07
+
+Inch Creek
+
+Coho
+
+20
+
+0.95
+
+0.05
+
+60
+
+1
+
+0.02
+
+Nitinat
+
+Coho
+
+40
+
+1
+
+0.55
+
+45
+
+1
+
+0.18
+
+Puntledge
+
+Coho
+
+20
+
+1
+
+0.35
+
+88
+
+0.86
+
+0.25
+
+Puntledge summer
+
+Chinook
+
+11
+
+1
+
+0.09
+
+18
+
+0.94
+
+0
+
+Table 3. Non-lethal BKD screening samples. Female Coho salmon broodstock were sampled at both facilities. Agreement values were calculated using Cohen’s kappa analysis and all tissues were compared to kidney.
+
+Year
+
+Facility
+
+No. sampled
+
+Samples collected
+
+Sample agreement
+
+2024
+
+Nitinat
+
+40
+
+Kidney
+
+Gill clip
+
+Mucus 
+
+Ventral swab
+
+Anal fin clip
+
+Gill: <0
+
+Mucus: 0.11
+
+Ventral swab: 0.085
+
+Anal fin clip: <0
+
+2025
+
+Nitinat
+
+40
+
+Kidney
+
+Gill clip
+
+Anal fin
+
+NA
+
+Big Q
+
+40
+
+Kidney 
+
+Gill clip
+
+Anal fin
+
+NA
+
+Supplemental Table 1. Stock and species sampled. 
+
+Stock
+
+Species
+
+Big Q
+
+Coho
+
+Chehalis
+
+Coho
+
+Chehalis
+
+Chinook
+
+Chilko
+
+Chinook
+
+Chilliwack
+
+Coho
+
+Fraser
+
+Sockeye
+
+Fulton
+
+Sockeye
+
+Inch
+
+Coho
+
+Kitimat
+
+Coho
+
+Maria Slough
+
+Chinook
+
+Nanaimo River
+
+Chinook
+
+Nitinat
+
+Coho
+
+Norrish (Inch)
+
+Coho
+
+Puntledge
+
+Coho
+
+Puntledge Fall
+
+Chinook
+
+Puntledge Summer
+
+Chinook
+
+Quatse
+
+Coho
+
+Robertson
+
+Chinook
+
+Skeena
+
+Sockeye
+
+Sooke
+
+Chinook
+
+Thornton
+
+Chinook
+
+Viner River
+
+Chum","Badil, S., Elliott, D. G., Kurobe, T., Hedrick, R. P., Clemens, K., Blair, M., Purcell, M. K. 2011. Comparative evaluation of molecular diagnostic tests for Nucleospora salmonis and prevalence in migrating juvenile salmonids from the Snake River, USA. J. Aquat. Anim. Health. 23:19–29. doi:10.1080/08997659.2011.559418.
+
+Bettge, K., Wahli, T., Segner, H., & Schmidt-Posthaus, H. 2009. Proliferative kidney disease in rainbow trout: time- and temperature-related renal pathology and parasite distribution. Dis. Aquat. Org. 83:67–76. doi: 10.3354/dao01989.
+
+Gibbs, G. D., Griffin, M. J., Mauel, M. J., & Lawrence, M. L. 2020. Validation of a quantitative PCR assay for the detection of 2 Flavobacterium columnare genomovars. J. Vet. Diagn. Investig. 32:356–362. doi:10.1177/104063872091576.
+
+Howell, C. K., Atkinson, S. D., Bartholomew, J. L., & Hallett, S. L. 2019. Development and application of a qPCR assay targeting Ichthyophthirius multifiliis in environmental water samples. Dis. Aquat. Org. 134:43–55. doi: 10.3354/dao03351.
+
+Lennox, S.M.G., Shavalier, M.A., Brenden, T.O., Knupp, C.K., & Loch, T.P. 2023. Developing an improved egg disinfection method to reduce Flavobacterium psychrophilum transmission risk in rainbow trout (Oncorhynchus mykiss). American Fisheries Society – Fish Health Section Summer Seminar Series. https://sites.google.com/umn.edu/fishhealthseminar/archived-seminars/2023-seminar-series/lennox
+
+Ma, J., Bruce, T. J., Oliver, L. P., & Cain, K. D. 2019. Co-infection of rainbow trout (Oncorhynchus mykiss) with infectious hematopoietic necrosis virus and Flavobacterium psychrophilum. J. Fish Dis. 42:1065–1076. doi:10.1111/jfd.13012.
+
+Marancik, D. P., & Wiens, G. D. 2013. A real-time polymerase chain reaction assay for identification and quantification of Flavobacterium psychrophilum and application to disease resistance studies in selectively bred rainbow trout Oncorhynchus mykiss. FEMS Microbiol. Lett. 339:122–129. doi:10.1111/1574-6968.12061.
+
+Purcell, M. K., Thompson, R. L., Garver, K. A., Hawley, L. M., Batts, W. N., Sprague, L., Sampson, C. and Winton, J. R. 2013. Universal reverse-transcriptase real-time PCR for infectious hematopoietic necrosis virus (IHNV). Dis. Aquat. Org. 106: 103-115. doi: 10.3354/dao02644.
+
+Richmond, Z., & Plant, K. 2021. Quantitative PCR (RT-qPCR) for Detection of R.sal using AgPath-ID One-Step RT-qPCR kit in Multiorgan tissue of Finfish Species. BC Centre For Aquatic Health Sciences, SOP 83-v5.1."
 "PSSI Science Project Reporting_Otolith Microchemistry.docx","2026-02-02","2422","Development and application of laser ablation-inductively coupled plasma-mass spectrometry (LA-ICP-MS) to determine estuary entry size of juvenile salmonids and track habitat usage","Xiangjun Liao
 
 Nicole LaForge
@@ -1315,7 +1695,7 @@ While hatchery origin (HO) outmigrants have a higher survival rate overall than 
 The largest, oldest returning spawners tend disproportionately to have been early, small outmigrants. Therefore, releasing hatchery juveniles as late, large outmigrants appears to be promoting the return of spawners as younger, smaller adults which may be driving follow-on effects such as lower fecundity, fewer eggs per female, smaller average egg sizes and increased competition for optimal redd sites.","Our research has really highlighted the need to address Pacific salmon stocks from the perspective of life history types, rather than as monoliths. By identifying what life-history types leave the river and what life-history types return, we can identify differential survival across these life-history types and start getting at what makes a successful Pacific salmon. This can improve Pacific salmon management by providing assessments of how habitat, such as freshwater rearing habitat, may improve the overall survival of stocks by allowing more members of the population to make use of a more successful life history type. We have also shown that there are different ages at return amongst life history types, which could improve management by addressing not only changes in survival, but changes in fitness. By addressing carry over effects of early life history decisions, we can start to better address where the bottlenecks to survival exist and how targeted restoration could be rolled out.","As we study more systems, it is clear that each system has its own unique set of circumstances. An early life history type that may be successful in Sarita may not be successful elsewhere. We have also found that brood year specific analyses are more helpful to pinpoint certain problematic years which can then be investigated further to find a cause. We are working on finishing up these reports on various systems highlighted above, as well as working with other members of FTF to provide details about how these carry over effects may be manifesting in biological data we already have collected.","Figure 1. Outmigration life-history types of Sarita River Chinook salmon smolts captured in an RST located in the lower Sarita River.
 
 Figure 2. Outmigration life-history types of Sarita River Chinook salmon as identified in returning adults through LA-ICP-MS. Fry outmigrants that made up 95% of the outmigrating smolts only constituted around 63% of returning adults.",
-"PSSI Science Project Reporting_PSSI 2412_Pearce_Mackenzie_Forster_Neville.docx","2026-02-02","PSSI 2412","Investigation of the impacts of singular and coinciding acute climate stressors on the nutritional quality of the pteropod Limacina helicina, a juvenile Pacific salmon dietary species","Chris Pearce, Clara Mackenzie, Ian Forster (DFO, Nearshore Ecosystems Section)","Chrys Neville (DFO, Salmon Marine Interactions Program, Regional Ecosystem Effects on Fish & Fisheries Section)","Strait of Georgia (SOG); Pacific Biological Station (PBS), Nanaimo; Pacific Science Enterprise Center (PSEC), West Vancouver","N/A.","Strait of Georgia","N/A.","Pacific","N/A.","N/A.","N/A.","The nutritional status (i.e. fatty acid (FA) profiles) of L. helicina was quantified in (a) field samples collected via plankton tow throughout the SOG between 2014 and 2023; and (b) laboratory samples following short-term experimental exposure to coinciding ocean warming and ocean acidification (OA) conditions, in order to investigate how changing oceanic conditions may impact the feed quality of a Pacific salmon prey species. 
+"PSSI Science Project Reporting_PSSI 2412_Pearce_Mackenzie_Forster_Neville.docx","2026-02-02","2412","Investigation of the impacts of singular and coinciding acute climate stressors on the nutritional quality of the pteropod Limacina helicina, a juvenile Pacific salmon dietary species","Chris Pearce, Clara Mackenzie, Ian Forster (DFO, Nearshore Ecosystems Section)","Chrys Neville (DFO, Salmon Marine Interactions Program, Regional Ecosystem Effects on Fish & Fisheries Section)","Strait of Georgia (SOG); Pacific Biological Station (PBS), Nanaimo; Pacific Science Enterprise Center (PSEC), West Vancouver","N/A.","Strait of Georgia","N/A.","Pacific","N/A.","N/A.","N/A.","The nutritional status (i.e. fatty acid (FA) profiles) of L. helicina was quantified in (a) field samples collected via plankton tow throughout the SOG between 2014 and 2023; and (b) laboratory samples following short-term experimental exposure to coinciding ocean warming and ocean acidification (OA) conditions, in order to investigate how changing oceanic conditions may impact the feed quality of a Pacific salmon prey species. 
 
   
 

@@ -10,7 +10,7 @@ library(here)
 # --- Configuration ---
 INPUT_DIR  <- here("data", "word_docs")
 OUTPUT_CSV <- here("data", "processed", "pssi_form_data.csv")
-OUTPUT_DB  <- here("data", "projects.db")
+OUTPUT_DB  <- here("output", "projects.db")
 
 # Fields to extract - labels as they appear in the document
 # Format: "label_in_document" = "output_field_name"
@@ -58,27 +58,27 @@ fix_encoding <- function(text) {
   
   # Common UTF-8 mojibake patterns when UTF-8 is read as Latin-1
   replacements <- c(
-    "Ã©" = "é",
-    "Ã¨" = "è",
-    "Ã " = "à",
-    "Ã¢" = "â",
-    "Ã®" = "î",
-    "Ã´" = "ô",
-    "Ã»" = "û",
-    "Ã§" = "ç",
-    "Ã‰" = "É",
-    "Ã€" = "À",
-    "Ã'" = "Ñ",
-    "Ã±" = "ñ",
-    "Ã¼" = "ü",
-    "Ã¶" = "ö",
-    "Ã¤" = "ä",
-    "â€™" = "'",
-    "â€œ" = "'",
-    "â€" = "'",
-    "â€" = "—",
-    "â€" = "–",
-    "â€¦" = "…"
+    "\u00c3\u00a9" = "\u00e9",
+    "\u00c3\u00a8" = "\u00e8",
+    "\u00c3\u00a0" = "\u00e0",
+    "\u00c3\u00a2" = "\u00e2",
+    "\u00c3\u00ae" = "\u00ee",
+    "\u00c3\u00b4" = "\u00f4",
+    "\u00c3\u00bb" = "\u00fb",
+    "\u00c3\u00a7" = "\u00e7",
+    "\u00c3\u0089" = "\u00c9",
+    "\u00c3\u0080" = "\u00c0",
+    "\u00c3\u0091" = "\u00d1",
+    "\u00c3\u00b1" = "\u00f1",
+    "\u00c3\u00bc" = "\u00fc",
+    "\u00c3\u00b6" = "\u00f6",
+    "\u00c3\u00a4" = "\u00e4",
+    "\u00e2\u0080\u0099" = "'",
+    "\u00e2\u0080\u009c" = "\u201c",
+    "\u00e2\u0080\u009d" = "\u201d",
+    "\u00e2\u0080\u0093" = "\u2013",
+    "\u00e2\u0080\u0094" = "\u2014",
+    "\u00e2\u0080\u00a6" = "\u2026"
   )
   
   result <- text
@@ -94,7 +94,6 @@ fix_encoding <- function(text) {
 # ----------------------------------------------------------
 extract_text_with_breaks <- function(node, ns = W_NS) {
   if (is.na(node) || is.null(node)) return(NA_character_)
-  
   
   # Find all paragraph elements
   paragraphs <- xml_find_all(node, ".//w:p", ns = ns)
@@ -148,7 +147,27 @@ extract_text_with_breaks <- function(node, ns = W_NS) {
 }
 
 # ----------------------------------------------------------
+# Helper: Extract only Figure/Table captions from text
+# ----------------------------------------------------------
+extract_captions_only <- function(text) {
+  if (is.na(text) || nchar(text) == 0) return(NA_character_)
+  
+  # Split into lines
+  lines <- unlist(strsplit(text, "\n+"))
+  lines <- trimws(lines)
+  
+  # Keep only lines that start with "Figure" or "Table" followed by a number
+  caption_lines <- lines[grepl("^(Figure|Table)\\s*\\d", lines, ignore.case = TRUE)]
+  
+  if (length(caption_lines) == 0) return(NA_character_)
+  
+  result <- paste(caption_lines, collapse = "\n\n")
+  return(result)
+}
+
+# ----------------------------------------------------------
 # Extract Content Controls (w:sdt elements) from document.xml
+# Special handling for tables_figures to get full cell content
 # ----------------------------------------------------------
 extract_content_controls <- function(doc_xml, ns = W_NS) {
   
@@ -175,7 +194,29 @@ extract_content_controls <- function(doc_xml, ns = W_NS) {
     tag_val <- if (!is.na(tag_node)) xml_attr(tag_node, "val") else NA
     alias_val <- if (!is.na(alias_node)) xml_attr(alias_node, "val") else NA
     
-    # Get content
+    key <- if (!is.na(tag_val)) tag_val else alias_val
+    
+    # Special handling for tables_figures - get all text from parent table cell
+    if (!is.na(key) && key == "tables_figures") {
+      # Try to find the parent table cell (w:tc)
+      # Navigate up: sdt -> possibly sdtContent wrapper -> tc
+      parent_tc <- xml_find_first(sdt, "ancestor::w:tc", ns = ns)
+      
+      if (!is.na(parent_tc)) {
+        # Extract all text from the table cell
+        cell_text <- extract_text_with_breaks(parent_tc, ns)
+        
+        # Extract only the Figure/Table captions
+        content_text <- extract_captions_only(cell_text)
+        
+        if (!is.na(content_text) && nchar(content_text) > 0) {
+          results[[key]] <- content_text
+          next
+        }
+      }
+    }
+    
+    # Default extraction for other fields
     sdt_content <- xml_find_first(sdt, ".//w:sdtContent", ns = ns)
     content_text <- extract_text_with_breaks(sdt_content, ns)
     
@@ -187,7 +228,6 @@ extract_content_controls <- function(doc_xml, ns = W_NS) {
     
     # Store with available identifiers
     if (!is.na(tag_val) || !is.na(alias_val)) {
-      key <- if (!is.na(tag_val)) tag_val else alias_val
       results[[key]] <- content_text
     }
   }
@@ -600,4 +640,5 @@ inspect_document <- function(docx_path) {
 }
 
 # --- Run extraction automatically when sourced ---
-extract_all_forms()
+# Uncomment the line below to run extraction when the script is sourced
+# extract_all_forms()
