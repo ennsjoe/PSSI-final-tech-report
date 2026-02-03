@@ -782,12 +782,12 @@ tbl_word <- BCSRIF_df %>%
       "Recipient: ", recipient
     )
   ) %>%
-  select(Project, collaborators, description)
+  select(Project, description)
 
 ft <- flextable(tbl_word) %>%
   set_header_labels(
     Project = "Project",
-    collaborators = "Collaborators",
+    #collaborators = "Collaborators",
     description = "Description"
   ) %>%
 
@@ -802,8 +802,8 @@ ft <- flextable(tbl_word) %>%
 
   # Column widths (in inches) – tweak to your page layout
   width(j = "Project",       width = 2.1) %>%
-  width(j = "collaborators", width = 1.7) %>%
-  width(j = "description",   width = 3) %>%
+  #width(j = "collaborators", width = 1.7) %>%
+  width(j = "description",   width = 5) %>%
 
 # Keep our explicit widths (don’t let autofit override them)
   set_table_properties(layout = "fixed")
