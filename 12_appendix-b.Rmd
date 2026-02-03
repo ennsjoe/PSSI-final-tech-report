@@ -1,4 +1,4 @@
-# Appendix B: Overview of Phase 2 BCSRIF Projects {#sec:appendix-bcsrif-projects}
+# APPENDIX `r new_appendix()`. Overview of Phase 2 BCSRIF Projects {#app:BCSRIF}
 
 ```{r}
 library(gt)

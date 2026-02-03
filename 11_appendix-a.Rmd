@@ -1,4 +1,4 @@
-# Appendix A: Project Summary Table {#sec:project-summary}
+# APPENDIX `r new_appendix()`. Project Summary Table {#app:projects}
 
 ```{r project-summary-table}
 # Create a summary table of all projects

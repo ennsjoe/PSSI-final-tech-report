@@ -3,6 +3,14 @@
 This section provides detailed reports for each PSSI-funded research project. Reports are organized by project ID and include highlights, background, methods, findings, insights, and next steps.
 
 ```{r generate-project-reports, results='asis'}
+
+#extract report information from word docs
+#source(here("helper-functions", "project_report_extraction.R"))
+
+con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
+projects_df <- dbReadTable(con, "projects")
+dbDisconnect(con)
+
 # Generate a report section for each project using the template
 for (i in seq_len(nrow(projects_df))) {
   project <- projects_df[i, ]
