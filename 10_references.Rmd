@@ -1,3 +1,4 @@
 # REFERENCES {#sec:references}
 
-<div id="refs"></div>
+::: {#refs custom-style="Bibliography"}
+:::
