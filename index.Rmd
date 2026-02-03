@@ -50,7 +50,7 @@ citation: |
   Lagasse, C., Enns, J., Brown, N., Pearsall, I., Huang, A.-M., and Dobson, D. 2026. Summary of research and findings from the Pacific Salmon Strategy Initiative. Canadian Technical Report of Fisheries and Aquatic Sciences nnn.
 
 output:
-  csasdown2::techreport_docx:
+  csasdown::techreport_docx:
     french: false
     toc: true
     toc_depth: 3
@@ -60,3 +60,18 @@ link-citations: true
 bibliography: bib/references.bib
 csl: csl/csas.csl
 ---
+
+```{r setup, include=FALSE}
+
+library(here)
+
+# --- Configuration ---
+INPUT_DIR  <- here("data", "word_docs")
+OUTPUT_CSV <- here("data", "processed", "pssi_form_data.csv")
+OUTPUT_DB  <- here("output", "projects.db")
+template_path <- here("templates", "project-template.Rmd")
+
+# Source helper-functions 
+source(here("helper-functions", "helper-functions.R"))
+
+```

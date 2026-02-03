@@ -7,10 +7,6 @@ library(DBI)
 library(RSQLite)
 library(here)
 
-# --- Configuration ---
-INPUT_DIR  <- here("data", "word_docs")
-OUTPUT_CSV <- here("data", "processed", "pssi_form_data.csv")
-OUTPUT_DB  <- here("output", "projects.db")
 
 # Fields to extract - labels as they appear in the document
 # Format: "label_in_document" = "output_field_name"
