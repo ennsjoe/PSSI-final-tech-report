@@ -38,3 +38,5 @@ if (nrow(projects_df) > 0) {
   cat("*No project data available.*")
 }
 ```
+
+\newpage

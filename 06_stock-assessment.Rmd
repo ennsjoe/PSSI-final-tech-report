@@ -3,3 +3,5 @@
 Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks that occurred during PSSI and FSARs that were completed or are still underway. Describe emergent themes, trends, or challenges across FSARs and stocks that were assessed.
 
 Include a table or figure with list of FSARs.
+
+\newpage

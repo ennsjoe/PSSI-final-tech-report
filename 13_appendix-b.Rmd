@@ -50,3 +50,5 @@ gt(BCSRIF_df) |>
     data_row.padding = px(6)
   )
 ```
+
+\newpage

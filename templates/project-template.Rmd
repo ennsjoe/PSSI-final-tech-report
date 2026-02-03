@@ -206,3 +206,5 @@ if (!is.na(project$references) && nchar(project$references) > 0) {
   }
 }
 ```
+
+\newpage

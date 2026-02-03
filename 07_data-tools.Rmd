@@ -82,3 +82,5 @@ flextable(data_projects) %>%
   align(align = "left", part = "all") %>%
   valign(valign = "top", part = "body")
 ```
+
+\newpage

@@ -303,3 +303,5 @@ Further understanding thresholds and tipping points, and how these differ among 
 Changes in the frequency of extreme events, such as flooding, marine heat-waves, and droughts, are difficult to accurately model and assess but are important determinants of salmon survival
 
 Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
+
+\newpage
