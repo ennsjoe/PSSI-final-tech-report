@@ -58,27 +58,27 @@ fix_encoding <- function(text) {
   
   # Common UTF-8 mojibake patterns when UTF-8 is read as Latin-1
   replacements <- c(
-    "\u00c3\u00a9" = "\u00e9",
-    "\u00c3\u00a8" = "\u00e8",
-    "\u00c3\u00a0" = "\u00e0",
-    "\u00c3\u00a2" = "\u00e2",
-    "\u00c3\u00ae" = "\u00ee",
-    "\u00c3\u00b4" = "\u00f4",
-    "\u00c3\u00bb" = "\u00fb",
-    "\u00c3\u00a7" = "\u00e7",
-    "\u00c3\u0089" = "\u00c9",
-    "\u00c3\u0080" = "\u00c0",
-    "\u00c3\u0091" = "\u00d1",
-    "\u00c3\u00b1" = "\u00f1",
-    "\u00c3\u00bc" = "\u00fc",
-    "\u00c3\u00b6" = "\u00f6",
-    "\u00c3\u00a4" = "\u00e4",
-    "\u00e2\u0080\u0099" = "'",
-    "\u00e2\u0080\u009c" = "\u201c",
-    "\u00e2\u0080\u009d" = "\u201d",
-    "\u00e2\u0080\u0093" = "\u2013",
-    "\u00e2\u0080\u0094" = "\u2014",
-    "\u00e2\u0080\u00a6" = "\u2026"
+    "ÃƒÂ©" = "Ã©",
+    "ÃƒÂ¨" = "Ã¨",
+    "Ãƒ " = "Ã ",
+    "ÃƒÂ¢" = "Ã¢",
+    "ÃƒÂ®" = "Ã®",
+    "ÃƒÂ´" = "Ã´",
+    "ÃƒÂ»" = "Ã»",
+    "ÃƒÂ§" = "Ã§",
+    "Ãƒâ€°" = "Ã‰",
+    "Ãƒâ‚¬" = "Ã€",
+    "Ãƒ'" = "Ã‘",
+    "ÃƒÂ±" = "Ã±",
+    "ÃƒÂ¼" = "Ã¼",
+    "ÃƒÂ¶" = "Ã¶",
+    "ÃƒÂ¤" = "Ã¤",
+    "Ã¢â‚¬â„¢" = "'",
+    "Ã¢â‚¬Å“" = "'",
+    "Ã¢â‚¬" = "'",
+    "Ã¢â‚¬" = "â€”",
+    "Ã¢â‚¬" = "â€“",
+    "Ã¢â‚¬Â¦" = "â€¦"
   )
   
   result <- text
@@ -92,8 +92,12 @@ fix_encoding <- function(text) {
 # ----------------------------------------------------------
 # Helper: Extract text from XML node preserving line breaks
 # ----------------------------------------------------------
+# ----------------------------------------------------------
+# Helper: Extract text from XML node preserving line breaks AND italic formatting
+# ----------------------------------------------------------
 extract_text_with_breaks <- function(node, ns = W_NS) {
   if (is.na(node) || is.null(node)) return(NA_character_)
+  
   
   # Find all paragraph elements
   paragraphs <- xml_find_all(node, ".//w:p", ns = ns)
@@ -112,6 +116,19 @@ extract_text_with_breaks <- function(node, ns = W_NS) {
     if (length(runs) == 0) return("")
     
     run_texts <- map_chr(runs, function(r) {
+      # Check if this run is italicized
+      rPr <- xml_find_first(r, ".//w:rPr", ns = ns)
+      is_italic <- FALSE
+      
+      if (!is.na(rPr)) {
+        italic_node <- xml_find_first(rPr, ".//w:i", ns = ns)
+        if (!is.na(italic_node)) {
+          # Check if italic is explicitly turned off
+          val <- xml_attr(italic_node, "val")
+          is_italic <- is.na(val) || val != "0"
+        }
+      }
+      
       # Get all children (text and breaks)
       children <- xml_children(r)
       
@@ -127,7 +144,14 @@ extract_text_with_breaks <- function(node, ns = W_NS) {
         return("")
       })
       
-      paste(parts, collapse = "")
+      run_text <- paste(parts, collapse = "")
+      
+      # Wrap in markdown italic syntax if needed
+      if (is_italic && nchar(trimws(run_text)) > 0) {
+        run_text <- paste0("*", run_text, "*")
+      }
+      
+      return(run_text)
     })
     
     paste(run_texts, collapse = "")
@@ -146,28 +170,9 @@ extract_text_with_breaks <- function(node, ns = W_NS) {
   if (nchar(result) == 0) NA_character_ else result
 }
 
-# ----------------------------------------------------------
-# Helper: Extract only Figure/Table captions from text
-# ----------------------------------------------------------
-extract_captions_only <- function(text) {
-  if (is.na(text) || nchar(text) == 0) return(NA_character_)
-  
-  # Split into lines
-  lines <- unlist(strsplit(text, "\n+"))
-  lines <- trimws(lines)
-  
-  # Keep only lines that start with "Figure" or "Table" followed by a number
-  caption_lines <- lines[grepl("^(Figure|Table)\\s*\\d", lines, ignore.case = TRUE)]
-  
-  if (length(caption_lines) == 0) return(NA_character_)
-  
-  result <- paste(caption_lines, collapse = "\n\n")
-  return(result)
-}
 
 # ----------------------------------------------------------
 # Extract Content Controls (w:sdt elements) from document.xml
-# Special handling for tables_figures to get full cell content
 # ----------------------------------------------------------
 extract_content_controls <- function(doc_xml, ns = W_NS) {
   
@@ -194,29 +199,7 @@ extract_content_controls <- function(doc_xml, ns = W_NS) {
     tag_val <- if (!is.na(tag_node)) xml_attr(tag_node, "val") else NA
     alias_val <- if (!is.na(alias_node)) xml_attr(alias_node, "val") else NA
     
-    key <- if (!is.na(tag_val)) tag_val else alias_val
-    
-    # Special handling for tables_figures - get all text from parent table cell
-    if (!is.na(key) && key == "tables_figures") {
-      # Try to find the parent table cell (w:tc)
-      # Navigate up: sdt -> possibly sdtContent wrapper -> tc
-      parent_tc <- xml_find_first(sdt, "ancestor::w:tc", ns = ns)
-      
-      if (!is.na(parent_tc)) {
-        # Extract all text from the table cell
-        cell_text <- extract_text_with_breaks(parent_tc, ns)
-        
-        # Extract only the Figure/Table captions
-        content_text <- extract_captions_only(cell_text)
-        
-        if (!is.na(content_text) && nchar(content_text) > 0) {
-          results[[key]] <- content_text
-          next
-        }
-      }
-    }
-    
-    # Default extraction for other fields
+    # Get content
     sdt_content <- xml_find_first(sdt, ".//w:sdtContent", ns = ns)
     content_text <- extract_text_with_breaks(sdt_content, ns)
     
@@ -228,6 +211,7 @@ extract_content_controls <- function(doc_xml, ns = W_NS) {
     
     # Store with available identifiers
     if (!is.na(tag_val) || !is.na(alias_val)) {
+      key <- if (!is.na(tag_val)) tag_val else alias_val
       results[[key]] <- content_text
     }
   }
@@ -550,11 +534,16 @@ extract_all_forms <- function(input_dir = INPUT_DIR,
   dir.create(dirname(output_csv), recursive = TRUE, showWarnings = FALSE)
   
   # Write with UTF-8 BOM for better Excel compatibility
-  con <- file(output_csv, "w", encoding = "UTF-8")
-  writeChar("\uFEFF", con, eos = NULL)  # Write BOM
+  con <- file(output_csv, "wb")
+  writeBin(charToRaw('\uFEFF'), con)
   close(con)
-  write.table(combined, output_csv, row.names = FALSE, na = "", 
-              sep = ",", quote = TRUE, fileEncoding = "UTF-8", append = TRUE)
+  
+  # Append data to file with BOM (use "ab" mode to avoid warning)
+  con <- file(output_csv, "ab")
+  write.table(combined, con, row.names = FALSE, na = "", 
+              sep = ",", quote = TRUE, fileEncoding = "UTF-8",
+              col.names = TRUE)
+  close(con)
   message("\nCSV saved to: ", output_csv)
   
   # Save to SQLite
@@ -640,5 +629,4 @@ inspect_document <- function(docx_path) {
 }
 
 # --- Run extraction automatically when sourced ---
-# Uncomment the line below to run extraction when the script is sourced
-# extract_all_forms()
+extract_all_forms()
