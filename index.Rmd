@@ -52,46 +52,10 @@ citation: |
 output:
   csasdown2::techreport_docx:
     french: false
-    copy_sty: true
-    line_nums: false
-    line_nums_mod: 1
-
+    toc: true
+    toc_depth: 3
+    
 link-citations: true
 bibliography: bib/references.bib
 csl: csl/csas.csl
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = FALSE,
-  message = FALSE,
-  warning = FALSE,
-  fig.path = "figures/generated/"
-)
-
-# Load packages
-library(tidyverse)
-library(knitr)
-library(csasdown2)
-library(DBI)
-library(RSQLite)
-library(here)
-
-# Source helper functions
-source(here("helper-functions", "helper-functions.R"))
-
-# Rebuild database from CSV each time
-init_database(overwrite = TRUE)
-
-# Load project data
-projects_df <- read.csv(
-  here("data", "processed", "pssi_form_data.csv"),
-  stringsAsFactors = FALSE,
-  na.strings = c("", "NA")
-) %>%
-  filter(!is.na(project_id)) %>%
-  arrange(project_id)
-
-n_projects <- nrow(projects_df)
-template_path <- here("templates", "project-template.Rmd")
-```
