@@ -54,6 +54,7 @@ output:
     french: false
     toc: true
     toc_depth: 3
+    pandoc_args: ["--csl=csl/csas.csl"]
     
 link-citations: true
 bibliography: bib/references.bib

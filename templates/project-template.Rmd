@@ -192,8 +192,17 @@ if (!is.na(project$next_steps) && nchar(project$next_steps) > 0) {
 # References
 if (!is.na(project$references) && nchar(project$references) > 0) {
   cat("#### References\n\n")
-  cat("::: {custom-style=\"Bibliography\"}\n")
-  cat(project$references, "\n")
-  cat(":::\n\n")
+  
+  # Split references by line breaks (assuming each reference is on its own line or paragraph)
+  refs <- strsplit(project$references, "\n\n")[[1]]
+  refs <- trimws(refs)
+  refs <- refs[refs != ""]
+  
+  # Wrap each reference in a div with custom style
+  for (ref in refs) {
+    cat("::: {custom-style=\"Bibliography\"}\n")
+    cat(ref, "\n")
+    cat(":::\n\n")
+  }
 }
 ```
