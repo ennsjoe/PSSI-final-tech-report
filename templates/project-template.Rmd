@@ -1,18 +1,14 @@
 
-### Project `r project$project_id`: \n\n `r project$project_title`
+### Project `r project$project_id`: `r project$project_title`
  
 ```{r}
-
 officer::fpar(
      officer::run_bookmark(
        make_bkm(project$project_id),
-       officer::ftext("\u200B")  # zero‑width space: invisible anchor text
-       #officer::ftext(paste0("[ANCHOR ", project$project_id, "]"))
+       officer::ftext("\u200B")  # zero-width space: invisible anchor text
      )
    )
 ```
-
-
 
 ```{r, results='asis'}
 # Display project metadata box
@@ -88,42 +84,91 @@ if (!is.na(project$methods_findings) && nchar(project$methods_findings) > 0) {
 ```
 
 ```{r, results='asis'}
-# Tables and Figures with images
+# Tables and Figures section
 fig_dir <- here("figures", "project_figures", project$project_id)
+
+# Check if directory exists and has content
+has_content <- FALSE
+img_files <- character(0)
+csv_files <- character(0)
 
 if (dir.exists(fig_dir)) {
   img_files <- list.files(fig_dir, pattern = "\\.(png|jpg|jpeg|gif)$", 
                           full.names = TRUE, ignore.case = TRUE)
+  csv_files <- list.files(fig_dir, pattern = "\\.csv$", 
+                          full.names = TRUE, ignore.case = TRUE)
+  has_content <- length(img_files) > 0 || length(csv_files) > 0
+}
+
+# Also check for text-only tables_figures content
+has_text_content <- !is.na(project$tables_figures) && nchar(project$tables_figures) > 0
+
+if (has_content || has_text_content) {
+  cat("#### Tables and Figures\n\n")
   
-  if (length(img_files) > 0) {
-    cat("#### Tables and Figures\n\n")
+  # Parse captions from tables_figures field
+  captions <- NULL
+  if (has_text_content) {
+    captions <- strsplit(project$tables_figures, "\n")[[1]]
+    captions <- trimws(captions)
+    captions <- captions[captions != ""]
+  }
+  
+  # Helper function to find matching caption
+  find_caption <- function(file_name, captions) {
+    if (is.null(captions)) return(file_name)
     
-    # Parse captions
-    captions <- NULL
-    if (!is.na(project$tables_figures) && nchar(project$tables_figures) > 0) {
-      captions <- strsplit(project$tables_figures, "\n")[[1]]
-      captions <- trimws(captions)
-      captions <- captions[captions != ""]
+    # Convert filename like "Table_1" or "Figure_1" to pattern "Table 1" or "Figure 1"
+    search_pattern <- gsub("_", " ", file_name)
+    
+    # Also try matching with just the base pattern (case insensitive)
+    match_idx <- grep(paste0("^", search_pattern), captions, ignore.case = TRUE)
+    
+    if (length(match_idx) > 0) {
+      return(captions[match_idx[1]])
     }
+    return(file_name)
+  }
+  
+  # Combine and sort all files (tables and figures together)
+  all_files <- c(csv_files, img_files)
+  
+  if (length(all_files) > 0) {
+    # Sort files so Tables come before Figures, then numerically
+    file_order <- order(
+      !grepl("^Table", basename(all_files), ignore.case = TRUE),  # Tables first
+      as.numeric(gsub("\\D", "", basename(all_files)))  # Then by number
+    )
+    all_files <- all_files[file_order]
     
-    for (img_path in sort(img_files)) {
-      img_name <- tools::file_path_sans_ext(basename(img_path))
+    for (file_path in all_files) {
+      file_name <- tools::file_path_sans_ext(basename(file_path))
+      file_ext <- tolower(tools::file_ext(file_path))
+      caption <- find_caption(file_name, captions)
       
-      # Find matching caption
-      caption <- img_name
-      if (!is.null(captions)) {
-        match_idx <- grep(paste0("^", img_name), captions, ignore.case = TRUE)
-        if (length(match_idx) > 0) {
-          caption <- captions[match_idx[1]]
-        }
+      if (file_ext == "csv") {
+        # Render table from CSV
+        table_data <- read.csv(file_path, stringsAsFactors = FALSE, check.names = FALSE)
+        
+        # Print caption
+        cat("\n\n**", caption, "**\n\n", sep = "")
+        
+        # Render the table using knitr::kable
+        print(knitr::kable(table_data, format = "pandoc", row.names = FALSE))
+        cat("\n\n")
+        
+      } else {
+        # Render image
+        cat("![", caption, "](", file_path, ")\n\n", sep = "")
       }
-      
-      cat("![", caption, "](", img_path, ")\n\n", sep = "")
     }
   }
-} else if (!is.na(project$tables_figures) && nchar(project$tables_figures) > 0) {
-  cat("#### Tables and Figures\n\n")
-  cat(project$tables_figures, "\n\n")
+  
+  # If there are captions but no matching files, show the text content
+  # (for captions that don't have associated files)
+  if (!has_content && has_text_content) {
+    cat(project$tables_figures, "\n\n")
+  }
 }
 ```
 
@@ -147,8 +192,19 @@ if (!is.na(project$next_steps) && nchar(project$next_steps) > 0) {
 # References
 if (!is.na(project$references) && nchar(project$references) > 0) {
   cat("#### References\n\n")
-  cat("::: {custom-style=\"Bibliography\"}\n")
-  cat(project$references, "\n")
-  cat(":::\n\n")
+  
+  # Split references by line breaks (assuming each reference is on its own line or paragraph)
+  refs <- strsplit(project$references, "\n\n")[[1]]
+  refs <- trimws(refs)
+  refs <- refs[refs != ""]
+  
+  # Wrap each reference in a div with custom style
+  for (ref in refs) {
+    cat("::: {custom-style=\"Bibliography\"}\n")
+    cat(ref, "\n")
+    cat(":::\n\n")
+  }
 }
 ```
+
+\newpage

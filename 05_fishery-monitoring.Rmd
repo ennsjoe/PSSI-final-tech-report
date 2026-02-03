@@ -1,0 +1,74 @@
+## Fishery monitoring and harvest techniques (NB/CL/FM) {#sec:fishery-monitoring}
+
+```{r fishery-projects}
+library(flextable)
+
+con <- get_db_connection()
+fishery_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Fishery monitoring and harvest techniques'
+    AND section = 'Fishery monitoring and harvest techniques'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+flextable(fishery_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to fishery monitoring and harvest techniques") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
+```
+
+### Highlights
+
+-   New technologies and collaborative partnerships are improving efficiency and accuracy of salmon fishery monitoring programs
+
+-   Research has identified new methods, opportunities, and best practices for selective fishing that can mitigate impacts on non-target stocks and species
+
+### Background and objectives
+
+The PSSI harvest transformation pillar focused on how precautionary fishery management can help address persistent declines in numerous British Columbia and Yukon salmon stocks. Various efforts and management measures were embraced to improve selectivity of fisheries across all sectors, including advancement of selective harvest methods, reformed licensing and regulatory approaches, enhanced catch monitoring, and long-term closures of some commercial fisheries. Research projects conducted under the harvest transformation pillar focused on developing, testing, and applying improved catch monitoring and reporting frameworks to address longstanding information gaps, particularly with respect to mixed‑stock fisheries. Pilot projects were also conducted to evaluate selective and mark‑selective fishing methods to better understand their effectiveness in reducing impacts on stocks of concern while maintaining harvest opportunities. Collectively, these projects lay the foundation for a refined approach to managing and regulating Pacific salmon fisheries. Preliminary results and management implications from a selection of PSSI harvest transformation research projects are summarized thematically below.
+
+### Enhancements to recreational monitoring
+
+British Columbia is a renowned destination for salmon angling. Active recreational fisheries span the entire coastline alongside an extensive network of lodges and guiding operations. Likewise, recreational fishing is prevalent and popular in many of BC’s salmon-bearing watersheds. It is a considerable challenge to monitor and assess the impacts to salmon of such widespread, diffuse fisheries, and critical information gaps exist. As a result, several new recreational fishery restrictions have been introduced in recent years to protect declining stocks. PSSI sub-initiative 18.2 focuses on developing or improving recreational fishery monitoring to better inform management actions.
+
+In one such effort, the Central Coast Indigenous Resource Alliance has developed and implemented a creel survey with expanded coverage across a large swathe of the Central Coast. Researchers designed an improved survey and analytical framework that fills gaps in existing DFO programs and is more robust against data limitations. The survey also includes expansive genetic sampling that will better inform the stock composition of salmon catches, particularly Coho, in the region. Finally, this work is strengthening First Nation leadership in fishery monitoring and paves the way for a more active role moving forward.
+
+-   MSF reference fishery (Erin Rechisky)
+
+-   Creel monitoring capacity improvements (Natalie Fuller)
+
+### Research on release mortality and best practices for recreational fisheries
+
+The Pacific Salmon Ecology and Conservation Laboratory at the University of British Columbia undertook a 5-year research program to study the mechanisms and impacts of injuries sustained by chinook and coho salmon when released by recreational anglers. The BC Sport Fishing Institute, Pacific Salmon Foundation, Canada’s Ocean Tracking Network, DFO, and Kintama Marine Research were key collaborators on this work.
+
+Results arising from acoustic telemetry tracking, extended holding studies, and physiological assays demonstrate that post‑release mortality varies considerably among catch and release methods and that fish condition, species, size, and environmental conditions are also important factors. In broad terms, chinook salmon released in good physical condition generally exhibit low mortality, whereas individuals exhibiting injuries such as bleeding, scale or fin damage, or eye trauma experience substantially higher mortality. Coho salmon appear less resilient compared to chinook released under similar conditions. In addition, smaller fish suffer higher mortality than larger fish, and warm ocean temperatures during capture and release exacerbate losses. These findings indicate that release mortalities in marine recreational fisheries can be significant but that outcomes depend strongly on the circumstances under which fish are captured and released.
+
+Based on these findings, the Pacific Salmon Ecology and Conservation Laboratory is developing practical, evidence‑based recommendations to minimize injury, physiological stress, and subsequent mortality when releasing salmon. Key recommendations emphasize reducing physical contact and air exposure, avoiding the use of landing nets and on‑board handling, releasing fish at the waterline, and minimizing fight times. Gear recommendations include eschewing in-line flashers as well as large or multiple hooks, especially treble hooks,  all of which increase injury risk and severity. Recommendations for fishery management include minimizing fishing in areas dominated by immature fish or salmon predators, winding down fisheries when surface water temperatures are exceptionally warm, and stopping fishing trips once daily retention limits have been achieved. These best practices provide new options to reduce recreational fishing impacts while maintaining opportunity. Researchers are also developing resources to help integrate release mortality considerations into monitoring and public education programs.
+
+### Bycatch monitoring in commercial fisheries
+
+-   Salmon bycatch monitoring in the trawl fishery (Cory Lagasse)
+
+### Selective harvest methods and monitoring to support adaptive management
+
+Several research initiatives focused on improving the timeliness, accuracy, and operational relevance of fishery data to support measures aiming to reduce impacts on stocks of concern. A central theme across projects is the integration of emerging technologies with established fishing practices and community‑based monitoring programs. All projects recognized the need for innovation in both fishing practices and monitoring to better support precautionary management.
+
+DFO fishery management indicated that expanded fishery observer coverage is required on the North Coast. This motivated efforts to advance electronic monitoring for commercial vessels as an alternative or offset to the costly at-sea observer program. A pilot study was conducted by the United Fishermen & Allied Workers Union, Teem Fish Monitoring, and Ecotrust Canada  during a Skeena River gillnet demonstration fishery. The electronic monitoring system accurately captured core information, including fishing effort, retained catch, released catch, and fish condition at release. Species identification, camera placement, and potential for crew members to block the view were important limitations, but these might be diminished through improved camera placement, lighting, and fisher cooperation. Future integration of automated image analysis and artificial intelligence could further improve data processing and cost efficiency, emphasizing the value of continuing to develop electronic monitoring systems for commercial salmon fisheries .
+
+Complementary efforts are exploring selective harvest and monitoring tools in First Nation terminal fisheries. A pilot study led by the A‑Tlegay Fisheries Society is revitalizing traditional salmon trap technologies in the Campbell–Quinsam estuary to enable selective harvest of hatchery salmon while safely releasing wild salmon and steelhead. To support improved First Nation terminal fishery management and monitoring, the Pacific Salmon Foundation is developing deep‑learning approaches to automate salmon counting and species identification from video and sonar data, with the goal of linking these tools to escapement monitoring programs on the North and Central Coast. By enabling near‑real‑time data integration, this work supports more responsive management of terminal fisheries. Together, these projects illustrate how selective fishing methods, combined with modern monitoring technologies and Indigenous leadership, can yield more flexible and precautionary fisheries.
+
+\newpage

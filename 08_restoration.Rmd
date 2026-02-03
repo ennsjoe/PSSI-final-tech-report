@@ -1,0 +1,103 @@
+## Restoration and recovery {#sec:restoration-recovery}
+
+### A. Recovery and rebuilding Programs
+
+```{r recovery-projects}
+library(flextable)
+
+con <- get_db_connection()
+recovery_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Restoration and recovery'
+    AND section = 'Recovery and rebuilding programs'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+flextable(recovery_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to recovery and rebuilding programs") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
+```
+
+### B. Restoration prioritization
+
+```{r restoration-projects}
+library(flextable)
+
+con <- get_db_connection()
+restoration_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Restoration and recovery'
+    AND section = 'Restoration prioritization'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+flextable(restoration_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to restoration prioritization") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
+```
+
+### Template / Guiding Questions
+
+Research Goals
+
+-   What were the key objectives of this research theme?
+
+-   How do these relate to original goals of PSSI/BCSRIF?
+
+-   What major gaps in our knowledge were being addressed?
+
+Outcomes
+
+-   What have we learned and how have we moved the dial on our scientific understanding?
+
+-   What new tools/tech/techniques have been created?
+
+-   How can these projects inform management planning/actions/policy?
+
+Engagement, Collaboration & Knowledge Transfer
+
+-   How did these projects engage with other groups? Was this effective? 
+
+-   Have new ways to ensure knowledge transfer to different audiences been developed?
+
+-   What products have been created? 
+
+Next Steps
+
+-   Major conclusions
+
+-   How could/should the project findings be operationalized for salmon conservation and management?
+
+-   Remaining knowledge gaps and recommendations for future studies
+
+\newpage

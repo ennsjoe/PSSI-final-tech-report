@@ -1,0 +1,26 @@
+# Project Reports {#sec:project-reports}
+
+This section provides detailed reports for each PSSI-funded research project. Reports are organized by project ID and include highlights, background, methods, findings, insights, and next steps.
+
+```{r generate-project-reports, results='asis'}
+# Generate a report section for each project using the template
+for (i in seq_len(nrow(projects_df))) {
+  project <- projects_df[i, ]
+  
+  # Render the project template
+  tryCatch({
+    cat(knitr::knit_child(
+      template_path,
+      envir = environment(),
+      quiet = TRUE
+    ))
+    # Page break (pandoc converts for Word output)
+    cat("\n\n\\newpage\n\n")
+  }, error = function(e) {
+    cat(paste0("\n\n## Project ", project$project_id, "\n\n"))
+    cat(paste0("*Error generating report: ", e$message, "*\n\n"))
+    cat(paste0("*Template path: ", template_path, "*\n\n"))
+    cat("\n\n\\newpage\n\n")
+  })
+}
+```

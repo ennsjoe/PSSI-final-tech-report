@@ -1,0 +1,855 @@
+---
+title: "Summary of research and findings from the Pacific Salmon Strategy Initiative"
+author: "DFO Science Pacific Region"
+editor: "Cory Lagasse, Joe Enns, Nicholas Brown, Isobel Pearsall, Ann-Marie Huang, Diana Dobson"
+date: "`r Sys.Date()`"
+output:
+  officedown::rdocx_document:
+    reference_docx: "templates/reference-doc.docx"
+    toc: true
+    toc_depth: 3
+    fig_caption: true
+    fig_width: 6.5
+    fig_height: 4.5
+bibliography: references.json
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.path = "figures/generated/"
+)
+
+# Load packages
+library(tidyverse)
+library(knitr)
+library(gt)
+library(DBI)
+library(RSQLite)
+library(here)
+library(officer)
+library(flextable) # for word doc tables
+library(officedown) #for hyperlinks, etc. in word output
+
+# Source helper functions
+source(here("helper-functions.R"))
+
+# Rebuild database from CSV each time (ensures latest data)
+init_database(overwrite = TRUE)
+```
+
+```{r load-project-data, include=FALSE}
+# Load project form data from CSV
+projects_df <- read.csv(
+  here("data", "processed", "pssi_form_data.csv"),
+  stringsAsFactors = FALSE,
+  na.strings = c("", "NA")
+)
+
+# Filter to only projects with valid project_id
+projects_df <- projects_df %>%
+  filter(!is.na(project_id)) %>%
+  arrange(project_id)
+
+n_projects <- nrow(projects_df)
+
+# Define template path (resolve once, before the loop)
+template_path <- here("templates", "project-template.Rmd")
+
+# Check if template exists
+if (!file.exists(template_path)) {
+  warning("Template not found at: ", template_path)
+}
+```
+
+# Abstract
+
+Brief overview of the report's purpose and findings.
+
+\newpage
+
+# Introduction
+
+The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million towards habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. Over its five year span beginning in 2021, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitat, support sustainable fishing opportunities while reducing impacts on vulnerable stocks, and build capacity among partners to achieve better outcomes for Pacific salmon ([DFO 2025](https://www.dfo-mpo.gc.ca/campaign-campagne/pss-ssp/index-eng.html)). PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative. The PSSI was initially designed and managed across four pillars, each of which involved multiple sectors within DFO and included several sub-initiatives.
+
+The conservation and stewardship pillar focused on new activities and investments supporting the long-term persistence and rebuilding of Pacific salmon populations. Key components included a doubling of the British Columbia Salmon Restoration and Innovation Fund (BCSRIF), investing in research to improve our understanding of salmon and their ecosystems, advancing integrated planning for salmon ecosystems to mitigate pressures on freshwater habitats, developing integrated rebuilding plans for vulnerable salmon populations, improving supports for salmon stewardship activities through engagement, and capacity-building with First Nations and community partners.
+
+The salmon enhancement pillar aimed to modernize hatchery programs to more effectively support the conservation, recovery, and sustainable use of Pacific salmon. A key objective under this pillar was to invest in new hatchery infrastructure and capacity, including retrofitting existing facilities and building new facilities in the Upper Fraser area. The pillar also aimed to strengthen collaboration and enhancement partnerships, including with First Nations and other stakeholders, while investing in hatchery science related to genetics, fish health, salmon ecosystems, and operational monitoring. In addition, this pillar supported development of a modernized enhancement policy intended to guide decision-making in a way that better supports the overall enhancement vision, including the targeted use of conservation-based hatchery production to help recover, stabilize, and restore vulnerable salmon stocks.
+
+The harvest transformation pillar was intended to change how Pacific salmon fisheries were managed in response to long-term stock declines and ongoing conservation concerns. Its key objectives included adopting more precautionary and selective fishing approaches, including exploring mark-selective fisheries, and developing new tools to better manage harvest capacity across sectors. The pillar also included commitments to update the Salmon Allocation Policy and to update licensing, regulatory, and management frameworks, including measures such as licence buyback programs and long-term commercial fishery closures in areas with significant conservation concerns. In addition, it aimed to improve the timeliness and accuracy of fishery monitoring and catch reporting programs to strengthen the information base used for harvest decision-making.
+
+The integration and collaboration pillar focused on strengthening collective capacity to address Pacific salmon declines by improving how DFO worked both internally and with external partners. Key objectives under this pillar were to provide capacity support to various internal and external groups involved in salmon conservation and management, to improve collaboration among federal, provincial, territorial, Indigenous, and other governments, and to prioritize salmon stocks for recovery through coordinated, cross-jurisdictional planning and decision-making processes.
+
+Supporting the pillars were investments in scientific research, both within DFO through new and expanded research projects led by the Science branch, as well as through grants and partnerships delivered externally under the second phase of BCSRIF. Within DFO Science, new research was implemented across multiple PSSI sub-initiatives that supported scientific activities across all four research divisions. The sub-initiatives focused on improving our understanding of salmon and their ecosystems, informing enhancement modernization plans, supporting restoration effectiveness and prioritization, and expanded recreational fisheries monitoring. Following a DFO workshop that identified priority research areas [@lagasse2024], multi-year research projects were developed and implemented. Projects covered freshwater and marine domains, hatchery and fishery management advice, and simulation modelling to genetic and physiological studies.
+
+In addition to DFO-led research projects, PSSI supported many research-oriented projects through BCSRIF phase two. New collaborative projects focused on climate change impacts, priority salmon populations, habitat restoration effectiveness, innovative monitoring tools, and other areas related to Pacific salmon conservation [@DFO2025]. These investments enabled First Nations, academic researchers, industry, and community organizations to work alongside DFO scientists, strengthening the evidence base for management decisions while incorporating Indigenous knowledge, local observations, and novel technologies into the broader PSSI research portfolio.
+
+Collaborative and inter-disciplinary approaches were an important theme for research programs, recognizing the importance of cooperation among scientists, managers, stakeholders, and Indigenous groups to achieve desired outcomes for Pacific salmon [@lagasse2024; @buxton2021]. Pacific salmon are managed under a complex, multi-jurisdictional framework and are subject to a variety of threats throughout their life-cycle stemming from natural and anthropogenic causes. To accurately assess and understand status and drivers of productivity across the many conservation units of salmon in the Pacific region requires a diverse range of studies and approaches undertaken cooperatively across organizations and informed by management questions and priority information needs. Synthesis and communication of findings is also important to share insights and advice relevant to decision-making.
+
+This report provides an overview of the outcomes and findings of research projects funded by the PSSI with a focus on work led by DFO Science Pacific Region. We synthesize findings from a diverse and multi-disciplinary suite of research projects across PSSI research themes intended to advance our understanding of Pacific salmon, their ecosystems, and best practices for management. We also provide summary reports for `r n_projects` research projects led by DFO Science that were funded by PSSI, highlighting insights and next steps. Based on findings over the five years of PSSI, we identify knowledge gaps and future research priorities to support ongoing rebuilding and management of Pacific salmon.
+
+# Research Themes
+
+Describe the scope, extent, and characteristics of research and monitoring conducted as part of PSSI.
+
+Present conceptual diagram and research categories showing linkages between research areas, salmon ecology, and management decisions
+
+```{r study-area-map, fig.cap="Focus categories for research."}
+
+# Example: include a pre-made diagram # 
+knitr::include_graphics("figures/focus_categories_clip.png")
+
+```
+
+## Understanding Salmon and Their Ecosystems
+
+Context for this section
+
+### A. Salmon population monitoring
+
+```{r salmon-population-projects}
+con <- get_db_connection()
+s_monitor_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Salmon population monitoring'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(s_monitor_projects)
+```
+
+### B. Life cycle approaches
+
+#### Follow the Fish (IP)
+
+Provide an overview of the follow the fish program, how risk assessments and limiting factors (RAMS) were used to guide research priorities, key insights, and next steps to support rebuilding of WCVI Chinook salmon.
+
+```{r ftf-projects}
+con <- get_db_connection()
+ftf_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Assessments'
+    AND section = 'Life cycle assessment - Follow The Fish'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(ftf_projects)
+```
+
+#### Bottlenecks to survival (IP)
+
+```{r bottleneck-projects}
+con <- get_db_connection()
+bottleneck_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Assessments'
+    AND section = 'Life cycle assessment - Bottlenecks to survival'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(bottleneck_projects)
+```
+
+### C. Freshwater ecosystems (JE)
+
+```{r freshwater-ecosystem-projects}
+con <- get_db_connection()
+freshwater_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Freshwater ecosystems'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(
+  df = freshwater_projects
+)
+
+
+```
+
+Summarize research undertaken and key findings focused on freshwater ecosystems. Projects and themes include:
+
+-   Risk assessment and mitigation of aquatic invasive species
+
+    -   Understanding threats of freshwater AIS (Thomas Therriault)
+
+    -   Survival and predation on Okanagan Chinook (Tommy Pontbriand)
+
+    -   Monitoring of Smallmouth bass in Cultus Lake (Daniel Doutaz)
+
+-   Research on freshwater toxins and their effects on salmon, particulalrly 6PPD-Q
+
+    -   Identifying tire-related toxic hotspots (Lisa Loseto)
+
+-   Physiological and mechanistic studies to link environmental conditions with survival and productivity
+
+    -   Mechanistic modelling linking hydrology to habitat quality (Sean Naman)
+
+    -   Physiological studies to understand cumulative impacts on salmon survival (David Patterson)
+
+    -   Effects of redd scour on WCVI Chinook (Diana McHugh)
+
+-   Broad-scale spatial and statistical modelling to characterize cumulative threats to freshwater habitat
+
+    -   Geospatial indicators of cumulative threats to stream habitat (Josie Iacarella)
+
+    -   Effects of forest harvest of salmon productivity (BCSRIF, Maria Kuruvilla)
+
+    -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
+
+### D. Marine ecosystems (IP/NB)
+
+```{r marine-ecosystem-projects}
+con <- get_db_connection()
+marine_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Marine ecosystems'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(marine_projects)
+```
+
+Summarize research and key findings related to building understanding of marine ecosystems and key stressors. Projects and themes include:
+
+-   Oceanographic studies monitoring marine conditions to understand their influence on salmon productivity
+
+    -   Zooplankton and krill monitoring (Akash Sastri)
+
+    -   Hypoxia and temperature within Vancouver Island fjords (Laura Bianucci)
+
+    -   Acoustic monitoring of salmon and salmon prey (Stephane Gauthier)
+
+    -   Monitoring harmful algal biotoxins (Andrew Ross)
+
+    -   Contaminants monitoring (Lisa Loseto)
+
+-   Research and monitoring on marine ecosystems and predators
+
+    -   eDNA monitoring in WCVI (Christoph Deeg)
+
+    -   Quantifying salmon predation by sea lions (Cameron Freshwater)
+
+### E. Climate change vulnerability (CL)
+
+```{r climate-projects}
+con <- get_db_connection()
+climate_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Understanding salmon ecosystems'
+    AND section = 'Climate change vulnerabiliity'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(climate_projects)
+```
+
+**Highlights**
+
+-   Newly developed marine and freshwater climate models allow us to assess environmental changes that will be experience by Pacific salmon within British Columbia
+
+-   Vulnerability assessments reveal differences in risk for the 50 conservation units of Pacific salmon within the Fraser basin, with Pink and Chum salmon the least vulnerable to climate changes while ….
+
+-   Life stage models….
+
+-   Genetic adaptation….
+
+-   Greenhouse gas emissions matter. Vulnerability, as represented by conditions beyond optimal thresholds, was more severe in high emissions scenarios compared to scenarios with mitigation.
+
+-   These new assessments can be applied in planning and decision-making to contextualize risks and benefits….
+
+**Research Goals**
+
+The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems sub-initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
+
+Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures [@schoen2017; @chittenden2009; @crozier2025]. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, modern genotyping, life-cycle modelling, and vulnerability risk assessments. Collectively, these studies reveal important details about the implications of climate change for Pacific salmon that can allow us to understand and anticipate current and future changes.
+
+**Downscaled climate modelling**
+
+Global climate modelling – the simulation of earth systems into the future under different greenhouse gas emission scenarios – is the basis for much of our understanding about future climate change as reported on by the intergovernmental panel on climate change (IPCC). However, these global models lack the necessary detail to tease out fine-scale environmental changes to aquatic habitats that will be significant to understanding responses of Pacific salmon over the coming decades. Recent work, including many projects supported by PSSI, is addressing these gaps through downscaling of global climate models to marine and freshwater environments across the Pacific region.
+
+Within freshwater habitats, the Pacific Climate Impacts Consortium (PCIC) has developed high resolution stream temperature and flow models that project future conditions throughout British Columbia. Statistically downscaled models of August stream temperature have also recently been developed providing an alternative method for projecting future temperatures.  These models reveal a gradient of temperature changes throughout British Columbia influenced not only by global climate patterns, but by elevation, glacial coverage, latitude…..
+
+Within marine areas, regional oceanographic models developed by the Ocean Science division project changes in salinity, temperature, and biogeochemistry for waters across the continental shelf of British Columbia. While these models have recently been applied to understand how climate change will affect habitat availability for groundfish and other marine species, applying them towards the assessment of climate change vulnerability for Pacific salmon is more challenging…  Given the importance of marine survival to the productivity of Pacific salmon, this is an important area for further research….
+
+**Vulnerability assessments**
+
+For the purposes of Pacific salmon management, projecting future environmental conditions is only helpful if we can predict how Pacific salmon will respond to those changes. Climate change vulnerability assessments apply a diverse range of methods to consider how the combined exposure and sensitivity of a species or population determines the risks they face from climate change. While such assessments have been applied to thousands of different species at regional and global scales, including to Pacific salmon in the continental US, it is only recently and with support from PSSI that these studies have been applied to Pacific salmon in Canada.
+
+Two of these studies have been focused on the Fraser Basin, the largest and most diverse river basin for Pacific salmon in Canada with over 50 conservation units. The Pacific Salmon Foundation developed a model to quantify life-stage specific exposure of Pacific salmon conservation units to environmental conditions above optimal thresholds, including high temperature and low flow thresholds. DFO Science has developed a climate vulnerability indicators framework that incorporates several downscaled climate models, demographic information such as conservation status, and genetic diversity information to characterize key mechanisms of vulnerability.
+
+Together, these studies reveal …..
+
+Life stage modelling can also be used for evaluating and disentangling the influence of environmental conditions on salmon productivity retroactively and into the future. Models of sockeye salmon, covering populations from the southern to northern ends of their range, reveal important similarities and differences in responses….
+
+**Genetic adaptation**
+
+**Knowledge gaps and future priorities**
+
+Expanding vulnerability assessments to populations beyond the Fraser basin
+
+Further understanding thresholds and tipping points, and how these differ among species of Pacific salmon
+
+Changes in the frequency of extreme events, such as flooding, marine heat-waves, and droughts, are difficult to accurately model and assess but are important determinants of salmon survival
+
+Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
+
+## Science to support hatchery modernization (CL/SEP)
+
+Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
+
+### A. Genetics
+
+```{r genetics-projects}
+con <- get_db_connection()
+genetics_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Science to support hatchery modernization'
+    AND section = 'Genetics'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(genetics_projects)
+```
+
+Summarize research and key findings from genetics projects. Research questions (from SEP):
+
+-   What are the differences between hatchery and natural origin fish?
+
+-   Why do these differences occur and what are the mechanisms behind them?
+
+-   What factors affect long-term population fitness?
+
+Projects and themes include:
+
+-   Developing and operationalizing modern genetic methods for stock identification and assessment
+
+    -   Continuation/expansion of PBT programs (Eric Rondeau)
+
+    -   Improving stock delineation in Chum salmon by characterizing genome-wide genetic variation (Anna Tigano)
+
+    -   Rapid broodstock screening for improved genetic management of Pacific salmon (Kyle Wellband)
+
+-   Evaluating genetic differences among hatchery and wild populations, and their implications for fitness
+
+    -   Fitness effects of hatchery enhancement and relative reproductive success (Tim Healy)
+
+    -   Epigenetic variation and inheritance in hatchery and natural origin Chinook and Coho salmon (Tim Healy, Kyle Wellband)
+
+    -   Genetic variation linked to early maturation in male Chinook salmon
+
+### B. Fish health and hatchery practices
+
+```{r health-projects}
+con <- get_db_connection()
+health_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Science to support hatchery modernization'
+    AND section = 'Fish health and hatchery practices'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(health_projects)
+```
+
+Summarize research and key findings from fish health projects. Research questions (from SEP):
+
+-   How can we better assess and track fish condition and stress?
+
+-   How do we advance aFish health and hatchery best practicesnd modernize diagnostic and health-management practices?
+
+-   How can new molecular and technological tools help us detect issues early and inform decision-making?
+
+Projects and themes include:
+
+-   New diagnostic and monitoring tools for fish health
+
+    -   Expanding and modernizing the finfish diagnostic lab (Amy Long)
+
+    -   Developing a proactive, modernized approach to ensure optimal health and condition (Karia Kaukinen, Kristi Miller)
+
+    -   Using scales to monitor chronic stress in Chinook and Coho salmon (Stewart Johnson)
+
+    -   Application of nanopore technology for detection and characterization of pathogens (BCSRIF, Ahmed Siah)
+
+-   Evaluating factors determining fish health and disease prevalence
+
+    -   Using broodstock data to understand factors that affect BKD rates (Amy Long)
+
+    -   Factors influencing IHNV in sockeye salmon (Kyle Garver)
+
+    -   Modeling interactions of environmental, biological, and infectious factors at the Quinsam river hatchery (Simon Jones)
+
+-   Effects of rearing practices and diet on hatchery fish survival
+
+    -   Optimizing feeds for hatchery production of Pacific salmon (Erika Eliason)
+
+    -   Predicting Chinook reproductive success based on adult thiamine levels (Erika Eliason)
+
+    -   Causes and consequences of vateritic otoliths in hatchery-reared Coho salmon (BCSRIF, Leigh Gaffney)
+
+## Fishery monitoring and harvest techniques (NB/CL/FM)
+
+```{r fishery-projects}
+con <- get_db_connection()
+fishery_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Fishery monitoring and harvest techniques'
+    AND section = 'Fishery monitoring and harvest techniques'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(fishery_projects)
+```
+
+Describe the harvest transformation pillar of PSSI, DFO Science sub-initiatives, and key areas of monitoring and research. Projects and themes include:
+
+-   Enhancements to recreational monitoring
+
+    -   MSF reference fishery (Erin Rechisky)
+
+    -   Creel monitoring capacity improvements (Natalie Fuller)
+
+    -   First Nations-led catch monitoring on the Central Coast (BCSRIF, Megan Adams)
+
+-   Research on release mortality and best practices for recreational fisheries
+
+    -   Mortality of released Pacific Salmon in marine recreational fishery (BCSRIF, Scott Hinch)
+
+    -   FRIM - short-term holding and respirometry studies (BCSRIF, SFIB)
+
+-   Bycatch monitoring in commercial fisheries
+
+    -   Salmon bycatch monitoring in the trawl fishery (Cory Lagasse)
+
+-   Selective harvest methods and monitoring to support adaptive management
+
+    -   Computer vision for adaptive management of terminal salmon fisheries (BCSRIF, Will Atlas)
+
+    -   Fish trap pilot study (BCSRIF, Derek Leboeuf)
+
+## Stock assessment - Fisheries Science Advisory Reports (AMH)
+
+Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks that occurred during PSSI and FSARs that were completed or are still underway. Describe emergent themes, trends, or challenges across FSARs and stocks that were assessed.
+
+Include a table or figure with list of FSARs.
+
+## Data management and tools
+
+Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
+
+### A. Improving data management and availability
+
+```{r innovation-projects}
+
+data_projects_loc <- here("data", "raw", "PSSI_data_projects.csv")
+
+data_projects_table <-read_csv(data_projects_loc) %>%
+  mutate(URL = URL_link) %>%
+  select(-URL_link)
+
+tbl_word <- data_projects_table %>%
+  mutate(
+    Title         = str_squish(Title),
+    Status        = str_squish(Status),
+    Accessibility = str_squish(Accessibility),
+    Description   = str_squish(Description),
+
+    # Stub-like column (NOT including URL)
+    Tool = paste0(
+      Title, "\n",
+      "Status: ", Status, "\n",
+      "Access: ", Accessibility
+    )
+  ) %>%
+  select(Tool, Description)
+
+ft <- flextable(tbl_word) %>%
+  set_header_labels(
+    Tool        = "Tool",
+    Description = "Description"
+  ) %>%
+
+  # Header styling
+  bold(part = "header") %>%
+  bg(part = "header", bg = "#E9EEF3") %>%
+  color(part = "header", color = "#1F2D3D") %>%
+  fontsize(part = "header", size = 11) %>%
+
+  # Stub-like styling for Tool column (body only)
+  bold(j = "Tool", part = "body") %>%
+  bg(j = "Tool", bg = "#F4F6F8", part = "body") %>%
+
+  # Alignment & readability
+  valign(valign = "top", part = "body") %>%
+  align(align = "left", part = "all") %>%
+  fontsize(size = 8, part = "body") %>%
+  padding(padding = 4, part = "all") %>%
+
+  # Widths for default Word page (Letter portrait, normal margins ≈ 6.5" usable)
+  width(j = "Tool",        width = 2.) %>%
+  width(j = "Description", width = 4.5) %>%
+
+  theme_zebra() %>%
+  set_table_properties(layout = "fixed")
+
+ft
+
+
+
+# 
+# # If you want URL to be clickable, keep a separate display column.
+# # This assumes URL is either NA or a label / URL text. Adjust as needed.
+# gt(data_projects_table) %>%
+#   cols_width(
+#     Title ~ px(200),
+#     Status ~ px(100),
+#     Accessibility ~ px(150),
+#     URL ~ px(150),
+#     Description ~ px(520)
+#   ) %>%
+#   tab_style(
+#     style = cell_text(whitespace = "normal"),
+#     locations = cells_body(columns = Description)
+#   ) %>%
+#   opt_row_striping() %>%
+#   tab_options(
+#     table.width = pct(100),
+#     data_row.padding = px(6)
+#   )
+
+```
+
+### B. Data and modelling to support decision making
+
+```{r data-projects}
+con <- get_db_connection()
+data_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Data management and tools'
+    AND section = 'Data and modelling to support decision making'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(data_projects)
+```
+
+## Restoration and recovery
+
+### A. Recovery and rebuilding Programs
+
+```{r recovery-projects}
+con <- get_db_connection()
+recovery_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Restoration and recovery'
+    AND section = 'Recovery and rebuilding programs'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(recovery_projects)
+```
+
+### B. Restoration prioritization
+
+```{r restoration-projects}
+con <- get_db_connection()
+restoration_projects <- dbGetQuery(con, "
+  SELECT project_number, source, project_title
+  FROM projects
+  WHERE include = 'y'
+    AND broad_header = 'Restoration and recovery'
+    AND section = 'Restoration prioritization'
+  ORDER BY project_number
+")
+dbDisconnect(con)
+
+ft_projects_table(restoration_projects)
+```
+
+### Template / Guiding Questions
+
+Research Goals
+
+-   What were the key objectives of this research theme?
+
+-   How do these relate to original goals of PSSI/BCSRIF?
+
+-   What major gaps in our knowledge were being addressed?
+
+Outcomes
+
+-   What have we learned and how have we moved the dial on our scientific understanding?
+
+-   What new tools/tech/techniques have been created?
+
+-   How can these projects inform management planning/actions/policy?
+
+Engagement, Collaboration & Knowledge Transfer
+
+-   How did these projects engage with other groups? Was this effective? 
+
+-   Have new ways to ensure knowledge transfer to different audiences been developed?
+
+-   What products have been created? 
+
+Next Steps
+
+-   Major conclusions
+
+-   How could/should the project findings be operationalized for salmon conservation and management?
+
+-   Remaining knowledge gaps and recommendations for future studies
+
+# Summary
+
+How have PSSI Research elements met its objectives? How has work completed moved the dial for salmon conservation and understanding factors driving salmon declines?
+
+# References
+
+Include relevant citations from report body here.
+
+::: {#refs}
+:::
+
+\newpage
+
+# Project Reports
+
+This section provides detailed reports for each PSSI-funded research project. Reports are organized by project ID and include highlights, background, methods, findings, insights, and next steps.
+
+```{r generate-project-reports, results='asis'}
+# Generate a report section for each project using the template
+for (i in seq_len(nrow(projects_df))) {
+  project <- projects_df[i, ]
+  
+  # Render the project template
+  tryCatch({
+    cat(knitr::knit_child(
+      template_path,
+      envir = environment(),
+      quiet = TRUE
+    ))
+    # Page break (pandoc converts for Word output)
+    cat("\n\n\\newpage\n\n")
+  }, error = function(e) {
+    cat(paste0("\n\n## Project ", project$project_id, "\n\n"))
+    cat(paste0("*Error generating report: ", e$message, "*\n\n"))
+    cat(paste0("*Template path: ", template_path, "*\n\n"))
+    cat("\n\n\\newpage\n\n")
+  })
+}
+```
+
+# Appendix A: Project Summary Table
+
+```{r project-summary-table}
+# Create a summary table of all projects
+if (nrow(projects_df) > 0) {
+  projects_df %>%
+    select(project_id, project_title, project_leads, location, species) %>%
+    rename(
+      `Project ID` = project_id,
+      `Title` = project_title,
+      `Leads` = project_leads,
+      `Location` = location,
+      `Species` = species
+    ) %>%
+    gt() %>%
+    tab_header(
+      title = md("**Summary of PSSI Research Projects**")
+    ) %>%
+    cols_width(
+      `Project ID` ~ px(80),
+      `Title` ~ px(250),
+      `Leads` ~ px(150),
+      `Location` ~ px(120),
+      `Species` ~ px(80)
+    )
+} else {
+  cat("*No project data available.*")
+}
+```
+
+\newpage
+
+# Appendix B: Overview of Phase 2 BCSRIF Projects
+
+```{r}
+
+BCSRIF_df <- read.csv(
+  here("data", "raw", "report_project_list.csv"),
+  stringsAsFactors = FALSE,
+  na.strings = c("", "NA")
+) %>%
+  filter(source == "BCSRIF", include == "y") %>%
+  select(project_number, project_title, recipient, description, collaborators)
+
+# # Build a rich stub label so ONLY `description` remains as a body column
+# bcsrif_gt <- BCSRIF_df %>%
+#   mutate(
+#     stub = str_glue(
+#       "<b>{project_number}</b><br>",
+#       "<span style='font-size: 0.95em;'>{project_title}</span><br>",
+#       "<span style='color:#555; font-size: 0.9em;'><b>Recipient:</b> {recipient}</span><br>",
+#     ),
+#     # Clean up stray whitespace/newlines in description for nicer wrapping
+#     description = str_squish(description),
+#     collaborators = str_squish(collaborators)
+#   ) %>%
+#   select(stub, description, collaborators)
+# 
+# gt(bcsrif_gt, rowname_col = "stub") %>%
+#   # Keep only description as a visible data column
+#   cols_label(description = "Description",
+#              collaborators = "Collaborators") %>%
+# 
+#   # Label the stub area (the left “index” column)
+#   tab_stubhead(label = "Project") %>%
+# 
+#   # Interpret HTML in the stub so <br> and <b> work
+#   fmt_markdown(columns = stub) %>%
+# 
+#   # Give Description lots of room; keep stub readable
+#   cols_width(
+#     stub ~ px(320),
+#     description ~ px(560),
+#     collaborators ~ px (200)
+#   )
+
+
+
+# Build a stub-like first column ("Project") WITHOUT collaborators/description
+tbl_word <- BCSRIF_df %>%
+  mutate(
+    # Clean whitespace
+    project_title = str_squish(project_title),
+    recipient     = str_squish(recipient),
+    collaborators = str_squish(collaborators),
+    description   = str_squish(description),
+
+    # "Stub" column (project_number + title + recipient only)
+    Project = paste0(
+      project_number, "\n",
+      project_title, "\n",
+      "Recipient: ", recipient
+    )
+  ) %>%
+  select(Project, collaborators, description)
+
+ft <- flextable(tbl_word) %>%
+  set_header_labels(
+    Project = "Project",
+    collaborators = "Collaborators",
+    description = "Description"
+  ) %>%
+
+  # Make the "stub" column visually stubby (bold, slightly shaded)
+  bold(j = "Project", part = "body") %>%
+  bg(j = "Project", bg = "#F4F6F8", part = "body") %>%
+
+  # Top-align and wrap long text well in Word
+  valign(valign = "top", part = "body") %>%
+  align(align = "left", part = "all") %>%
+  fontsize(size = 10, part = "all") %>%
+
+  # Column widths (in inches) – tweak to your page layout
+  width(j = "Project",       width = 2.1) %>%
+  width(j = "collaborators", width = 1.7) %>%
+  width(j = "description",   width = 3) %>%
+
+# Keep our explicit widths (don’t let autofit override them)
+  set_table_properties(layout = "fixed")
+
+
+ft
+
+```
+
+\newpage
+
+# Appendix C: Summary of DFO Science PSSI Data Projects
+
+#### 1. Salmon Tracking, Escapement, Assessment and Management Platform
+
+The Salmon Tracking, Escapement, Assessment and Management ([STREAM](https://pac-salmon.dfo-mpo.gc.ca:8443/bcsn/#/)) Platform is a new online resource that helps improve how salmon escapement information is collected, shared, and understood. [STREAM](https://pac-salmon.dfo-mpo.gc.ca:8443/bcsn/#/) brings together data, tools, and easy‑to‑use applications to support the conservation and management of Pacific salmon.
+
+Fisheries and Oceans staff require timely, consistent access to salmon data across sectors. The STREAM platform enhances the timeliness of salmon count data, standardizes the spatial organization of salmon information, and improves reporting on salmon status. This foundational information supports stock assessment biologists, fisheries managers, species at risk biologists, and other decision-makers in delivering informed, data-driven management.
+
+The platform has three main areas: entering and uploading data, learning about salmon populations, and exploring status reports (Figure 1). Through these features, users can view information about salmon populations across different regions and access data that support science, monitoring, and decision‑making.
+
+As STREAM continues to grow, additional funding would allow us to respond to user feedback, develop more tools that improve data quality, and make more information available to the public.
+
+```{r, echo=FALSE, fig.align="center", fig.cap="Figure 1 - Screen capture of the Salmon Tracking Escapement Assessment and Management (STREAM) Platform with the table of contents visible."}
+# Tables and Figures with images
+data_fig_dir <- here("figures", "data_tools_figures")
+
+if (dir.exists(data_fig_dir)) {
+
+  knitr::include_graphics(file.path(data_fig_dir, "Figure1.png"))
+  
+}
+
+```
+
+#### 2. Salmon Space
+
+[Salmon Space](https://egispi.ent.dfo-mpo.ca/apps/SalmonSpace-Espacesaumon/) is an interactive map that lets you explore salmon information across British Columbia and Yukon. You can search by location or by salmon species to find data such as salmon counts and stock status (Figure 2).
+
+There is strong public demand for access to salmon data to enhance transparency and build trust in departmental decision-making. Salmon Space provides up-to-date salmon counts and status information in an accessible format. By improving data transparency, this application strengthens trust and alignment between internal and external biologists, Indigenous partners, and the broader community of salmon stakeholders and enthusiasts.
+
+The map includes several optional layers, including census sites, conservation units, stock management units, and designatable units, allowing users to view salmon information at different scales. Data is updated weekly from the Fisheries and Oceans regional database, so the public can access recent information with confidence.
+
+Users can download both tabular and spatial data directly from the site, or customize and print map views to support reports, presentations, and research.
+
+```{r, echo=FALSE, fig.align="center", fig.cap="Figure 2 - Screen capture of Salmon Space showing the Osoyoos-Skaha-Okanagan Sockeye conservation unit (highlighted) with associated information displayed in a pop-up."}
+# Tables and Figures with images
+data_fig_dir <- here("figures", "data_tools_figures")
+
+if (dir.exists(data_fig_dir)) {
+
+  knitr::include_graphics(file.path(data_fig_dir, "Figure2.png"))
+  
+}
+
+```
+
+\newpage

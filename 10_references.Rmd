@@ -1,0 +1,6 @@
+# REFERENCES {#sec:references}
+
+::: {#refs custom-style="Bibliography"}
+:::
+
+\newpage
