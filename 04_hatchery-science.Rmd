@@ -1,10 +1,12 @@
-## Science to support hatchery modernization (CL/SEP) {##sec:hatcheries}
+## Science to support hatchery modernization (CL/SEP) {#sec:hatcheries}
 
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
 ### A. Genetics
 
 ```{r genetics-projects}
+library(flextable)
+
 con <- get_db_connection()
 genetics_projects <- dbGetQuery(con, "
   SELECT project_number, source, project_title
@@ -16,7 +18,21 @@ genetics_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-knitr::kable(genetics_projects)
+flextable(genetics_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to genetics") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
 ```
 
 Summarize research and key findings from genetics projects. Research questions (from SEP):
@@ -48,6 +64,8 @@ Projects and themes include:
 ### B. Fish health and hatchery practices
 
 ```{r health-projects}
+library(flextable)
+
 con <- get_db_connection()
 health_projects <- dbGetQuery(con, "
   SELECT project_number, source, project_title
@@ -59,7 +77,21 @@ health_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-knitr::kable(health_projects)
+flextable(health_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to fish health and hatchery practices") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
 ```
 
 Summarize research and key findings from fish health projects. Research questions (from SEP):

@@ -1,8 +1,10 @@
-## Restoration and recovery {##sec:restoration-recovery}
+## Restoration and recovery {#sec:restoration-recovery}
 
 ### A. Recovery and rebuilding Programs
 
 ```{r recovery-projects}
+library(flextable)
+
 con <- get_db_connection()
 recovery_projects <- dbGetQuery(con, "
   SELECT project_number, source, project_title
@@ -14,12 +16,28 @@ recovery_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-knitr::kable(recovery_projects)
+flextable(recovery_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to recovery and rebuilding programs") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
 ```
 
 ### B. Restoration prioritization
 
 ```{r restoration-projects}
+library(flextable)
+
 con <- get_db_connection()
 restoration_projects <- dbGetQuery(con, "
   SELECT project_number, source, project_title
@@ -31,7 +49,21 @@ restoration_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-knitr::kable(restoration_projects)
+flextable(restoration_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to restoration prioritization") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
 ```
 
 ### Template / Guiding Questions

@@ -1,6 +1,8 @@
-## Fishery monitoring and harvest techniques (NB/CL/FM) {##sec:fishery-monitoring}
+## Fishery monitoring and harvest techniques (NB/CL/FM) {#sec:fishery-monitoring}
 
 ```{r fishery-projects}
+library(flextable)
+
 con <- get_db_connection()
 fishery_projects <- dbGetQuery(con, "
   SELECT project_number, source, project_title
@@ -12,7 +14,21 @@ fishery_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-knitr::kable(fishery_projects)
+flextable(fishery_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to fishery monitoring and harvest techniques") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
 ```
 
 ### Highlights

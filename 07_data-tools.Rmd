@@ -1,4 +1,4 @@
-## Data management and tools {##sec:data-management}
+## Data management and tools {#sec:data-management}
 
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
 
@@ -53,6 +53,8 @@ gt(tbl_word) |>
 ### B. Data and modelling to support decision making
 
 ```{r data-projects}
+library(flextable)
+
 con <- get_db_connection()
 data_projects <- dbGetQuery(con, "
   SELECT project_number, source, project_title
@@ -64,5 +66,19 @@ data_projects <- dbGetQuery(con, "
 ")
 dbDisconnect(con)
 
-knitr::kable(data_projects)
+flextable(data_projects) %>%
+  set_header_labels(
+    project_number = "Project",
+    source = "Source",
+    project_title = "Title"
+  ) %>%
+  width(j = 1, width = 1) %>%
+  width(j = 2, width = 1) %>%
+  width(j = 3, width = 4.5) %>%
+  set_caption("Projects related to data and modelling to support decision making") %>%
+  font(fontname = "Times New Roman", part = "all") %>%
+  fontsize(size = 11, part = "all") %>%
+  bold(part = "header") %>%
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "body")
 ```
