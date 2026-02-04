@@ -51,7 +51,7 @@ format:
   docx:
     toc: true
     toc-depth: 3
-    number-sections: true
+    number-sections: false
     number-depth: 3
     reference-doc: templates/custom-reference.docx
     highlight-style: github

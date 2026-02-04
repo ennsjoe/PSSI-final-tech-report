@@ -8,11 +8,16 @@ library(DBI)
 library(RSQLite)
 library(readr)
 
-# Define common paths
+# Define standard paths - data/ folder is the single source of truth
 OUTPUT_DB <<- here('data', 'projects.db')
 OUTPUT_CSV <<- here('data', 'processed', 'pssi_form_data.csv')
 INPUT_DIR <<- here('data', 'word_docs')
 template_path <<- here('templates', 'project-template.Rmd')
+
+# Alternative template path if templates/ doesn't exist
+if (!file.exists(template_path)) {
+  template_path <<- here('project-template.Rmd')
+}
 
 # Source helper functions if not already loaded
 if (!exists('get_db_connection')) {
@@ -24,33 +29,64 @@ if (!exists('get_db_connection')) {
 
 # Load project data if not already loaded
 if (!exists('projects_df')) {
-  # Try multiple possible CSV locations
-  csv_paths <- c(
-    here('data', 'processed', 'pssi_form_data.csv'),
-    here('data', 'raw', 'report_project_list.csv')
-  )
-  
   csv_loaded <- FALSE
-  for (csv_path in csv_paths) {
-    if (file.exists(csv_path)) {
-      projects_df <<- read_csv(csv_path, show_col_types = FALSE)
-      
-      # Filter based on which columns exist
-      if ('project_id' %in% names(projects_df)) {
-        projects_df <<- projects_df %>% filter(!is.na(project_id))
-      } else if ('project_number' %in% names(projects_df)) {
-        projects_df <<- projects_df %>% filter(!is.na(project_number))
+  
+  # Try loading from database first (preferred - data/projects.db)
+  if (file.exists(OUTPUT_DB)) {
+    tryCatch({
+      con <- dbConnect(SQLite(), OUTPUT_DB)
+      if ('projects' %in% dbListTables(con)) {
+        projects_df <<- dbReadTable(con, 'projects')
+        dbDisconnect(con)
+        
+        # Filter out empty rows
+        if ('project_id' %in% names(projects_df)) {
+          projects_df <<- projects_df %>% filter(!is.na(project_id))
+        }
+        
+        n_projects <<- nrow(projects_df)
+        message('Loaded ', n_projects, ' projects from database: ', OUTPUT_DB)
+        csv_loaded <- TRUE
+      } else {
+        dbDisconnect(con)
       }
-      
-      n_projects <<- nrow(projects_df)
-      message('Loaded ', n_projects, ' projects from: ', csv_path)
-      csv_loaded <- TRUE
-      break
+    }, error = function(e) {
+      warning('Failed to load from database: ', e$message)
+    })
+  }
+  
+  # Fall back to CSV if database didn't work
+  if (!csv_loaded) {
+    csv_paths <- c(
+      OUTPUT_CSV, 
+      here('data', 'pssi_form_data.csv'),
+      here('pssi_form_data.csv')
+    )
+    
+    for (csv_path in csv_paths) {
+      if (file.exists(csv_path)) {
+        tryCatch({
+          projects_df <<- read_csv(csv_path, show_col_types = FALSE)
+          
+          if ('project_id' %in% names(projects_df)) {
+            projects_df <<- projects_df %>% filter(!is.na(project_id))
+          } else if ('project_number' %in% names(projects_df)) {
+            projects_df <<- projects_df %>% filter(!is.na(project_number))
+          }
+          
+          n_projects <<- nrow(projects_df)
+          message('Loaded ', n_projects, ' projects from CSV: ', csv_path)
+          csv_loaded <- TRUE
+          break
+        }, error = function(e) {
+          # Continue
+        })
+      }
     }
   }
   
   if (!csv_loaded) {
-    warning('No project CSV found in expected locations')
+    warning('No project data found')
     projects_df <<- data.frame()
     n_projects <<- 0
   }
