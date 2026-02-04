@@ -13,18 +13,18 @@ library(flextable)
 
 con <- get_db_connection()
 s_monitor_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Understanding salmon ecosystems'
     AND section = 'Salmon population monitoring'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(s_monitor_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%
@@ -50,18 +50,18 @@ library(flextable)
 
 con <- get_db_connection()
 ftf_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Assessments'
     AND section = 'Life cycle assessment - Follow The Fish'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(ftf_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%
@@ -83,18 +83,18 @@ library(flextable)
 
 con <- get_db_connection()
 bottleneck_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Assessments'
     AND section = 'Life cycle assessment - Bottlenecks to survival'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(bottleneck_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%
@@ -116,18 +116,18 @@ library(flextable)
 
 con <- get_db_connection()
 freshwater_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Understanding salmon ecosystems'
     AND section = 'Freshwater ecosystems'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(freshwater_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%
@@ -179,18 +179,18 @@ library(flextable)
 
 con <- get_db_connection()
 marine_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Understanding salmon ecosystems'
     AND section = 'Marine ecosystems'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(marine_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%
@@ -232,18 +232,18 @@ library(flextable)
 
 con <- get_db_connection()
 climate_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Understanding salmon ecosystems'
     AND section = 'Climate change vulnerabiliity'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(climate_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%

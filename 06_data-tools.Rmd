@@ -61,18 +61,18 @@ library(flextable)
 
 con <- get_db_connection()
 data_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Data management and tools'
     AND section = 'Data and modelling to support decision making'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(data_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%

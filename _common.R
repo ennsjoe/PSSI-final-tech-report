@@ -8,86 +8,52 @@ library(DBI)
 library(RSQLite)
 library(readr)
 
-# Define standard paths - data/ folder is the single source of truth
+# Define common paths
 OUTPUT_DB <<- here('data', 'projects.db')
-OUTPUT_CSV <<- here('data', 'processed', 'pssi_form_data.csv')
-INPUT_DIR <<- here('data', 'word_docs')
 template_path <<- here('templates', 'project-template.Rmd')
 
-# Alternative template path if templates/ doesn't exist
-if (!file.exists(template_path)) {
-  template_path <<- here('project-template.Rmd')
+# Source helper functions (contains init_database, get_db_connection, make_bkm)
+helper_file <- here('helper-functions', 'helper-functions.R')
+if (file.exists(helper_file)) {
+  source(helper_file)
+  message('✓ Loaded helper functions')
+} else {
+  stop('❌ helper-functions.R not found at: ', helper_file)
 }
 
-# Source helper functions if not already loaded
-if (!exists('get_db_connection')) {
-  helper_file <- here('helper-functions', 'helper-functions.R')
-  if (file.exists(helper_file)) {
-    source(helper_file)
-  }
-}
-
-# Load project data if not already loaded
-if (!exists('projects_df')) {
-  csv_loaded <- FALSE
-  
-  # Try loading from database first (preferred - data/projects.db)
-  if (file.exists(OUTPUT_DB)) {
-    tryCatch({
-      con <- dbConnect(SQLite(), OUTPUT_DB)
-      if ('projects' %in% dbListTables(con)) {
-        projects_df <<- dbReadTable(con, 'projects')
-        dbDisconnect(con)
-        
-        # Filter out empty rows
-        if ('project_id' %in% names(projects_df)) {
-          projects_df <<- projects_df %>% filter(!is.na(project_id))
-        }
-        
-        n_projects <<- nrow(projects_df)
-        message('Loaded ', n_projects, ' projects from database: ', OUTPUT_DB)
-        csv_loaded <- TRUE
-      } else {
-        dbDisconnect(con)
-      }
-    }, error = function(e) {
-      warning('Failed to load from database: ', e$message)
-    })
-  }
-  
-  # Fall back to CSV if database didn't work
-  if (!csv_loaded) {
-    csv_paths <- c(
-      OUTPUT_CSV, 
-      here('data', 'pssi_form_data.csv'),
-      here('pssi_form_data.csv')
-    )
+# Ensure database exists and is up-to-date
+if (!file.exists(OUTPUT_DB)) {
+  message('\nDatabase not found. Initializing...')
+  init_database(overwrite = TRUE)
+} else {
+  # Check if database needs updating
+  db_status <- check_database(OUTPUT_DB)
+  if (db_status$exists) {
+    message('✓ Database found: ', db_status$message)
     
-    for (csv_path in csv_paths) {
-      if (file.exists(csv_path)) {
-        tryCatch({
-          projects_df <<- read_csv(csv_path, show_col_types = FALSE)
-          
-          if ('project_id' %in% names(projects_df)) {
-            projects_df <<- projects_df %>% filter(!is.na(project_id))
-          } else if ('project_number' %in% names(projects_df)) {
-            projects_df <<- projects_df %>% filter(!is.na(project_number))
-          }
-          
-          n_projects <<- nrow(projects_df)
-          message('Loaded ', n_projects, ' projects from CSV: ', csv_path)
-          csv_loaded <- TRUE
-          break
-        }, error = function(e) {
-          # Continue
-        })
-      }
+    # Verify critical columns exist
+    required_cols <- c('project_id', 'source', 'broad_header', 'section', 'include')
+    missing <- setdiff(required_cols, db_status$columns)
+    if (length(missing) > 0) {
+      warning('Database missing required columns: ', paste(missing, collapse=', '))
+      message('Rebuilding database...')
+      init_database(overwrite = TRUE)
     }
+  } else {
+    message('Database exists but appears corrupted. Rebuilding...')
+    init_database(overwrite = TRUE)
   }
-  
-  if (!csv_loaded) {
-    warning('No project data found')
-    projects_df <<- data.frame()
-    n_projects <<- 0
-  }
+}
+
+# Load project data from database into global environment
+if (!exists('projects_df')) {
+  tryCatch({
+    con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
+    projects_df <<- dbReadTable(con, 'projects')
+    dbDisconnect(con)
+    n_projects <<- nrow(projects_df)
+    message('✓ Loaded ', n_projects, ' projects from database')
+  }, error = function(e) {
+    stop('Failed to load projects from database: ', e$message)
+  })
 }

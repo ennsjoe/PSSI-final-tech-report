@@ -8,73 +8,38 @@ This section provides detailed reports for each PSSI-funded research project. Re
 
 ```{r generate-project-reports, results='asis'}
 
-# Load project data from standard locations
-projects_df <- NULL
-
-# 1. Try Database (standard location: data/projects.db)
-if (file.exists(OUTPUT_DB)) {
-  tryCatch({
-    con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
-    if ("projects" %in% dbListTables(con)) {
-      projects_df <- dbReadTable(con, "projects")
-    }
-    dbDisconnect(con)
-  }, error = function(e) {
-    message("Could not load from database: ", e$message)
-  })
+# Verify template exists
+if (!file.exists(template_path)) {
+  stop("Template not found at: ", template_path, "\n",
+       "Make sure templates/project-template.Rmd exists in your project")
 }
 
-# 2. Try CSV Fallback (if DB failed or is empty)
-if (is.null(projects_df) || nrow(projects_df) == 0) {
-  # Check multiple possible paths for the flat data structure
-  csv_paths <- c(
-    OUTPUT_CSV, 
-    here::here("data", "pssi_form_data.csv"),
-    here::here("pssi_form_data.csv")
-  )
-  
-  for (csv_path in csv_paths) {
-    if (file.exists(csv_path)) {
-      tryCatch({
-        projects_df <- readr::read_csv(csv_path, show_col_types = FALSE)
-        if (nrow(projects_df) > 0) break
-      }, error = function(e) next)
-    }
-  }
-}
+# Load project data from database
+con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
+projects_df <- dbReadTable(con, "projects")
+dbDisconnect(con)
 
-# 3. Data Integrity & Synonyms (Fix for the 'project_number' error)
-if (!is.null(projects_df) && nrow(projects_df) > 0) {
-  
-  # Standardize column names: Rename 'project_number' to 'project_id' if necessary
-  if ("project_number" %in% names(projects_df) && !("project_id" %in% names(projects_df))) {
-    projects_df <- projects_df %>% rename(project_id = project_number)
-  }
-  
-  # Filter out rows with no ID or Title
-  projects_df <- projects_df %>% 
-    filter(!is.na(project_id), !is.na(project_title)) %>%
-    mutate(project_id = as.character(project_id))
-  
-  # Sort by Project ID
-  projects_df <- projects_df %>% arrange(project_id)
-}
+message("Loaded ", nrow(projects_df), " projects from database")
 
-# 4. Final Validation Check
-if (is.null(projects_df) || nrow(projects_df) == 0) {
-  stop("Could not load project data. Please ensure data/pssi_form_data.csv exists.")
-}
+# Convert project_id to character and filter for projects with content
+projects_df <- projects_df %>%
+  mutate(project_id = as.character(project_id)) %>%
+  filter(
+    !is.na(project_id),
+    !is.na(project_title),
+    # Must have at least one content field
+    !is.na(highlights) | !is.na(background) | !is.na(methods_findings)
+  ) %>%
+  arrange(project_id)
 
-required_fields <- c('project_id', 'project_title')
-missing_fields <- setdiff(required_fields, names(projects_df))
-if (length(missing_fields) > 0) {
-  stop("Missing required fields: ", paste(missing_fields, collapse = ", "),
-       "\nAvailable fields: ", paste(names(projects_df), collapse = ", "))
-}
+message("Generating reports for ", nrow(projects_df), " projects with content")
 
-# 5. Generate a report section for each project using the template
+# Generate a report for each project
 for (i in seq_len(nrow(projects_df))) {
-  project <- projects_df[i, ]
+  # Extract project as a list for easier access in template
+  project <- as.list(projects_df[i, ])
+  
+  message("Rendering project ", i, "/", nrow(projects_df), ": ", project$project_id)
   
   # Render the project template
   tryCatch({
@@ -83,11 +48,15 @@ for (i in seq_len(nrow(projects_df))) {
       envir = environment(),
       quiet = TRUE
     ))
-    cat("\n\\newpage\n") # Force page break between projects
+    cat("\n\\newpage\n")
   }, error = function(e) {
-    cat(paste0("\n\n::: {.alert .alert-warning}\n",
-               "**Error rendering Project ", project$project_id, ":** ", 
-               conditionMessage(e), "\n:::\n\n"))
+    # Display error in document
+    cat(paste0("\n\n### Project ", project$project_id, ": ", project$project_title, "\n\n"))
+    cat(paste0("**Error rendering project:** ", conditionMessage(e), "\n\n"))
+    cat("\n\\newpage\n")
+    message("ERROR: ", conditionMessage(e))
   })
 }
+
+message("Completed rendering ", nrow(projects_df), " project reports")
 ```

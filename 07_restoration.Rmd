@@ -11,18 +11,18 @@ library(flextable)
 
 con <- get_db_connection()
 recovery_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Restoration and recovery'
     AND section = 'Recovery and rebuilding programs'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(recovery_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%
@@ -44,18 +44,18 @@ library(flextable)
 
 con <- get_db_connection()
 restoration_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Restoration and recovery'
     AND section = 'Restoration prioritization'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(restoration_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%

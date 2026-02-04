@@ -1,204 +1,108 @@
 
 ### Project `r project$project_id`: `r project$project_title`
- 
-```{r}
-officer::fpar(
-     officer::run_bookmark(
-       make_bkm(project$project_id),
-       officer::ftext("\u200B")  # zero-width space: invisible anchor text
-     )
-   )
-```
 
-```{r, results='asis'}
-# Display project metadata box
+```{r, results='asis', echo=FALSE}
+# Helper function to safely extract text from project data
+safe_text <- function(value) {
+  if (is.null(value) || is.na(value)) return(NULL)
+  text <- as.character(value)
+  if (nchar(text) > 0) return(text)
+  return(NULL)
+}
+
+# Display project metadata
 metadata_items <- c()
 
-if (!is.na(project$project_leads) && nchar(project$project_leads) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Project Leads:** ", project$project_leads))
+if (!is.null(safe_text(project$project_leads))) {
+  metadata_items <- c(metadata_items, paste0("**Project Leads:** ", safe_text(project$project_leads)))
 }
 
-if (!is.na(project$collaborations) && nchar(project$collaborations) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Collaborations:** ", project$collaborations))
+if (!is.null(safe_text(project$collaborations))) {
+  metadata_items <- c(metadata_items, paste0("**Collaborations:** ", safe_text(project$collaborations)))
 }
 
-if (!is.na(project$location) && nchar(project$location) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Location:** ", project$location))
+if (!is.null(safe_text(project$location))) {
+  metadata_items <- c(metadata_items, paste0("**Location:** ", safe_text(project$location)))
 }
 
-if (!is.na(project$region) && nchar(project$region) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Region:** ", project$region))
+if (!is.null(safe_text(project$region))) {
+  metadata_items <- c(metadata_items, paste0("**Region:** ", safe_text(project$region)))
 }
 
-if (!is.na(project$species) && nchar(project$species) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Species:** ", project$species))
+if (!is.null(safe_text(project$species))) {
+  metadata_items <- c(metadata_items, paste0("**Species:** ", safe_text(project$species)))
 }
 
-if (!is.na(project$waterbodies) && nchar(project$waterbodies) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Waterbodies:** ", project$waterbodies))
+if (!is.null(safe_text(project$waterbodies))) {
+  metadata_items <- c(metadata_items, paste0("**Waterbodies:** ", safe_text(project$waterbodies)))
 }
 
-if (!is.na(project$life_history) && nchar(project$life_history) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Life History:** ", project$life_history))
+if (!is.null(safe_text(project$life_history))) {
+  metadata_items <- c(metadata_items, paste0("**Life History:** ", safe_text(project$life_history)))
 }
 
-if (!is.na(project$stock) && nchar(project$stock) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Stock:** ", project$stock))
+if (!is.null(safe_text(project$stock))) {
+  metadata_items <- c(metadata_items, paste0("**Stock:** ", safe_text(project$stock)))
 }
 
-if (!is.na(project$population) && nchar(project$population) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Population:** ", project$population))
+if (!is.null(safe_text(project$population))) {
+  metadata_items <- c(metadata_items, paste0("**Population:** ", safe_text(project$population)))
 }
 
-if (!is.na(project$cu) && nchar(project$cu) > 0) {
-  metadata_items <- c(metadata_items, paste0("**Conservation Unit:** ", project$cu))
+if (!is.null(safe_text(project$cu))) {
+  metadata_items <- c(metadata_items, paste0("**Conservation Unit:** ", safe_text(project$cu)))
 }
 
 if (length(metadata_items) > 0) {
   cat(paste(metadata_items, collapse = " \n\n "), "\n\n")
 }
-```
 
-```{r, results='asis'}
-# Highlights
-if (!is.na(project$highlights) && nchar(project$highlights) > 0) {
+# Highlights section
+highlights_text <- safe_text(project$highlights)
+if (!is.null(highlights_text)) {
   cat("#### Highlights\n\n")
-  cat(project$highlights, "\n\n")
+  cat(highlights_text, "\n\n")
 }
-```
 
-```{r, results='asis'}
-# Background
-if (!is.na(project$background) && nchar(project$background) > 0) {
+# Background section
+background_text <- safe_text(project$background)
+if (!is.null(background_text)) {
   cat("#### Background\n\n")
-  cat(project$background, "\n\n")
+  cat(background_text, "\n\n")
 }
-```
 
-```{r, results='asis'}
-# Methods and Findings
-if (!is.na(project$methods_findings) && nchar(project$methods_findings) > 0) {
+# Methods and Findings section
+methods_text <- safe_text(project$methods_findings)
+if (!is.null(methods_text)) {
   cat("#### Methods and Findings\n\n")
-  cat(project$methods_findings, "\n\n")
-}
-```
-
-```{r, results='asis'}
-# Tables and Figures section
-fig_dir <- here("figures", "project_figures", project$project_id)
-
-# Check if directory exists and has content
-has_content <- FALSE
-img_files <- character(0)
-csv_files <- character(0)
-
-if (dir.exists(fig_dir)) {
-  img_files <- list.files(fig_dir, pattern = "\\.(png|jpg|jpeg|gif)$", 
-                          full.names = TRUE, ignore.case = TRUE)
-  csv_files <- list.files(fig_dir, pattern = "\\.csv$", 
-                          full.names = TRUE, ignore.case = TRUE)
-  has_content <- length(img_files) > 0 || length(csv_files) > 0
+  cat(methods_text, "\n\n")
 }
 
-# Also check for text-only tables_figures content
-has_text_content <- !is.na(project$tables_figures) && nchar(project$tables_figures) > 0
-
-if (has_content || has_text_content) {
-  cat("#### Tables and Figures\n\n")
-  
-  # Parse captions from tables_figures field
-  captions <- NULL
-  if (has_text_content) {
-    captions <- strsplit(project$tables_figures, "\n")[[1]]
-    captions <- trimws(captions)
-    captions <- captions[captions != ""]
-  }
-  
-  # Helper function to find matching caption
-  find_caption <- function(file_name, captions) {
-    if (is.null(captions)) return(file_name)
-    
-    # Convert filename like "Table_1" or "Figure_1" to pattern "Table 1" or "Figure 1"
-    search_pattern <- gsub("_", " ", file_name)
-    
-    # Also try matching with just the base pattern (case insensitive)
-    match_idx <- grep(paste0("^", search_pattern), captions, ignore.case = TRUE)
-    
-    if (length(match_idx) > 0) {
-      return(captions[match_idx[1]])
-    }
-    return(file_name)
-  }
-  
-  # Combine and sort all files (tables and figures together)
-  all_files <- c(csv_files, img_files)
-  
-  if (length(all_files) > 0) {
-    # Sort files so Tables come before Figures, then numerically
-    file_order <- order(
-      !grepl("^Table", basename(all_files), ignore.case = TRUE),  # Tables first
-      as.numeric(gsub("\\D", "", basename(all_files)))  # Then by number
-    )
-    all_files <- all_files[file_order]
-    
-    for (file_path in all_files) {
-      file_name <- tools::file_path_sans_ext(basename(file_path))
-      file_ext <- tolower(tools::file_ext(file_path))
-      caption <- find_caption(file_name, captions)
-      
-      if (file_ext == "csv") {
-        # Render table from CSV
-        table_data <- read.csv(file_path, stringsAsFactors = FALSE, check.names = FALSE)
-        
-        # Print caption
-        cat("\n\n**", caption, "**\n\n", sep = "")
-        
-        # Render the table using knitr::kable
-        print(knitr::kable(table_data, format = "pandoc", row.names = FALSE))
-        cat("\n\n")
-        
-      } else {
-        # Render image
-        cat("![", caption, "](", file_path, ")\n\n", sep = "")
-      }
-    }
-  }
-  
-  # If there are captions but no matching files, show the text content
-  # (for captions that don't have associated files)
-  if (!has_content && has_text_content) {
-    cat(project$tables_figures, "\n\n")
-  }
-}
-```
-
-```{r, results='asis'}
-# Insights
-if (!is.na(project$insights) && nchar(project$insights) > 0) {
+# Insights section
+insights_text <- safe_text(project$insights)
+if (!is.null(insights_text)) {
   cat("#### Insights\n\n")
-  cat(project$insights, "\n\n")
+  cat(insights_text, "\n\n")
 }
-```
 
-```{r, results='asis'}
-# Next Steps
-if (!is.na(project$next_steps) && nchar(project$next_steps) > 0) {
+# Next Steps section
+next_steps_text <- safe_text(project$next_steps)
+if (!is.null(next_steps_text)) {
   cat("#### Next Steps\n\n")
-  cat(project$next_steps, "\n\n")
+  cat(next_steps_text, "\n\n")
 }
-```
 
-```{r, results='asis'}
-# References
-if (!is.na(project$references) && nchar(project$references) > 0) {
+# References section
+references_text <- safe_text(project$references)
+if (!is.null(references_text)) {
   cat("#### References\n\n")
   
-  # Split references by line breaks (assuming each reference is on its own line or paragraph)
-  refs <- strsplit(project$references, "\n\n")[[1]]
+  # Split references by double line breaks
+  refs <- strsplit(references_text, "\n\n")[[1]]
   refs <- trimws(refs)
   refs <- refs[refs != ""]
   
-  # Wrap each reference in a div with custom style
+  # Display each reference
   for (ref in refs) {
     cat("::: {custom-style=\"Bibliography\"}\n")
     cat(ref, "\n")

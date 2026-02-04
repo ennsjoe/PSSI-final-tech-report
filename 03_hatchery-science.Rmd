@@ -13,18 +13,18 @@ library(flextable)
 
 con <- get_db_connection()
 genetics_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Science to support hatchery modernization'
     AND section = 'Genetics'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(genetics_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%
@@ -72,18 +72,18 @@ library(flextable)
 
 con <- get_db_connection()
 health_projects <- dbGetQuery(con, "
-  SELECT project_number, source, project_title
+  SELECT project_id, source, project_title
   FROM projects
   WHERE include = 'y'
     AND broad_header = 'Science to support hatchery modernization'
     AND section = 'Fish health and hatchery practices'
-  ORDER BY project_number
+  ORDER BY project_id
 ")
 dbDisconnect(con)
 
 flextable(health_projects) %>%
   set_header_labels(
-    project_number = "Project",
+    project_id = "Project",
     source = "Source",
     project_title = "Title"
   ) %>%

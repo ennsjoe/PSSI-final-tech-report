@@ -26,9 +26,8 @@ if (!dir.exists(dirname(OUTPUT_DB))) {
 }
 
 message("Using paths:")
-message("  Database: ", OUTPUT_DB)
-message("  CSV:      ", OUTPUT_CSV)
-message("  Input:    ", INPUT_DIR)
+message("  CSV Output: ", OUTPUT_CSV)
+message("  Input:      ", INPUT_DIR)
 message("")
 
 # Fields to extract - Updated to include 'Project Number' to prevent Rmd errors
@@ -118,21 +117,30 @@ extract_all_forms <- function(input_dir = INPUT_DIR, output_csv = OUTPUT_CSV, ou
   combined <- bind_rows(results)
   
   # Save CSV
+  message("\nSaving CSV to: ", output_csv)
   con_csv <- file(output_csv, "wb")
   writeBin(charToRaw('\uFEFF'), con_csv)
   write.table(combined, con_csv, row.names = FALSE, na = "", sep = ",", quote = TRUE, fileEncoding = "UTF-8", col.names = TRUE)
   close(con_csv)
+  message("✓ CSV saved: ", nrow(combined), " projects")
   
-  # Save Database with explicit error handling for file locks
-  tryCatch({
-    con_db <- dbConnect(SQLite(), output_db)
-    dbWriteTable(con_db, "projects", combined, overwrite = TRUE)
-    dbDisconnect(con_db)
-    message("\nSuccess! Database and CSV updated in /data.")
-  }, error = function(e) {
-    stop("Could not connect to database: ", e$message, 
-         "\nCheck if the file 'projects.db' is open in another program.")
-  })
+  # NOTE: Database write commented out
+  # The merged database (tracking list + content) should be created by init_database() in build-report.R
+  # This ensures all 224 projects are in the database, not just the ones with extracted content
+  
+  # # Save Database with explicit error handling for file locks
+  # tryCatch({
+  #   con_db <- dbConnect(SQLite(), output_db)
+  #   dbWriteTable(con_db, "projects", combined, overwrite = TRUE)
+  #   dbDisconnect(con_db)
+  #   message("\nSuccess! Database and CSV updated in /data.")
+  # }, error = function(e) {
+  #   stop("Could not connect to database: ", e$message, 
+  #        "\nCheck if the file 'projects.db' is open in another program.")
+  # })
+  
+  message("\n=== Extraction Complete ===")
+  message("Next step: Run build-report.R to merge with tracking list and generate report")
   
   return(combined)
 }
