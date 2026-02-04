@@ -1,5 +1,9 @@
 ## Fishery monitoring and harvest techniques (NB/CL/FM) {#sec:fishery-monitoring}
 
+```{r setup, include=FALSE}
+source(here::here("_common.R"))
+```
+
 ```{r fishery-projects}
 library(flextable)
 

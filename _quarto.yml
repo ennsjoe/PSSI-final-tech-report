@@ -1,0 +1,82 @@
+project:
+  type: book
+  output-dir: .
+
+book:
+  title: "Summary of research and findings from the Pacific Salmon Strategy Initiative"
+  subtitle: "Pacific Salmon Strategy Initiative"
+  output-file: "PSSI-Technical-Report-2026"
+
+  
+  author: 
+    - name: "Cory Lagasse"
+      affiliation: "Pacific Biological Station, Fisheries and Oceans Canada"
+      email: "cory.lagasse@dfo-mpo.gc.ca"
+    - name: "Joe Enns"
+      affiliation: "Pacific Biological Station, Fisheries and Oceans Canada"
+    - name: "Nicholas Brown"
+      affiliation: "Pacific Biological Station, Fisheries and Oceans Canada"
+    - name: "Isobel Pearsall"
+      affiliation: "Pacific Biological Station, Fisheries and Oceans Canada"
+    - name: "Ann-Marie Huang"
+      affiliation: "Pacific Biological Station, Fisheries and Oceans Canada"
+    - name: "Diana Dobson"
+      affiliation: "Pacific Biological Station, Fisheries and Oceans Canada"
+  
+  date: "2026"
+  
+  # Report-specific metadata
+  page-footer:
+    left: "Canadian Technical Report of Fisheries and Aquatic Sciences nnn"
+    center: "Pacific Region"
+    right: "2026"
+  
+  chapters:
+    - index.Rmd
+    - 01_introduction.Rmd
+    - 02_understanding-ecosystems.Rmd
+    - 03_hatchery-science.Rmd
+    - 04_fishery-monitoring.Rmd
+    - 05_stock-assessment.Rmd
+    - 06_data-tools.Rmd
+    - 07_restoration.Rmd
+    - 08_summary.Rmd
+    - 99_references.Rmd
+    - 10_project-reports.Rmd
+    - 11_appendix-a.Rmd
+    - 12_appendix-b.Rmd
+    - 13_appendix-c.Rmd
+
+format:
+  docx:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    number-depth: 3
+    reference-doc: templates/custom-reference.docx
+    highlight-style: github
+    fig-width: 7
+    fig-height: 5
+    fig-dpi: 300
+    
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+    embed-resources: true
+
+bibliography: bib/references.bib
+csl: csl/csas.csl
+link-citations: true
+
+execute:
+  echo: false
+  warning: false
+  message: false
+  cache: false
+
+knitr:
+  opts_chunk:
+    fig.path: "figures/generated/"

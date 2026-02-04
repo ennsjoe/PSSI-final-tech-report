@@ -1,5 +1,9 @@
 ## Understanding Salmon and Their Ecosystems {#sec:understanding-salmon-ecosystems}
 
+```{r setup, include=FALSE}
+source(here::here("_common.R"))
+```
+
 Context for this section
 
 ### A. Salmon population monitoring

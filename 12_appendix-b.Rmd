@@ -1,54 +1,70 @@
-# APPENDIX `r new_appendix()`. Overview of Phase 2 BCSRIF Projects {#app:BCSRIF}
+# APPENDIX B. Overview of Phase 2 BCSRIF Projects {#app:BCSRIF}
 
-```{r}
+```{r appendix-b-setup, include=FALSE}
+source(here::here("_common.R"))
 library(gt)
+```
 
+```{r bcsrif-table}
 # Load and filter BCSRIF projects
-BCSRIF_df <- read.csv(
-  here("data", "raw", "report_project_list.csv"),
-  stringsAsFactors = FALSE,
-  na.strings = c("", "NA")
-) %>%
-  filter(source == "BCSRIF", include == "y") %>%
-  select(project_number, project_title, recipient, description, collaborators) %>%
-  mutate(
-    project_title = str_squish(project_title),
-    recipient     = str_squish(recipient),
-    collaborators = str_squish(collaborators),
-    description   = str_squish(description),
+csv_path <- here("data", "raw", "report_project_list.csv")
 
-    # Stub-like column combining key metadata
-    Project = paste0(
-      project_number, "\n",
-      project_title, "\n",
-      "Recipient: ", recipient
-    )
+if (file.exists(csv_path)) {
+  BCSRIF_df <- read.csv(
+    csv_path,
+    stringsAsFactors = FALSE,
+    na.strings = c("", "NA")
   ) %>%
-  select(Project, collaborators, description)
-
-# Build a clean, Word-friendly gt table
-gt(BCSRIF_df) |>
-  tab_caption("BCSRIF Projects") |>
-  cols_label(
-    Project      = "Project",
-    collaborators = "Collaborators",
-    description   = "Description"
-  ) |>
-  cols_width(
-    Project ~ px(220),
-    collaborators ~ px(180),
-    description ~ px(380)
-  ) |>
-  opt_row_striping() |>
-  cols_align("left") |>
-  tab_style(
-    style = cell_text(whitespace = "normal"),
-    locations = cells_body(columns = everything())
-  ) |>
-  tab_options(
-    table.width = pct(100),
-    data_row.padding = px(6)
-  )
+    filter(source == "BCSRIF", include == "y") %>%
+    select(project_number, project_title, recipient, description, collaborators) %>%
+    mutate(
+      project_title = str_squish(project_title),
+      recipient     = str_squish(recipient),
+      collaborators = str_squish(collaborators),
+      description   = str_squish(description),
+      
+      # Stub-like column combining key metadata
+      Project = paste0(
+        project_number, "\n",
+        project_title, "\n",
+        "Recipient: ", recipient
+      )
+    ) %>%
+    select(Project, collaborators, description)
+  
+  # Check if we have any BCSRIF projects
+  if (nrow(BCSRIF_df) > 0) {
+    # Build a clean, Word-friendly gt table
+    gt(BCSRIF_df) %>%
+      tab_header(
+        title = md("**BCSRIF Projects**")
+      ) %>%
+      cols_label(
+        Project       = "Project",
+        collaborators = "Collaborators",
+        description   = "Description"
+      ) %>%
+      cols_width(
+        Project       ~ px(220),
+        collaborators ~ px(180),
+        description   ~ px(380)
+      ) %>%
+      opt_row_striping() %>%
+      cols_align("left") %>%
+      tab_style(
+        style = cell_text(whitespace = "normal"),
+        locations = cells_body(columns = everything())
+      ) %>%
+      tab_options(
+        table.width = pct(100),
+        data_row.padding = px(6)
+      )
+  } else {
+    cat("*No BCSRIF projects found with include = 'y'.*\n")
+  }
+} else {
+  cat("*Project data file not found at:", csv_path, "*\n")
+}
 ```
 
 \newpage

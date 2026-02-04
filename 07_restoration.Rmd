@@ -1,5 +1,9 @@
 ## Restoration and recovery {#sec:restoration-recovery}
 
+```{r setup, include=FALSE}
+source(here::here("_common.R"))
+```
+
 ### A. Recovery and rebuilding Programs
 
 ```{r recovery-projects}

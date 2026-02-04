@@ -1,5 +1,9 @@
 # Project Reports {#sec:project-reports}
 
+```{r setup, include=FALSE}
+source(here::here("_common.R"))
+```
+
 This section provides detailed reports for each PSSI-funded research project. Reports are organized by project ID and include highlights, background, methods, findings, insights, and next steps.
 
 ```{r generate-project-reports, results='asis'}

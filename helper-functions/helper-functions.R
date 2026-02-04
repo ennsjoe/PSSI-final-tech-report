@@ -442,3 +442,36 @@ show_paths <- function() {
   
   invisible(paths)
 }
+# --- Appendix Numbering Functions ---
+
+# Counter for appendix letters (initialized on first use)
+if (!exists(".appendix_counter", envir = .GlobalEnv)) {
+  assign(".appendix_counter", 0, envir = .GlobalEnv)
+}
+
+#' Generate next appendix letter
+#' 
+#' Automatically increments and returns the next appendix letter (A, B, C, etc.)
+#' Used in chapter headers to automatically number appendices.
+#' 
+#' @return The next appendix letter as a character string
+#' @examples
+#' # In your Rmd file header:
+#' # APPENDIX `r new_appendix()`. Title
+new_appendix <- function() {
+  current <- get(".appendix_counter", envir = .GlobalEnv)
+  current <- current + 1
+  assign(".appendix_counter", current, envir = .GlobalEnv)
+  LETTERS[current]
+}
+
+#' Reset appendix counter
+#' 
+#' Resets the appendix counter back to 0. Useful for debugging or when
+#' regenerating the document.
+#' 
+#' @return Invisible NULL
+reset_appendix <- function() {
+  assign(".appendix_counter", 0, envir = .GlobalEnv)
+  invisible(NULL)
+}

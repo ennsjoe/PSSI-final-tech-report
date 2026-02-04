@@ -1,41 +1,155 @@
-# APPENDIX `r new_appendix()`. Project Summary Table {#app:projects}
+# APPENDIX A. Project Summary Table {#app:projects}
+
+```{r appendix-a-setup, include=FALSE}
+source(here::here("_common.R"))
+library(gt)
+```
+
+```{r load-project-data, include=FALSE}
+# Ensure projects_df is loaded
+if (!exists("projects_df") || is.null(projects_df) || nrow(projects_df) == 0) {
+  # Try to load from database first
+  if (file.exists(OUTPUT_DB)) {
+    tryCatch({
+      con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
+      projects_df <- dbReadTable(con, "projects")
+      dbDisconnect(con)
+      message("Loaded ", nrow(projects_df), " projects from database")
+    }, error = function(e) {
+      message("Could not load from database: ", e$message)
+      projects_df <- NULL
+    })
+  }
+  
+  # If database didn't work, try CSV files
+  if (is.null(projects_df) || nrow(projects_df) == 0) {
+    csv_paths <- c(
+      here("data", "processed", "pssi_form_data.csv"),
+      here("data", "raw", "report_project_list.csv"),
+      here("pssi_form_data.csv"),
+      here("report_project_list.csv")
+    )
+    
+    for (csv_path in csv_paths) {
+      if (file.exists(csv_path)) {
+        tryCatch({
+          projects_df <- read_csv(csv_path, show_col_types = FALSE)
+          
+          # Filter out rows with no project identifier
+          if ("project_id" %in% names(projects_df)) {
+            projects_df <- projects_df %>% filter(!is.na(project_id))
+          } else if ("project_number" %in% names(projects_df)) {
+            projects_df <- projects_df %>% filter(!is.na(project_number))
+          }
+          
+          message("Loaded ", nrow(projects_df), " projects from: ", csv_path)
+          break
+        }, error = function(e) {
+          message("Could not load from ", csv_path, ": ", e$message)
+        })
+      }
+    }
+  }
+  
+  # Final check
+  if (is.null(projects_df)) {
+    projects_df <- data.frame()
+    warning("No project data could be loaded")
+  }
+}
+```
 
 ```{r project-summary-table}
 # Create a summary table of all projects
-if (nrow(projects_df) > 0) {
-
-  projects_df %>%
-    select(project_id, project_title, project_leads, location, species) %>%
-    rename(
-      `Project ID` = project_id,
-      `Title`      = project_title,
-      `Leads`      = project_leads,
-      `Location`   = location,
-      `Species`    = species
-    ) %>%
-    gt() %>%
-    tab_header(
-      title = md("**Summary of PSSI Research Projects**")
-    ) %>%
-    cols_width(
-      `Project ID` ~ px(80),
-      `Title`      ~ px(250),
-      `Leads`      ~ px(150),
-      `Location`   ~ px(120),
-      `Species`    ~ px(80)
-    ) %>%
-    opt_row_striping() %>%
-    tab_style(
-      style = cell_text(whitespace = "normal"),
-      locations = cells_body(columns = everything())
-    ) %>%
-    tab_options(
-      table.width = pct(100),
-      data_row.padding = px(6)
+if (exists("projects_df") && !is.null(projects_df) && nrow(projects_df) > 0) {
+  
+  # Determine which columns are available
+  has_project_id <- "project_id" %in% names(projects_df)
+  has_project_number <- "project_number" %in% names(projects_df)
+  has_project_title <- "project_title" %in% names(projects_df)
+  has_project_leads <- "project_leads" %in% names(projects_df)
+  has_location <- "location" %in% names(projects_df)
+  has_species <- "species" %in% names(projects_df)
+  
+  # Select available columns
+  summary_df <- projects_df
+  
+  # Create the summary table with available columns
+  if (has_project_id) {
+    summary_df <- summary_df %>% select(project_id, everything())
+  } else if (has_project_number) {
+    summary_df <- summary_df %>% select(project_number, everything())
+  }
+  
+  # Select only the columns we want for the summary
+  available_cols <- intersect(
+    c("project_id", "project_number", "project_title", "project_leads", "location", "species"),
+    names(summary_df)
+  )
+  
+  if (length(available_cols) > 0) {
+    summary_df <- summary_df %>% select(all_of(available_cols))
+    
+    # Rename columns for display
+    rename_map <- c(
+      "project_id" = "Project ID",
+      "project_number" = "Project #",
+      "project_title" = "Title",
+      "project_leads" = "Leads",
+      "location" = "Location",
+      "species" = "Species"
     )
-
+    
+    for (old_name in names(rename_map)) {
+      if (old_name %in% names(summary_df)) {
+        summary_df <- summary_df %>% 
+          rename(!!rename_map[old_name] := !!old_name)
+      }
+    }
+    
+    # Create the table
+    gt_table <- gt(summary_df) %>%
+      tab_header(
+        title = md("**Summary of PSSI Research Projects**")
+      ) %>%
+      opt_row_striping() %>%
+      cols_align("left") %>%
+      tab_style(
+        style = cell_text(whitespace = "normal"),
+        locations = cells_body(columns = everything())
+      ) %>%
+      tab_options(
+        table.width = pct(100),
+        data_row.padding = px(6)
+      )
+    
+    # Set column widths if specific columns exist
+    if ("Project ID" %in% names(summary_df) || "Project #" %in% names(summary_df)) {
+      gt_table <- gt_table %>%
+        cols_width(
+          matches("Project") ~ px(80),
+          matches("Title") ~ px(250),
+          matches("Leads") ~ px(150),
+          matches("Location") ~ px(120),
+          matches("Species") ~ px(80)
+        )
+    }
+    
+    gt_table
+    
+  } else {
+    cat("*No valid columns found in project data.*\n")
+  }
+  
 } else {
-  cat("*No project data available.*")
+  cat("*No project data available.*\n\n")
+  cat("**Troubleshooting:**\n\n")
+  cat("- Check that data files exist in one of these locations:\n")
+  cat("  - `data/processed/pssi_form_data.csv`\n")
+  cat("  - `data/raw/report_project_list.csv`\n")
+  cat("  - `data/projects.db` (SQLite database)\n")
+  cat("- Verify that the files contain project data\n")
+  cat("- Run the data extraction/processing scripts if needed\n")
 }
 ```
 

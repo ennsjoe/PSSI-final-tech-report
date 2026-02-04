@@ -1,5 +1,9 @@
 ## Data management and tools {#sec:data-management}
 
+```{r setup, include=FALSE}
+source(here::here("_common.R"))
+```
+
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
 
 ### A. Improving data management and availability

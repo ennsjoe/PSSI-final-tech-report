@@ -1,5 +1,9 @@
 ## Science to support hatchery modernization (CL/SEP) {#sec:hatcheries}
 
+```{r setup, include=FALSE}
+source(here::here("_common.R"))
+```
+
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
 ### A. Genetics

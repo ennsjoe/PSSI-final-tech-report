@@ -1,5 +1,9 @@
 # Summary {#sec:summary}
 
+```{r setup, include=FALSE}
+source(here::here("_common.R"))
+```
+
 How have PSSI Research elements met its objectives? How has work completed moved the dial for salmon conservation and understanding factors driving salmon declines?
 
 \newpage
