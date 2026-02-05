@@ -29,27 +29,21 @@ con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
 projects_df <- dbReadTable(con, "projects")
 dbDisconnect(con)
 
-message("Loaded ", nrow(projects_df), " projects from database")
-
-# Convert project_id to character and filter for projects with content
+# Filter for DFO Science projects only
 projects_df <- projects_df %>%
   mutate(project_id = as.character(project_id)) %>%
   filter(
     !is.na(project_id),
     !is.na(project_title),
-    # Must have at least one content field
-    !is.na(highlights) | !is.na(background) | !is.na(methods_findings)
+    source == "DFO Science"  # Only show DFO Science projects
   ) %>%
   arrange(project_id)
 
-message("Generating reports for ", nrow(projects_df), " projects with content")
+message("Generating reports for ", nrow(projects_df), " DFO Science projects")
 
-# Generate a report for each project
+# Generate a report section for each project using the template
 for (i in seq_len(nrow(projects_df))) {
-  # Extract project as a list for easier access in template
-  project <- as.list(projects_df[i, ])
-  
-  message("Rendering project ", i, "/", nrow(projects_df), ": ", project$project_id)
+  project <- projects_df[i, ]
   
   # Render the project template
   tryCatch({
@@ -58,15 +52,13 @@ for (i in seq_len(nrow(projects_df))) {
       envir = environment(),
       quiet = TRUE
     ))
-    cat("\n\\newpage\n")
+    # Page break (pandoc converts for Word output)
+    cat("\n\n\\newpage\n\n")
   }, error = function(e) {
-    # Display error in document
-    cat(paste0("\n\n### Project ", project$project_id, ": ", project$project_title, "\n\n"))
-    cat(paste0("**Error rendering project:** ", conditionMessage(e), "\n\n"))
-    cat("\n\\newpage\n")
-    message("ERROR: ", conditionMessage(e))
+    cat(paste0("\n\n## Project ", project$project_id, "\n\n"))
+    cat(paste0("*Error generating report: ", e$message, "*\n\n"))
+    cat(paste0("*Template path: ", template_path, "*\n\n"))
+    cat("\n\n\\newpage\n\n")
   })
 }
-
-message("Completed rendering ", nrow(projects_df), " project reports")
 ```

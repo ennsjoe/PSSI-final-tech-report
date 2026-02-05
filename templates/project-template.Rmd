@@ -79,160 +79,70 @@ if (!is.null(methods_text)) {
 }
 ```
 
-```{r tables-and-figures, results='asis', echo=FALSE}
-# Tables and Figures section
+```{r, results='asis', echo=FALSE}
+# Tables and Figures section - SIMPLIFIED file loading
 fig_dir <- here::here("figures", "project_figures", project$project_id)
 
-# Check if directory exists and has content
-has_files <- FALSE
-img_files <- character(0)
-table_files <- character(0)
-
-if (dir.exists(fig_dir)) {
-  # Find image files (including SVG)
-  img_files <- list.files(fig_dir, 
-                          pattern = "\\.(png|jpg|jpeg|gif|svg)$", 
-                          full.names = TRUE, 
-                          ignore.case = TRUE)
-  
-  # Find table files (CSV and Excel)
-  table_files <- list.files(fig_dir, 
-                            pattern = "\\.(csv|xlsx|xls)$", 
-                            full.names = TRUE, 
-                            ignore.case = TRUE)
-  
-  has_files <- length(img_files) > 0 || length(table_files) > 0
-}
-
-# Also check for text-only tables_figures content
+# Check if directory exists
+has_files <- dir.exists(fig_dir)
 tables_figures_text <- safe_text(project$tables_figures)
-has_text_content <- !is.null(tables_figures_text)
 
-if (has_files || has_text_content) {
+if (has_files || !is.null(tables_figures_text)) {
   cat("#### Tables and Figures\n\n")
   
-  # Parse captions from tables_figures field
-  captions <- NULL
-  if (has_text_content) {
-    captions <- strsplit(tables_figures_text, "\n")[[1]]
-    captions <- trimws(captions)
-    captions <- captions[captions != ""]
-  }
-  
-  # Helper function to find matching caption
-  find_caption <- function(file_name, captions) {
-    if (is.null(captions)) return(file_name)
+  if (has_files) {
+    # Get all files (images and tables)
+    all_files <- list.files(fig_dir, full.names = TRUE)
     
-    # Extract base name (remove letter suffix if present)
-    # e.g., "Figure_1a" -> "Figure_1"
-    base_name <- file_name
-    if (grepl("[a-zA-Z]$", file_name)) {
-      base_name <- substr(file_name, 1, nchar(file_name) - 1)
-    }
+    # Filter for supported file types
+    img_pattern <- "\\.(png|jpg|jpeg|gif|svg)$"
+    table_pattern <- "\\.(csv|xlsx|xls)$"
     
-    # Convert filename like "Table_1" or "Figure_1" to pattern "Table 1" or "Figure 1"
-    search_pattern <- gsub("_", " ", base_name)
+    img_files <- all_files[grepl(img_pattern, all_files, ignore.case = TRUE)]
+    table_files <- all_files[grepl(table_pattern, all_files, ignore.case = TRUE)]
     
-    # Try matching with the base pattern (case insensitive)
-    match_idx <- grep(paste0("^", search_pattern), captions, ignore.case = TRUE)
+    # Combine and sort: tables first, then images
+    all_files <- c(table_files, img_files)
     
-    if (length(match_idx) > 0) {
-      return(captions[match_idx[1]])
-    }
-    
-    # If no match found, return original filename
-    return(file_name)
-  }
-  
-  # Combine all files (tables and figures)
-  all_files <- c(table_files, img_files)
-  
-  if (length(all_files) > 0) {
-    # Sort files so Tables come before Figures, then numerically
-    file_order <- order(
-      !grepl("^Table", basename(all_files), ignore.case = TRUE),  # Tables first
-      as.numeric(gsub("\\D", "", basename(all_files)))  # Then by number
-    )
-    all_files <- all_files[file_order]
-    
-    # Process files in groups (to handle letter suffixes with single caption)
-    i <- 1
-    while (i <= length(all_files)) {
-      file_path <- all_files[i]
+    # Process each file individually (no complex grouping logic)
+    for (file_path in all_files) {
       file_name <- tools::file_path_sans_ext(basename(file_path))
       file_ext <- tolower(tools::file_ext(file_path))
       
-      # Extract base name and check for letter suffix
-      base_name <- file_name
-      has_suffix <- grepl("[a-zA-Z]$", file_name)
-      
-      if (has_suffix) {
-        letter_suffix <- substr(file_name, nchar(file_name), nchar(file_name))
-        base_name <- substr(file_name, 1, nchar(file_name) - 1)
-      }
-      
-      # Find all files with the same base name (grouped figures like Figure_1a, Figure_1b)
-      group_files <- c(file_path)
-      j <- i + 1
-      while (j <= length(all_files)) {
-        next_file_name <- tools::file_path_sans_ext(basename(all_files[j]))
-        next_base <- next_file_name
-        if (grepl("[a-zA-Z]$", next_file_name)) {
-          next_base <- substr(next_file_name, 1, nchar(next_file_name) - 1)
-        }
-        if (next_base == base_name) {
-          group_files <- c(group_files, all_files[j])
-          j <- j + 1
-        } else {
-          break
-        }
-      }
-      
-      # Process the group of files
       tryCatch({
-        # Render all files in the group first (without captions)
-        for (gf in group_files) {
-          gf_name <- tools::file_path_sans_ext(basename(gf))
-          gf_ext <- tolower(tools::file_ext(gf))
-          
-          if (gf_ext %in% c("xlsx", "xls")) {
-            # Excel table
-            if (requireNamespace("openxlsx", quietly = TRUE) && 
-                requireNamespace("flextable", quietly = TRUE)) {
-              table_data <- openxlsx::read.xlsx(gf, sheet = 1)
-              ft <- flextable::flextable(table_data)
-              ft <- flextable::autofit(ft)
-              ft <- flextable::theme_booktabs(ft)
-              flextable::knit_print.flextable(ft)
-              cat("\n\n")
-            }
-          } else if (gf_ext == "csv") {
-            # CSV table
-            table_data <- read.csv(gf, stringsAsFactors = FALSE, check.names = FALSE)
-            print(knitr::kable(table_data, format = "pandoc", row.names = FALSE))
+        if (file_ext %in% c("xlsx", "xls")) {
+          # Excel table
+          if (requireNamespace("openxlsx", quietly = TRUE) && 
+              requireNamespace("flextable", quietly = TRUE)) {
+            table_data <- openxlsx::read.xlsx(file_path, sheet = 1)
+            ft <- flextable::flextable(table_data)
+            ft <- flextable::autofit(ft)
+            ft <- flextable::theme_booktabs(ft)
+            flextable::knit_print.flextable(ft)
             cat("\n\n")
-          } else if (gf_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
-            # Image - no caption yet
-            cat("![](", gf, ")\n\n", sep = "")
           }
+        } else if (file_ext == "csv") {
+          # CSV table
+          table_data <- read.csv(file_path, stringsAsFactors = FALSE, check.names = FALSE)
+          print(knitr::kable(table_data, format = "pandoc", row.names = FALSE))
+          cat("\n\n")
+        } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
+          # Image
+          cat("![](", file_path, ")\n\n", sep = "")
         }
         
-        # Now print the caption ONCE at the end for the whole group
-        caption <- find_caption(file_name, captions)
-        cat("**", caption, "**\n\n", sep = "")
+        # Add caption as filename (you can enhance this later)
+        cat("**", file_name, "**\n\n", sep = "")
         
       }, error = function(e) {
-        cat("\n\n*Error loading files: ", e$message, "*\n\n", sep = "")
+        cat("\n\n*Error loading file ", basename(file_path), ": ", e$message, "*\n\n", sep = "")
       })
-      
-      # Move to next group
-      i <- j
     }
   }
   
-  # If there are captions but no matching files, show the text content
-  if (!has_files && has_text_content) {
-    cat(tables_figures_text, "\n\n")
+  # Also show text content if present
+  if (!is.null(tables_figures_text)) {
+    cat("\n\n", tables_figures_text, "\n\n")
   }
 }
 ```

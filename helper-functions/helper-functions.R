@@ -5,11 +5,21 @@ library(readr)
 library(dplyr)
 library(here)
 
+# --- Configuration ---
+# Note: OUTPUT_DB and TABLE_NAME are also set in build-report.R / _common.R
+# These provide fallback defaults
+if (!exists("OUTPUT_DB")) {
+  OUTPUT_DB <- here("data", "projects.db")
+}
+if (!exists("TABLE_NAME")) {
+  TABLE_NAME <- "projects"
+}
 
 # --- MANUAL PATH OVERRIDE (if needed) ---
 # If the automatic search doesn't find your CSV files, uncomment and edit these lines:
 # RAW_CSV <- here("your", "path", "to", "report_project_list.csv")
 # PROCESSED_CSV <- here("your", "path", "to", "pssi_form_data.csv")
+# PRESENTATION_CSV <- here("your", "path", "to", "presentation_info.csv")
 # Then comment out or delete the "Find CSV files" section below (lines 20-75)
 
 # --- Helper function to find CSV files ---
@@ -38,7 +48,7 @@ find_csv_file <- function(filename, possible_paths = NULL) {
 }
 
 # --- Find CSV files ---
-if (!exists("RAW_CSV") || !exists("PROCESSED_CSV")) {
+if (!exists("RAW_CSV") || !exists("PROCESSED_CSV") || !exists("PRESENTATION_CSV")) {
   message("\n=== Locating CSV Files ===")
   
   RAW_CSV <- find_csv_file("report_project_list.csv")
@@ -67,14 +77,23 @@ if (!exists("RAW_CSV") || !exists("PROCESSED_CSV")) {
          "   Solution: Run find-csv-files.R to diagnose, or manually set path at top of helper-functions.R")
   }
   
+  PRESENTATION_CSV <- find_csv_file("presentation_info.csv")
+  if (is.null(PRESENTATION_CSV)) {
+    warning("\n⚠ Cannot find 'presentation_info.csv' - skipping presentation data merge")
+  }
+  
   message("✓ Found tracking CSV: ", RAW_CSV)
   message("✓ Found content CSV: ", PROCESSED_CSV)
+  if (!is.null(PRESENTATION_CSV)) {
+    message("✓ Found presentation CSV: ", PRESENTATION_CSV)
+  }
 }
 
 # --- Database Setup Functions ---
 
 #' Initialize and Merge the SQLite database
 #' Merges tracking data (report_project_list.csv) with content (pssi_form_data.csv)
+#' and presentation data (presentation_info.csv)
 init_database <- function(overwrite = FALSE) {
   message("\n=== Initializing Projects Database ===")
   
@@ -82,6 +101,9 @@ init_database <- function(overwrite = FALSE) {
   message("Using files:")
   message("  Tracking: ", RAW_CSV)
   message("  Content: ", PROCESSED_CSV)
+  if (!is.null(PRESENTATION_CSV)) {
+    message("  Presentations: ", PRESENTATION_CSV)
+  }
   
   # 1. Load Tracking Data (metadata for filtering and organization)
   message("\nLoading tracking data...")
@@ -97,22 +119,91 @@ init_database <- function(overwrite = FALSE) {
   message("  ✓ Loaded ", nrow(content_df), " rows")
   message("  Columns: ", paste(names(content_df), collapse = ", "))
   
-  # 3. Merge the datasets on project_id
-  message("\nMerging datasets on 'project_id'...")
-  final_df <- tracking_df %>%
-    left_join(content_df, by = "project_id", suffix = c("", ".y"))
+  # 3. Load Presentation Data (for projects without extracted content)
+  presentation_df <- NULL
+  if (!is.null(PRESENTATION_CSV) && file.exists(PRESENTATION_CSV)) {
+    message("\nLoading presentation data...")
+    presentation_df <- read_csv(PRESENTATION_CSV, show_col_types = FALSE) %>%
+      mutate(project_id = as.character(project_id)) %>%
+      filter(!is.na(abstract) & abstract != "NA" & abstract != "")  # Only projects with abstracts
+    
+    if (nrow(presentation_df) > 0) {
+      # Map presentation fields to content fields
+      presentation_df <- presentation_df %>%
+        select(
+          project_id,
+          project_title = pres_title,
+          project_leads = speakers,
+          collaborations = collaborators,
+          highlights = abstract,  # Map abstract to highlights
+          source
+        ) %>%
+        filter(!is.na(project_title) & project_title != "NA" & project_title != "")
+      
+      message("  ✓ Loaded ", nrow(presentation_df), " presentation rows with abstracts")
+      message("  Columns: ", paste(names(presentation_df), collapse = ", "))
+    } else {
+      message("  ℹ No presentations with non-NA abstracts found")
+      presentation_df <- NULL
+    }
+  }
   
-  # 4. Handle duplicate columns (keep tracking version, drop .y versions)
-  duplicate_cols <- grep("\\.y$", names(final_df), value = TRUE)
+  # 4. Merge tracking with content data first
+  message("\nMerging tracking + content data on 'project_id'...")
+  final_df <- tracking_df %>%
+    left_join(content_df, by = "project_id", suffix = c("", ".content"))
+  
+  # 5. For projects NOT in content_df, try to fill from presentation_df
+  if (!is.null(presentation_df) && nrow(presentation_df) > 0) {
+    message("\nAdding presentation data for projects without extracted content...")
+    
+    # Get list of project_ids that ARE in content_df (these have priority)
+    projects_with_content <- content_df %>%
+      pull(project_id)
+    
+    message("  Projects with extracted content (PRIORITY): ", length(projects_with_content))
+    
+    # Only use presentation data for projects NOT in pssi_form_data.csv
+    presentation_to_add <- presentation_df %>%
+      filter(!(project_id %in% projects_with_content))
+    
+    message("  Presentation projects to add: ", nrow(presentation_to_add))
+    
+    # For these projects, merge with presentation data
+    if (nrow(presentation_to_add) > 0) {
+      for (i in seq_len(nrow(presentation_to_add))) {
+        pres_proj <- presentation_to_add[i, ]
+        idx <- which(final_df$project_id == pres_proj$project_id)
+        
+        if (length(idx) > 0) {
+          # Fill in the missing fields (these projects had no content data)
+          final_df$project_title[idx] <- pres_proj$project_title
+          final_df$project_leads[idx] <- pres_proj$project_leads
+          final_df$collaborations[idx] <- pres_proj$collaborations
+          final_df$highlights[idx] <- pres_proj$highlights
+          # Also copy source from presentation if tracking list source is NA
+          if (is.na(final_df$source[idx]) || final_df$source[idx] == "") {
+            final_df$source[idx] <- pres_proj$source
+          }
+        }
+      }
+      
+      message("  ✓ Added presentation data to ", nrow(presentation_to_add), " projects")
+      message("  ✓ Did NOT overwrite any projects from pssi_form_data.csv")
+    }
+  }
+  
+  # 6. Handle duplicate columns (keep tracking version, drop suffix versions)
+  duplicate_cols <- grep("\\.content$|\\.y$", names(final_df), value = TRUE)
   if (length(duplicate_cols) > 0) {
     message("  Resolving ", length(duplicate_cols), " duplicate columns (keeping tracking data)")
     final_df <- final_df %>% select(-all_of(duplicate_cols))
   }
   
-  # 5. Create project_number as backward compatibility alias
+  # 7. Create project_number as backward compatibility alias
   final_df$project_number <- final_df$project_id
   
-  # 6. Ensure 'include' column exists for filtering
+  # 8. Ensure 'include' column exists for filtering
   if (!"include" %in% names(final_df)) {
     message("  Adding 'include' column (default: 'y')")
     final_df$include <- "y"
@@ -121,14 +212,14 @@ init_database <- function(overwrite = FALSE) {
   message("  ✓ Final dataset: ", nrow(final_df), " rows, ", ncol(final_df), " columns")
   message("  Final columns: ", paste(names(final_df), collapse = ", "))
   
-  # 7. Create database directory if needed
+  # 9. Create database directory if needed
   db_dir <- dirname(OUTPUT_DB)
   if (!dir.exists(db_dir)) {
     message("\nCreating database directory: ", db_dir)
     dir.create(db_dir, recursive = TRUE)
   }
   
-  # 8. Write to SQLite database
+  # 10. Write to SQLite database
   message("\nWriting to database: ", OUTPUT_DB)
   tryCatch({
     con <- dbConnect(SQLite(), OUTPUT_DB)
@@ -162,6 +253,20 @@ init_database <- function(overwrite = FALSE) {
     stop("Database write error: ", e$message)
   })
 }
+
+# --- Database Access Functions ---
+
+#' Get database connection
+get_db_con <- function(db_path = OUTPUT_DB) {
+  if (!file.exists(db_path)) {
+    stop("Database not found at: ", db_path, "\n",
+         "Run init_database() to create it.")
+  }
+  dbConnect(SQLite(), db_path)
+}
+
+# Alias for backward compatibility
+get_db_connection <- function(...) get_db_con(...)
 
 # --- Database Inspection Functions ---
 
@@ -220,8 +325,8 @@ new_appendix <- function() {
 make_bkm <- function(project_id) {
   paste0("project_", gsub("[^A-Za-z0-9]", "_", project_id))
 }
-  
-  
+
+
 
 # make a table from projects df for selected theme -------------------------------------------------------
 
@@ -236,22 +341,22 @@ make_bkm <- function(project_id) {
 
 
 make_section_table <- function(df,
-                              section_pick = "Salmon population monitoring",
-                              source_col = "source",
-                              num_col = "project_id",
-                              title_col = "project_title",
-                              num_label = "ID",
-                              title_label = "Project title",
-                              header_bg = "royalblue",
-                              header_fg = "white",
-                              group_bg  = "darkgrey",
-                              group_fg  = "white",
-                              font_size_body = 8,
-                              font_size_header = 11,
-                              font_size_group = 10,
-                              pad = 1,
-                              w_num = 1.2,   # inches (Word-friendly)
-                              w_title = 5.2  # inches (Word-friendly)
+                               section_pick = "Salmon population monitoring",
+                               source_col = "source",
+                               num_col = "project_id",
+                               title_col = "project_title",
+                               num_label = "ID",
+                               title_label = "Project title",
+                               header_bg = "royalblue",
+                               header_fg = "white",
+                               group_bg  = "darkgrey",
+                               group_fg  = "white",
+                               font_size_body = 8,
+                               font_size_header = 11,
+                               font_size_group = 10,
+                               pad = 1,
+                               w_num = 1.2,   # inches (Word-friendly)
+                               w_title = 5.2  # inches (Word-friendly)
 ) {
   
   stopifnot(requireNamespace("dplyr", quietly = TRUE))
