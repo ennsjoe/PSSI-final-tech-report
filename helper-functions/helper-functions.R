@@ -235,6 +235,14 @@ make_bkm <- function(project_id) {
 # }
 
 
+make_id <- function(x, prefix = "proj-") {
+  x <- tolower(as.character(x))
+  x <- gsub("[^a-z0-9]+", "-", x)
+  x <- gsub("(^-|-$)", "", x)
+  paste0(prefix, x)
+}
+
+
 make_section_table <- function(df,
                               section_pick = "Salmon population monitoring",
                               source_col = "source",
@@ -296,6 +304,9 @@ make_section_table <- function(df,
   
   # 3) Build flextable
   ft <- flextable::flextable(display_df)
+  
+  # rows that are actual projects (not divider rows)
+  data_rows <- which(display_df[[num_col]] != "")
   
   # 4) Set header labels programmatically (NO :=)
   label_map <- stats::setNames(
