@@ -1,4 +1,14 @@
-# REFERENCES {#sec:references}
+---
+# Development knitting only - ignored by Quarto book build
+output:
+  word_document:
+    reference_docx: templates/custom-reference.docx
+bibliography: bib/references.bib
+csl: csl/csas.csl
+link-citations: true
+---
+
+# References {#sec:references}
 
 ::: {#refs custom-style="Bibliography"}
 :::

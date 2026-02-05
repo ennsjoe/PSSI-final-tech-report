@@ -40,3 +40,5 @@ Nanaimo, British Columbia, V9T 6N7, Canada
 ---
 
 This report summarizes research and findings from `r n_projects` projects conducted under the Pacific Salmon Strategy Initiative.
+
+\newpage

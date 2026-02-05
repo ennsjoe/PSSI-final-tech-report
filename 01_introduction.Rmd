@@ -1,6 +1,16 @@
 ---
-bibliography: references.json
+# Development knitting only - ignored by Quarto book build
+output:
+  word_document:
+    reference_docx: templates/custom-reference.docx
+bibliography: bib/references.bib
+csl: csl/csas.csl
+link-citations: true
 ---
+
+```{r setup, include=FALSE}
+source(here::here("_common.R"))
+```
 
 # Introduction {#sec:introduction}
 
