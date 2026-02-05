@@ -1,3 +1,13 @@
+---
+# Development knitting only - ignored by Quarto book build
+output:
+  word_document:
+    reference_docx: templates/custom-reference.docx
+bibliography: bib/references.bib
+csl: csl/csas.csl
+link-citations: true
+---
+
 ## Understanding Salmon and Their Ecosystems {#sec:understanding-salmon-ecosystems}
 
 ```{r setup, include=FALSE}

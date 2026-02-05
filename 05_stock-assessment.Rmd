@@ -1,3 +1,13 @@
+---
+# Development knitting only - ignored by Quarto book build
+output:
+  word_document:
+    reference_docx: templates/custom-reference.docx
+bibliography: bib/references.bib
+csl: csl/csas.csl
+link-citations: true
+---
+
 ## Stock assessment - Fisheries Science Advisory Reports (AMH) {#sec:fsar}
 
 ```{r setup, include=FALSE}
