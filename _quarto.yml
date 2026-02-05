@@ -80,3 +80,7 @@ execute:
 knitr:
   opts_chunk:
     fig.path: "figures/generated/"
+    
+crossref:
+  tbl-prefix: "Table"
+  tbl-title: "Table"
