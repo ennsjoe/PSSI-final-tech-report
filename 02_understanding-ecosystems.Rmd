@@ -19,34 +19,11 @@ Context for this section
 ### A. Salmon population monitoring
 
 ```{r salmon-population-projects}
-library(flextable)
 
-con <- get_db_connection()
-s_monitor_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Understanding salmon ecosystems'
-    AND section = 'Salmon population monitoring'
-  ORDER BY project_id
-")
-dbDisconnect(con)
+make_section_table(projects_df,
+                   section_pick = "Salmon population monitoring")
 
-flextable(s_monitor_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to salmon population monitoring") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
+
 ```
 
 ### B. Life cycle approaches
@@ -56,100 +33,27 @@ flextable(s_monitor_projects) %>%
 Provide an overview of the follow the fish program, how risk assessments and limiting factors (RAMS) were used to guide research priorities, key insights, and next steps to support rebuilding of WCVI Chinook salmon.
 
 ```{r ftf-projects}
-library(flextable)
 
-con <- get_db_connection()
-ftf_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Assessments'
-    AND section = 'Life cycle assessment - Follow The Fish'
-  ORDER BY project_id
-")
-dbDisconnect(con)
+make_section_table(projects_df,
+                   section_pick = 'Life cycle assessment - Follow The Fish')
 
-flextable(ftf_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to life cycle assessment - Follow The Fish") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
 ```
 
 #### Bottlenecks to survival (IP)
 
 ```{r bottleneck-projects}
-library(flextable)
 
-con <- get_db_connection()
-bottleneck_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Assessments'
-    AND section = 'Life cycle assessment - Bottlenecks to survival'
-  ORDER BY project_id
-")
-dbDisconnect(con)
+make_section_table(projects_df,
+                   section_pick = 'Life cycle assessment - Bottlenecks to survival')
 
-flextable(bottleneck_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to life cycle assessment - Bottlenecks to survival") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
 ```
 
 ### C. Freshwater ecosystems (JE)
 
 ```{r freshwater-ecosystem-projects}
-library(flextable)
 
-con <- get_db_connection()
-freshwater_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Understanding salmon ecosystems'
-    AND section = 'Freshwater ecosystems'
-  ORDER BY project_id
-")
-dbDisconnect(con)
-
-flextable(freshwater_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to freshwater ecosystems") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
+make_section_table(projects_df,
+                   section_pick = 'Freshwater ecosystems')
 ```
 
 Summarize research undertaken and key findings focused on freshwater ecosystems. Projects and themes include:
@@ -185,34 +89,9 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 ### D. Marine ecosystems (IP/NB)
 
 ```{r marine-ecosystem-projects}
-library(flextable)
 
-con <- get_db_connection()
-marine_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Understanding salmon ecosystems'
-    AND section = 'Marine ecosystems'
-  ORDER BY project_id
-")
-dbDisconnect(con)
-
-flextable(marine_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to marine ecosystems") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
+make_section_table(projects_df,
+                   section_pick = 'Marine ecosystems')
 ```
 
 Summarize research and key findings related to building understanding of marine ecosystems and key stressors. Projects and themes include:
@@ -238,34 +117,9 @@ Summarize research and key findings related to building understanding of marine 
 ### E. Climate change vulnerability (CL)
 
 ```{r climate-projects}
-library(flextable)
 
-con <- get_db_connection()
-climate_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Understanding salmon ecosystems'
-    AND section = 'Climate change vulnerabiliity'
-  ORDER BY project_id
-")
-dbDisconnect(con)
-
-flextable(climate_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to climate change vulnerability") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
+make_section_table(projects_df,
+                   section_pick = 'Climate change vulnerability')
 ```
 
 **Highlights**

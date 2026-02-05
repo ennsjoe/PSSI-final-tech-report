@@ -21,7 +21,7 @@ Describe the data-related PSSI sub-initiatives and key projects to improve manag
 ```{r innovation-projects}
 library(gt)
 
-data_projects_loc <- here("data", "raw", "PSSI_data_projects.csv")
+data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
 
 # Load and clean data
 data_projects_table <- read_csv(data_projects_loc) %>%
@@ -67,34 +67,10 @@ gt(tbl_word) |>
 ### B. Data and modelling to support decision making
 
 ```{r data-projects}
-library(flextable)
 
-con <- get_db_connection()
-data_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Data management and tools'
-    AND section = 'Data and modelling to support decision making'
-  ORDER BY project_id
-")
-dbDisconnect(con)
+make_section_table(projects_df,
+                   section_pick = 'Data and modelling to support decision making')
 
-flextable(data_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to data and modelling to support decision making") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
 ```
 
 \newpage

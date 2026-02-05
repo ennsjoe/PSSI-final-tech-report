@@ -5,9 +5,6 @@ library(readr)
 library(dplyr)
 library(here)
 
-# --- Configuration ---
-DB_PATH <- here("data", "projects.db")
-TABLE_NAME <- "projects"
 
 # --- MANUAL PATH OVERRIDE (if needed) ---
 # If the automatic search doesn't find your CSV files, uncomment and edit these lines:
@@ -125,16 +122,16 @@ init_database <- function(overwrite = FALSE) {
   message("  Final columns: ", paste(names(final_df), collapse = ", "))
   
   # 7. Create database directory if needed
-  db_dir <- dirname(DB_PATH)
+  db_dir <- dirname(OUTPUT_DB)
   if (!dir.exists(db_dir)) {
     message("\nCreating database directory: ", db_dir)
     dir.create(db_dir, recursive = TRUE)
   }
   
   # 8. Write to SQLite database
-  message("\nWriting to database: ", DB_PATH)
+  message("\nWriting to database: ", OUTPUT_DB)
   tryCatch({
-    con <- dbConnect(SQLite(), DB_PATH)
+    con <- dbConnect(SQLite(), OUTPUT_DB)
     dbWriteTable(con, TABLE_NAME, final_df, overwrite = overwrite)
     
     # Verify
@@ -144,7 +141,7 @@ init_database <- function(overwrite = FALSE) {
     dbDisconnect(con)
     
     message("\n✅ Database created successfully!")
-    message("   Location: ", DB_PATH)
+    message("   Location: ", OUTPUT_DB)
     message("   Projects: ", row_count)
     message("   Columns: ", length(columns))
     
@@ -166,25 +163,11 @@ init_database <- function(overwrite = FALSE) {
   })
 }
 
-# --- Database Access Functions ---
-
-#' Get database connection
-get_db_con <- function(db_path = DB_PATH) {
-  if (!file.exists(db_path)) {
-    stop("Database not found at: ", db_path, "\n",
-         "Run init_database() to create it.")
-  }
-  dbConnect(SQLite(), db_path)
-}
-
-# Alias for backward compatibility
-get_db_connection <- function(...) get_db_con(...)
-
 # --- Database Inspection Functions ---
 
 #' Check database status
-check_database <- function(db_path = DB_PATH) {
-  if (!file.exists(db_path)) {
+check_database <- function(OUTPUT_DB = OUTPUT_DB) {
+  if (!file.exists(OUTPUT_DB)) {
     return(list(
       exists = FALSE,
       message = "Database not found"
@@ -192,7 +175,7 @@ check_database <- function(db_path = DB_PATH) {
   }
   
   tryCatch({
-    con <- dbConnect(SQLite(), db_path)
+    con <- dbConnect(SQLite(), OUTPUT_DB)
     tables <- dbListTables(con)
     
     if (TABLE_NAME %in% tables) {
@@ -236,4 +219,130 @@ new_appendix <- function() {
 # --- Bookmark Helper for Cross-References ---
 make_bkm <- function(project_id) {
   paste0("project_", gsub("[^A-Za-z0-9]", "_", project_id))
+}
+  
+  
+
+# make a table from projects df for selected theme -------------------------------------------------------
+
+# get_section_table <- fuction(df,
+#                              section_pick = "Salmon population monitoring")
+# {
+#   df_sub <- df %>%
+#     filter(section == section_pick,
+#            include %in% c("y", "Y")) %>%
+#     select(project_id, source, project_title)
+# }
+
+
+make_section_table <- function(df,
+                              section_pick = "Salmon population monitoring",
+                              source_col = "source",
+                              num_col = "project_id",
+                              title_col = "project_title",
+                              num_label = "ID",
+                              title_label = "Project title",
+                              header_bg = "royalblue",
+                              header_fg = "white",
+                              group_bg  = "darkgrey",
+                              group_fg  = "white",
+                              font_size_body = 8,
+                              font_size_header = 11,
+                              font_size_group = 10,
+                              pad = 1,
+                              w_num = 1.2,   # inches (Word-friendly)
+                              w_title = 5.2  # inches (Word-friendly)
+) {
+  
+  stopifnot(requireNamespace("dplyr", quietly = TRUE))
+  stopifnot(requireNamespace("stringr", quietly = TRUE))
+  stopifnot(requireNamespace("tibble", quietly = TRUE))
+  stopifnot(requireNamespace("flextable", quietly = TRUE))
+  stopifnot(requireNamespace("officer", quietly = TRUE))
+  
+  df_sub <- df %>%
+    filter(section == section_pick,
+           include %in% c("y", "Y")) %>%
+    select(project_id, source, project_title)
+  
+  # 1) Clean + sort 
+  df_clean <- df_sub |>
+    dplyr::mutate(
+      dplyr::across(dplyr::all_of(source_col), ~ stringr::str_squish(as.character(.x))),
+      dplyr::across(dplyr::all_of(num_col),    ~ as.character(.x)),
+      dplyr::across(dplyr::all_of(title_col),  ~ stringr::str_squish(as.character(.x)))
+    ) |>
+    dplyr::arrange(.data[[source_col]], .data[[num_col]])
+  
+  # 2) Insert divider rows using group key (.y) so it's always available
+  df_div <- df_clean |>
+    dplyr::group_by(.data[[source_col]]) |>
+    dplyr::group_modify(function(.x, .y) {
+      grp <- as.character(.y[[source_col]][1])
+      
+      tibble::tibble(
+        .is_group = c(TRUE, rep(FALSE, nrow(.x))),
+        # divider row has blank project_number, source label in title column
+        !!num_col   := c("", .x[[num_col]]),
+        !!title_col := c(grp, .x[[title_col]])
+      )
+    }) |>
+    dplyr::ungroup()
+  
+  group_rows <- which(df_div$.is_group)
+  
+  # Keep only visible columns
+  display_df <- df_div[, c(num_col, title_col), drop = FALSE]
+  
+  # 3) Build flextable
+  ft <- flextable::flextable(display_df)
+  
+  # 4) Set header labels programmatically (NO :=)
+  label_map <- stats::setNames(
+    object = c(num_label, title_label),
+    nm     = c(num_col, title_col)
+  )
+  ft <- do.call(flextable::set_header_labels, c(list(x = ft), as.list(label_map)))
+  
+  # 5) Base styling
+  ft <- ft |>
+    flextable::fontsize(size = font_size_body, part = "body") |>
+    flextable::fontsize(size = font_size_header, part = "header") |>
+    flextable::bold(part = "header") |>
+    flextable::align(align = "left", part = "all") |>
+    flextable::valign(valign = "top", part = "body") |>
+    flextable::padding(padding = pad, part = "all") |>
+    flextable::width(j = num_col, width = w_num) |>
+    flextable::width(j = title_col, width = w_title) |>
+    flextable::set_table_properties(layout = "fixed") |>
+    flextable::bg(part = "header", bg = header_bg) |>
+    flextable::color(part = "header", color = header_fg) 
+  
+  # 6) Merge + style each divider row (must be one-by-one)
+  for (r in group_rows) {
+    ft <- ft |>
+      flextable::merge_at(i = r, j = c(num_col, title_col), part = "body") |>
+      flextable::bg(i = r, bg = group_bg, part = "body") |>
+      flextable::color(i = r, color = group_fg, part = "body") |>
+      flextable::bold(i = r, part = "body") |>
+      flextable::fontsize(i = r, size = font_size_group, part = "body") |>
+      flextable::padding(i = r, padding = pad, part = "body")
+  }
+  
+  # 7) Borders (Word-friendly)
+  ft <- ft |>
+    flextable::border_outer(
+      part = "all",
+      border = officer::fp_border(color = "#BFBFBF", width = 1)
+    ) |>
+    flextable::border_inner_h(
+      part = "all",
+      border = officer::fp_border(color = "#E0E0E0", width = 0.75)
+    ) |>
+    flextable::border_inner_v(
+      part = "all",
+      border = officer::fp_border(color = "#E0E0E0", width = 0.75)
+    )
+  
+  ft
 }

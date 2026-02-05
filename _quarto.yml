@@ -52,8 +52,7 @@ format:
     toc: true
     toc-depth: 3
     number-sections: false
-    number-depth: 3
-    reference-doc: templates/custom-reference.docx
+    reference-doc: "templates/custom-reference.docx"
     highlight-style: github
     fig-width: 7
     fig-height: 5
@@ -80,3 +79,7 @@ execute:
 knitr:
   opts_chunk:
     fig.path: "figures/generated/"
+    
+crossref:
+  tbl-prefix: "Table"
+  tbl-title: "Table"

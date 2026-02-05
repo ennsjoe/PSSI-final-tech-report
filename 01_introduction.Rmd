@@ -10,6 +10,7 @@ link-citations: true
 
 ```{r setup, include=FALSE}
 source(here::here("_common.R"))
+
 ```
 
 # Introduction {#sec:introduction}
@@ -18,7 +19,7 @@ source(here::here("_common.R"))
 
 The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. Over its five year span beginning in 2021, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon. In doing so, the initiative sought to respond to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery.
 
-PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars—Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration—each of which involved multiple sectors within DFO and included several initiatives (Table 1). The pillars were intended to provide a framework for aligning actions across habitat, hatcheries, fisheries, and governance in support of the long‑term persistence and resilience of Pacific salmon.
+PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars—Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration—each of which involved multiple sectors within DFO and included several initiatives (@tbl-pssi-initiatives). The pillars were intended to provide a framework for aligning actions across habitat, hatcheries, fisheries, and governance in support of the long‑term persistence and resilience of Pacific salmon.
 
 The conservation and stewardship pillar focused on new activities and investments supporting the long-term persistence and rebuilding of Pacific salmon populations. Key components included a doubling of the British Columbia Salmon Restoration and Innovation Fund (BCSRIF), investing in research to improve our understanding of salmon and their ecosystems, advancing integrated planning for salmon ecosystems to mitigate pressures on freshwater habitats, developing integrated rebuilding plans for vulnerable salmon populations, improving supports for salmon stewardship activities through engagement, and capacity-building with First Nations and community partners.
 
@@ -27,6 +28,50 @@ The salmon enhancement pillar aimed to modernize hatchery programs to more effec
 The harvest transformation pillar was intended to change how Pacific salmon fisheries were managed in response to long-term stock declines and ongoing conservation concerns. Its key objectives included adopting more precautionary and selective fishing approaches, including exploring mark-selective fisheries, and developing new tools to better manage harvest capacity across sectors. The pillar also included commitments to update the Salmon Allocation Policy and to update licensing, regulatory, and management frameworks, including measures such as licence buyback programs and long-term commercial fishery closures in areas with significant conservation concerns. In addition, it aimed to improve the timeliness and accuracy of fishery monitoring and catch reporting programs to strengthen the information base used for harvest decision-making.
 
 The integration and collaboration pillar focused on strengthening collective capacity to address Pacific salmon declines by improving how DFO worked both internally and with external partners. Key objectives under this pillar were to provide capacity support to various internal and external groups involved in salmon conservation and management, to improve collaboration among federal, provincial, territorial, Indigenous, and other governments, and to prioritize salmon stocks for recovery through coordinated, cross-jurisdictional planning and decision-making processes.
+
+```{r}
+
+#| label: tbl-pssi-initiatives
+#| tbl-cap: "The 24 PSSI Initiatives by pillar.  Each initiative included 1-4 sub-initiatives (not shown)."
+  
+# 1. Read and Clean
+pillars_df <- read_csv(here(rawdata_path, "Table1_PSSI_initiatives.csv")) %>%
+  mutate(across(where(is.character), ~ str_replace_all(.x, "[^[:alnum:][:punct:][:space:]]", " ")))
+
+# 2. Create flextable
+ft <- flextable(
+  pillars_df,
+  col_keys = c("Pillar", "#", "Initiative Name")
+) %>%
+  
+  # Merge Pillar cells vertically
+  merge_v(j = "Pillar") %>%
+  
+  # Center Pillar text vertically and horizontally
+  align(j = "Pillar", align = "center", part = "body") %>%
+  valign(j = "Pillar", valign = "center", part = "body") %>% # 'top' often looks cleaner in Word for long groups
+  
+  # Bold the Pillar column
+  bold(j = "Pillar", bold = TRUE, part = "body") %>%
+  # Bold rows where Science lead/support == "Y"
+  bold(
+    i = ~ `Science lead or support` == "Y",
+    bold = TRUE,
+    part = "body"
+  ) %>%
+  
+  # Final styling
+  theme_vanilla() %>%
+  autofit() %>%
+  # Ensure the Pillar column doesn't get too wide after autofit
+  width(j = "Pillar", width = 1.5)
+
+ft
+
+
+
+
+```
 
 ## Scientific Research Components of PSSI
 
