@@ -19,34 +19,8 @@ Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the pr
 ### A. Genetics
 
 ```{r genetics-projects}
-library(flextable)
-
-con <- get_db_connection()
-genetics_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Science to support hatchery modernization'
-    AND section = 'Genetics'
-  ORDER BY project_id
-")
-dbDisconnect(con)
-
-flextable(genetics_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to genetics") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
+make_section_table(projects_df,
+                   section_pick = 'Genetics')
 ```
 
 Summarize research and key findings from genetics projects. Research questions (from SEP):
@@ -78,34 +52,9 @@ Projects and themes include:
 ### B. Fish health and hatchery practices
 
 ```{r health-projects}
-library(flextable)
 
-con <- get_db_connection()
-health_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Science to support hatchery modernization'
-    AND section = 'Fish health and hatchery practices'
-  ORDER BY project_id
-")
-dbDisconnect(con)
-
-flextable(health_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to fish health and hatchery practices") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
+make_section_table(projects_df,
+                   section_pick = 'Fish health and hatchery practices')
 ```
 
 Summarize research and key findings from fish health projects. Research questions (from SEP):

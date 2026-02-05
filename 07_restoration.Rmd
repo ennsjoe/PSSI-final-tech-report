@@ -17,67 +17,21 @@ source(here::here("_common.R"))
 ### A. Recovery and rebuilding Programs
 
 ```{r recovery-projects}
-library(flextable)
 
-con <- get_db_connection()
-recovery_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Restoration and recovery'
-    AND section = 'Recovery and rebuilding programs'
-  ORDER BY project_id
-")
-dbDisconnect(con)
+make_section_table(projects_df,
+                   section_pick = 'Recovery and rebuilding programs')
 
-flextable(recovery_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to recovery and rebuilding programs") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
+
 ```
 
 ### B. Restoration prioritization
 
 ```{r restoration-projects}
-library(flextable)
 
-con <- get_db_connection()
-restoration_projects <- dbGetQuery(con, "
-  SELECT project_id, source, project_title
-  FROM projects
-  WHERE include = 'y'
-    AND broad_header = 'Restoration and recovery'
-    AND section = 'Restoration prioritization'
-  ORDER BY project_id
-")
-dbDisconnect(con)
+make_section_table(projects_df,
+                   section_pick = 'Restoration and prioritization')
 
-flextable(restoration_projects) %>%
-  set_header_labels(
-    project_id = "Project",
-    source = "Source",
-    project_title = "Title"
-  ) %>%
-  width(j = 1, width = 1) %>%
-  width(j = 2, width = 1) %>%
-  width(j = 3, width = 4.5) %>%
-  set_caption("Projects related to restoration prioritization") %>%
-  font(fontname = "Times New Roman", part = "all") %>%
-  fontsize(size = 11, part = "all") %>%
-  bold(part = "header") %>%
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "body")
+
 ```
 
 ### Template / Guiding Questions

@@ -10,6 +10,7 @@ link-citations: true
 
 ```{r setup, include=FALSE}
 source(here::here("_common.R"))
+
 ```
 
 # Introduction {#sec:introduction}
@@ -63,13 +64,7 @@ ft <- flextable(
   theme_vanilla() %>%
   autofit() %>%
   # Ensure the Pillar column doesn't get too wide after autofit
-  width(j = "Pillar", width = 1.5) %>%
-
-# Add caption with label for cross-referencing
-  set_caption(caption = "PSSI Initiatives by Pillar", 
-              autonum = officer::run_autonum(seq_id = "tab", 
-                                             pre_label = "Table ", 
-                                             post_label = ": "))
+  width(j = "Pillar", width = 1.5)
 
 ft
 
