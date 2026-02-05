@@ -16,7 +16,7 @@ Brief overview of the report's purpose and findings.
 
 ## Citation {.unnumbered}
 
-Lagasse, C., Enns, J., Brown, N., Pearsall, I., Huang, A.-M., and Dobson, D. 2026. Summary of research and findings from the Pacific Salmon Strategy Initiative. Canadian Technical Report of Fisheries and Aquatic Sciences nnn.
+Lagasse, C., Enns, J., Brown, N., Pearsall, I., Huang, A.-M., and Dobson, D. 2026. Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative. Canadian Technical Report of Fisheries and Aquatic Sciences nnn.
 
 ## Report Information {.unnumbered}
 
