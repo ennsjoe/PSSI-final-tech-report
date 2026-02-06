@@ -25,6 +25,8 @@ ensure_package('readr')
 ensure_package('flextable')
 ensure_package('openxlsx')
 ensure_package('bookdown')
+ensure_package('officer')
+ensure_package('officedown')
 ensure_package('yaml')
 
 # ===================================================================
@@ -101,11 +103,11 @@ tryCatch({
     projects_df$source <- as.character(projects_df$source)
     projects_df$project_id <- as.character(projects_df$project_id)
     
-    # Apply transformation
-    projects_df <<- projects_df %>%
+    #Add DFO to project IDs if not already there
+    projects_df <- projects_df %>%
       mutate(
         project_id = if_else(
-          source == "DFO Science",
+          source == "DFO Science" & !str_starts(project_id, "DFO_"),
           paste0("DFO_", project_id),
           project_id
         )

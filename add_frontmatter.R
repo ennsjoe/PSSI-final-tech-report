@@ -97,27 +97,38 @@ add_frontmatter <- function(main_docx, output_docx = NULL, meta = list()) {
   }
   
   # #### 3. TABLE OF CONTENTS -------------------------------------------
-  # 
+
+  doc <- doc %>%
+    body_add_par("Table of Contents", style = "heading 1") %>%
+    body_add_toc(level = 3) %>%
+    body_add_break()
+  
+  # #### 5. LIST OF TABLES ----------------------------------------------
   # doc <- doc %>%
-  #   body_add_par("Table of Contents", style = "heading 1") %>%
-  #   body_add_toc(level = 3) %>%
+  #   body_add_par("LIST OF TABLES", style = "heading 1") %>%
+  #   body_add_toc(style = "Table Caption") %>%
+  #   body_add_break()
+  # 
+  # #### 6. LIST OF FIGURES ---------------------------------------------
+  # doc <- doc %>%
+  #   body_add_par("LIST OF FIGURES", style = "heading 1") %>%
+  #   body_add_toc(style = "Image Caption") %>%
   #   body_add_break()
   
-  #### 5. LIST OF TABLES ----------------------------------------------
-  doc <- doc %>%
-    body_add_par("LIST OF TABLES", style = "heading 1") %>%
-    body_add_toc(style = "Table Caption") %>%
-    body_add_break()
+  #### 7. APPEND MAIN CONTENT -----------------------------------------
   
-  #### 6. LIST OF FIGURES ---------------------------------------------
-  doc <- doc %>%
-    body_add_par("LIST OF FIGURES", style = "heading 1") %>%
-    body_add_toc(style = "Image Caption") %>%
-    body_add_break()
+  # 1. Force a section break to isolate front matter formatting
+  doc <- doc %>% body_end_section_portrait()
   
-  #### 4. APPEND MAIN CONTENT -----------------------------------------
+  # 2. Append the main document
   doc <- body_add_docx(doc, src = main_docx)
   
+  # 3. Final Save
   print(doc, target = output_docx)
+  
+  # Diagnostic: Print the number of elements to console
+  content_summary <- officer::docx_summary(doc)
+  message("Merged document contains ", nrow(content_summary), " elements.")
+  
   return(output_docx)
 }
