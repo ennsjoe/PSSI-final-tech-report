@@ -1,0 +1,4 @@
+officedown::rdocx_document:
+  reference_docx: "templates/custom-reference.docx"
+  toc: false
+  toc_depth: 3

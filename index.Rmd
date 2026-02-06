@@ -1,12 +1,13 @@
 # Preface {.unnumbered}
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 # Source common setup (created by build-report.R)
 source(here::here("_common.R"))
 
 # Verify data loaded
 if (!exists("projects_df")) {
   warning("Project data not loaded. Check _common.R")
+  
 }
 ```
 
@@ -33,12 +34,12 @@ Fisheries and Oceans Canada
 3190 Hammond Bay Road  
 Nanaimo, British Columbia, V9T 6N7, Canada
 
-## Acknowledgments {.unnumbered}
-
-<!-- Add acknowledgments here -->
-
 ---
 
-This report summarizes research and findings from `r n_projects` projects conducted under the Pacific Salmon Strategy Initiative.
+## Table of Contents {.unnumbered}
+```{r toc, results = "asis"}
+# add ToC after the front matter
+officer::block_toc(level = 3)
+```
 
 \newpage

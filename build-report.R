@@ -7,13 +7,11 @@
 # 3. Renders the report with Quarto
 
 library(here)
+library(bookdown)
 
 # Ensure we're in the project directory
 project_root <- here::here()
 cat("Working directory:", getwd(), "\n")
-
-# Find and report the output file
-output_dir <- file.path(project_root, "_book")
 
 # STEP 1: Load _common.R
 source(here("_common.R"))
@@ -56,18 +54,16 @@ tryCatch({
 cat("\n")
 
 
-# STEP 3: Render Report with Quarto
+# STEP 3: Render Report with bookdown (DOCX)
 # ===================================================================
 
-library(quarto)
+# bookdown compiles the multi-chapter book listed in _bookdown.yml
+# using the output format specified in _output.yml.
 
-quarto_render(output_format = "docx")
+# Render the book (uses index.Rmd by convention;
+bookdown::render_book()
 
-docx_files <- list.files(output_dir, pattern = "\\.docx$", full.names = TRUE)
-if (length(docx_files) > 0) {
-  cat("📄 Output saved to:", docx_files[1], "\n")
-  cat("   File size:", format(file.info(docx_files[1])$size / 1024^2, digits = 2), "MB\n\n")
-} else {
-  cat("📁 Output saved to:", output_dir, "\n\n")
-}
+
+
+
 

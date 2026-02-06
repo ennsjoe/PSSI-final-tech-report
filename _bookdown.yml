@@ -1,0 +1,14 @@
+book_filename: "PSSI-Technical-Report-2026"
+output_dir: "."
+delete_merged_file: true
+
+rmd_files:
+  - index.Rmd
+  - 01_body.Rmd
+  - 99_references.Rmd
+  - 10_project-reports.Rmd
+  - 11_appendix-a.Rmd
+  - 12_appendix-b.Rmd
+  - 13_appendix-c.Rmd
+  
+  

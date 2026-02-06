@@ -1,10 +1,8 @@
 # helper-functions.R
-library(DBI)
-library(RSQLite)
-library(readr)
-library(dplyr)
-library(here)
 
+
+# helper: define %||% if not present
+`%||%` <- function(x, y) if (is.null(x) || length(x) == 0) y else x
 
 # --- MANUAL PATH OVERRIDE (if needed) ---
 # If the automatic search doesn't find your CSV files, uncomment and edit these lines:
