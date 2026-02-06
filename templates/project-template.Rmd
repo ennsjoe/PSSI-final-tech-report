@@ -1,9 +1,7 @@
 
 ### Project `r project$project_id`: `r project$project_title`
 
-`r project$project_title`
-
-```{r create-bookmark, echo=FALSE, results='asis'}
+```{r, echo=FALSE, results='asis'}
 # Create bookmark using consistent helper function
 # This ensures cross-references in tables work correctly
 bookmark_id <- make_bkm(project$project_id)
@@ -19,7 +17,7 @@ officer::fpar(
 )
 ```
 
-```{r project-metadata, results='asis', echo=FALSE}
+```{r, results='asis', echo=FALSE}
 # ===================================================================
 # Helper Function for Safe Text Extraction
 # ===================================================================
@@ -94,7 +92,7 @@ if (length(metadata_items) > 0) {
 }
 ```
 
-```{r project-content, results='asis', echo=FALSE}
+```{r, results='asis', echo=FALSE}
 # ===================================================================
 # Main Content Sections
 # ===================================================================
@@ -308,7 +306,7 @@ if (has_files || has_text_content) {
 }
 ```
 
-```{r additional-sections, results='asis', echo=FALSE}
+```{r, results='asis', echo=FALSE}
 # ===================================================================
 # Additional Content Sections
 # ===================================================================
