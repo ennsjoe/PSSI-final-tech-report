@@ -399,43 +399,30 @@ data_projects_table <- read_csv(data_projects_loc) %>%
     Description   = str_squish(Description)
   ) %>%
   select(-URL_link)
-
-# Build stub-style Tool column + compact flextable
-tbl_word <- data_projects_table %>%
-  mutate(
-    Tool = paste0(
-      Title, "\n",
-      "Status: ", Status, "\n",
-      "Access: ", Accessibility
-    )
-  ) %>%
-  select(Tool, Description)
-
-ft <- flextable(tbl_word) %>%
-  set_caption("Innovation-related tools and descriptions") %>%
-  # Compact styling
-  fontsize(part = "all", size = 9) %>%                 # try 8–10
-  line_spacing(space = 0.9, part = "all") %>%          # tighter lines
-  padding(padding = 2, part = "all") %>%               # reduce cell padding
-  align(align = "left", part = "all") %>%
-  valign(valign = "top", part = "all") %>%
-  border_remove() %>%                                  # clean look
-  hline_top(border = fp_border(width = 0.5)) %>%       # subtle outer borders
-  hline_bottom(border = fp_border(width = 0.5)) %>%
-  vline_left(border = fp_border(width = 0.5)) %>%
-  vline_right(border = fp_border(width = 0.5)) %>%
-  # Wrapping + fixed layout improves Word rendering consistency
-  set_table_properties(layout = "fixed", width = 1) %>% # width=1 => 100% in Word
-  # Column widths tuned for compact report output (in inches)
-  width(j = "Tool", width = 2.0) %>%
-  width(j = "Description", width = 4.5) %>%
-  # Make header compact (or remove it entirely below)
-  bold(part = "header") %>%
-  fontsize(part = "header", size = 9) %>%
-  padding(part = "header", padding = 2) %>%
-  autofit()
-
-ft
+# 
+# # Build stub-style Tool column + compact flextable
+# tbl_word <- data_projects_table %>%
+#   mutate(
+#     Tool = paste0(
+#       Title, "\n",
+#       "Status: ", Status, "\n",
+#       "Access: ", Accessibility
+#     )
+#   ) %>%
+#   select(Tool, Description)
+# 
+# ft <- flextable(tbl_word) %>%
+#   set_caption("Innovation-related tools and descriptions") %>%
+#   # Column widths tuned for compact report output (in inches)
+#   width(j = "Tool", width = 2.0) %>%
+#   width(j = "Description", width = 4.5) %>%
+#   # Make header compact (or remove it entirely below)
+#   bold(part = "header") %>%
+#   fontsize(part = "header", size = 9) %>%
+#   padding(part = "header", padding = 2) %>%
+#   autofit()
+# 
+# ft
 ```
 
 ### B. Data and modelling to support decision making
@@ -478,8 +465,8 @@ make_section_table(projects_df,
 
 How have PSSI Research elements met its objectives? How has work completed moved the dial for salmon conservation and understanding factors driving salmon declines?
 
-\newpage
-
 # Acknowledgements
+
+\newpage
 
 <!-- Add acknowledgments here -->
