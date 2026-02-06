@@ -1,6 +1,20 @@
 
 ### Project `r project$project_id`: `r project$project_title`
 
+`r project$project_title`
+
+```{r}
+officer::fpar(
+     officer::run_bookmark(
+        project$project_id, 
+       officer::ftext(
+         as.character(project$project_id),
+         officer::fp_text(font.size = 1, color = "white")
+       )
+     )
+   )
+```
+
 ```{r, results='asis', echo=FALSE}
 # Helper function to safely extract text from project data
 safe_text <- function(value) {

@@ -79,6 +79,14 @@ if (!exists('projects_df')) {
   })
 }
 
+
+#update project ID fields to add letters (needed for word crossrefs)
+
+projects_df <- projects_df %>%
+  mutate(project_id = if_else(source == "DFO Science", 
+                              paste0("DFO_", project_id),
+                              project_id))
+
 # ===================================================================
 # Knitr Options
 # ===================================================================

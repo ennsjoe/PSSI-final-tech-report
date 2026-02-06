@@ -1,3 +1,5 @@
+# Summary of research and findings from the Pacific Salmon Strategy Initiative
+
 # Preface {.unnumbered}
 
 ```{r, include=FALSE}
@@ -35,6 +37,7 @@ Fisheries and Oceans Canada
 Nanaimo, British Columbia, V9T 6N7, Canada
 
 ---
+\newpage
 
 ## Table of Contents {.unnumbered}
 ```{r toc, results = "asis"}

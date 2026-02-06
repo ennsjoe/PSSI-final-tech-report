@@ -306,6 +306,31 @@ make_section_table <- function(df,
   # rows that are actual projects (not divider rows)
   data_rows <- which(display_df[[num_col]] != "")
   
+  # bookmark names must match the ones created in the template
+  bkms <- display_df[[num_col]][data_rows]
+  
+  # Word REF field with hyperlink switch: REF <bkm> \h
+  bslash <- intToUtf8(92)  # "\" character
+  field_code <- paste0("REF ", bkms, " ", bslash, "h")
+  
+  ft <- flextable::compose(
+    x = ft,
+    i = data_rows,
+    j = num_col,
+    value = flextable::as_paragraph(
+      flextable::as_word_field(field_code)
+    )
+  )
+  
+  # Optional: style like a hyperlink (blue + underlined)
+  ft <- flextable::style(
+    x    = ft,
+    i    = data_rows,
+    j    = num_col,
+    pr_t = flextable::fp_text_default(color = "#0563C1", underlined = TRUE),
+    part = "body"
+  )
+  
   # 4) Set header labels programmatically (NO :=)
   label_map <- stats::setNames(
     object = c(num_label, title_label),
