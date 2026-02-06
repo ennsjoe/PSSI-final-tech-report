@@ -96,6 +96,25 @@ add_frontmatter <- function(main_docx, output_docx = NULL, meta = list()) {
       body_add_break()
   }
   
+  # #### 3. TABLE OF CONTENTS -------------------------------------------
+  # 
+  # doc <- doc %>%
+  #   body_add_par("Table of Contents", style = "heading 1") %>%
+  #   body_add_toc(level = 3) %>%
+  #   body_add_break()
+  
+  #### 5. LIST OF TABLES ----------------------------------------------
+  doc <- doc %>%
+    body_add_par("LIST OF TABLES", style = "heading 1") %>%
+    body_add_toc(style = "Table Caption") %>%
+    body_add_break()
+  
+  #### 6. LIST OF FIGURES ---------------------------------------------
+  doc <- doc %>%
+    body_add_par("LIST OF FIGURES", style = "heading 1") %>%
+    body_add_toc(style = "Image Caption") %>%
+    body_add_break()
+  
   #### 4. APPEND MAIN CONTENT -----------------------------------------
   doc <- body_add_docx(doc, src = main_docx)
   

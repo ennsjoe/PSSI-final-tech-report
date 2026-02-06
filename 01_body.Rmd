@@ -29,7 +29,7 @@ The harvest transformation pillar was intended to change how Pacific salmon fish
 
 The integration and collaboration pillar focused on strengthening collective capacity to address Pacific salmon declines by improving how DFO worked both internally and with external partners. Key objectives under this pillar were to provide capacity support to various internal and external groups involved in salmon conservation and management, to improve collaboration among federal, provincial, territorial, Indigenous, and other governments, and to prioritize salmon stocks for recovery through coordinated, cross-jurisdictional planning and decision-making processes.
 
-```{r}
+```{r pssi-table, tab.cap="The 24 PSSI Initiatives by pillar.",tab.id="pssi-initiatives",tab.topcaption=TRUE}
 
 pillars_df <- read_csv(here(rawdata_path, "Table1_PSSI_initiatives.csv")) %>%
   mutate(across(where(is.character), ~ str_replace_all(.x, "[^[:alnum:][:punct:][:space:]]", " ")))
@@ -47,11 +47,6 @@ ft <- flextable(
   autofit() %>%
   width(j = "Pillar", width = 1.5)
 
-# Visible caption for readers (Quarto crossref still points to the dummy table)
-ft <- set_caption(
-  ft,
-  caption = "The 24 PSSI Initiatives by pillar. Each initiative included 1–4 sub-initiatives (not shown)."
-)
 
 ft
 
@@ -75,11 +70,11 @@ In this report, we summarize the outcomes and findings of research projects fund
 
 
 
-# Understanding Salmon and Their Ecosystems {#sec:understanding-salmon-ecosystems}
+# Improved Understanding of Salmon Ecosystems {#sec:salmon-ecosystems}
 
 ### A. Salmon population monitoring
 
-```{r salmon-population-projects}
+```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
 
 make_section_table(projects_df,
                    section_pick = "Salmon population monitoring")
@@ -93,7 +88,7 @@ make_section_table(projects_df,
 
 Provide an overview of the follow the fish program, how risk assessments and limiting factors (RAMS) were used to guide research priorities, key insights, and next steps to support rebuilding of WCVI Chinook salmon.
 
-```{r ftf-projects}
+```{r ftf-projects, tab.cap="DFO and BCSRIF projects associated with Follow the Fish.",tab.id="tbl-ftf"}
 
 make_section_table(projects_df,
                    section_pick = 'Life cycle assessment - Follow The Fish')
@@ -102,7 +97,7 @@ make_section_table(projects_df,
 
 #### Bottlenecks to survival (IP)
 
-```{r bottleneck-projects}
+```{r bottleneck-projects, tab.cap="DFO and BCSRIF projects associated with bottlenecks to survival.",tab.id="tbl-bottlenecks"}
 
 make_section_table(projects_df,
                    section_pick = 'Life cycle assessment - Bottlenecks to survival')
@@ -111,7 +106,7 @@ make_section_table(projects_df,
 
 ### C. Freshwater ecosystems (JE)
 
-```{r freshwater-ecosystem-projects}
+```{r freshwater-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with freshwater ecosystems theme.",tab.id="tbl-fweco"}
 
 make_section_table(projects_df,
                    section_pick = 'Freshwater ecosystems')
@@ -149,7 +144,7 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
 ### D. Marine ecosystems (IP/NB)
 
-```{r marine-ecosystem-projects}
+```{r marine-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with marine ecosystems and stressors theme.",tab.id="tbl-marine-eco"}
 
 make_section_table(projects_df,
                    section_pick = 'Marine ecosystems')
@@ -177,7 +172,7 @@ Summarize research and key findings related to building understanding of marine 
 
 ### E. Climate change vulnerability (CL)
 
-```{r climate-projects}
+```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
 
 make_section_table(projects_df,
                    section_pick = 'Climate change vulnerabiliity')
@@ -242,7 +237,7 @@ Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the pr
 
 ### A. Genetics
 
-```{r genetics-projects}
+```{r genetics-projects, tab.cap="DFO and BCSRIF projects associated with genetics.",tab.id="tbl-genetics"}
 make_section_table(projects_df,
                    section_pick = 'Genetics')
 ```
@@ -275,7 +270,7 @@ Projects and themes include:
 
 ### B. Fish health and hatchery practices
 
-```{r health-projects}
+```{r health-projects, tab.cap="DFO and BCSRIF projects associated with the fish health theme.",tab.id="tbl-health"}
 
 make_section_table(projects_df,
                    section_pick = 'Fish health and hatchery practices')
@@ -322,22 +317,22 @@ Projects and themes include:
 
 # Fishery monitoring and harvest techniques (NB/CL/FM) {#sec:fishery-monitoring}
 
-```{r fishery-projects}
+```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
 make_section_table(projects_df,
                    section_pick = 'Fishery monitoring and harvest techniques')
 ```
 
-### Highlights
+#### Highlights
 
 -   New technologies and collaborative partnerships are improving efficiency and accuracy of salmon fishery monitoring programs
 
 -   Research has identified new methods, opportunities, and best practices for selective fishing that can mitigate impacts on non-target stocks and species
 
-### Background and objectives
+#### Background and objectives
 
 The PSSI harvest transformation pillar focused on how precautionary fishery management can help address persistent declines in numerous British Columbia and Yukon salmon stocks. Various efforts and management measures were embraced to improve selectivity of fisheries across all sectors, including advancement of selective harvest methods, reformed licensing and regulatory approaches, enhanced catch monitoring, and long-term closures of some commercial fisheries. Research projects conducted under the harvest transformation pillar focused on developing, testing, and applying improved catch monitoring and reporting frameworks to address longstanding information gaps, particularly with respect to mixed‑stock fisheries. Pilot projects were also conducted to evaluate selective and mark‑selective fishing methods to better understand their effectiveness in reducing impacts on stocks of concern while maintaining harvest opportunities. Collectively, these projects lay the foundation for a refined approach to managing and regulating Pacific salmon fisheries. Preliminary results and management implications from a selection of PSSI harvest transformation research projects are summarized thematically below.
 
-### Enhancements to recreational monitoring
+#### Enhancements to recreational monitoring
 
 British Columbia is a renowned destination for salmon angling. Active recreational fisheries span the entire coastline alongside an extensive network of lodges and guiding operations. Likewise, recreational fishing is prevalent and popular in many of BC’s salmon-bearing watersheds. It is a considerable challenge to monitor and assess the impacts to salmon of such widespread, diffuse fisheries, and critical information gaps exist. As a result, several new recreational fishery restrictions have been introduced in recent years to protect declining stocks. PSSI sub-initiative 18.2 focuses on developing or improving recreational fishery monitoring to better inform management actions.
 
@@ -347,7 +342,7 @@ In one such effort, the Central Coast Indigenous Resource Alliance has developed
 
 -   Creel monitoring capacity improvements (Natalie Fuller)
 
-### Research on release mortality and best practices for recreational fisheries
+#### Research on release mortality and best practices for recreational fisheries
 
 The Pacific Salmon Ecology and Conservation Laboratory at the University of British Columbia undertook a 5-year research program to study the mechanisms and impacts of injuries sustained by chinook and coho salmon when released by recreational anglers. The BC Sport Fishing Institute, Pacific Salmon Foundation, Canada’s Ocean Tracking Network, DFO, and Kintama Marine Research were key collaborators on this work.
 
@@ -355,11 +350,11 @@ Results arising from acoustic telemetry tracking, extended holding studies, and 
 
 Based on these findings, the Pacific Salmon Ecology and Conservation Laboratory is developing practical, evidence‑based recommendations to minimize injury, physiological stress, and subsequent mortality when releasing salmon. Key recommendations emphasize reducing physical contact and air exposure, avoiding the use of landing nets and on‑board handling, releasing fish at the waterline, and minimizing fight times. Gear recommendations include eschewing in-line flashers as well as large or multiple hooks, especially treble hooks,  all of which increase injury risk and severity. Recommendations for fishery management include minimizing fishing in areas dominated by immature fish or salmon predators, winding down fisheries when surface water temperatures are exceptionally warm, and stopping fishing trips once daily retention limits have been achieved. These best practices provide new options to reduce recreational fishing impacts while maintaining opportunity. Researchers are also developing resources to help integrate release mortality considerations into monitoring and public education programs.
 
-### Bycatch monitoring in commercial fisheries
+#### Bycatch monitoring in commercial fisheries
 
 -   Salmon bycatch monitoring in the trawl fishery (Cory Lagasse)
 
-### Selective harvest methods and monitoring to support adaptive management
+#### Selective harvest methods and monitoring to support adaptive management
 
 Several research initiatives focused on improving the timeliness, accuracy, and operational relevance of fishery data to support measures aiming to reduce impacts on stocks of concern. A central theme across projects is the integration of emerging technologies with established fishing practices and community‑based monitoring programs. All projects recognized the need for innovation in both fishing practices and monitoring to better support precautionary management.
 
@@ -385,76 +380,39 @@ Describe the data-related PSSI sub-initiatives and key projects to improve manag
 
 ### A. Improving data management and availability
 
-```{r innovation-projects}
+```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.",tab.id="tbl-data-projects"}
 
 data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
 
-# Load and clean data
+# Load + clean + keep some fields
 data_projects_table <- read_csv(data_projects_loc) %>%
   mutate(
-    URL           = URL_link,
-    Title         = str_squish(Title),
-    Status        = str_squish(Status),
-    Accessibility = str_squish(Accessibility),
-    Description   = str_squish(Description)
+    Title  = str_squish(Title),
+    Status = str_squish(Status),
+    Access = str_squish(Accessibility),
+    URL    = URL_link
   ) %>%
-  select(-URL_link)
-# 
-# # Build stub-style Tool column + compact flextable
-# tbl_word <- data_projects_table %>%
-#   mutate(
-#     Tool = paste0(
-#       Title, "\n",
-#       "Status: ", Status, "\n",
-#       "Access: ", Accessibility
-#     )
-#   ) %>%
-#   select(Tool, Description)
-# 
-# ft <- flextable(tbl_word) %>%
-#   set_caption("Innovation-related tools and descriptions") %>%
-#   # Column widths tuned for compact report output (in inches)
-#   width(j = "Tool", width = 2.0) %>%
-#   width(j = "Description", width = 4.5) %>%
-#   # Make header compact (or remove it entirely below)
-#   bold(part = "header") %>%
-#   fontsize(part = "header", size = 9) %>%
-#   padding(part = "header", padding = 2) %>%
-#   autofit()
-# 
-# ft
+  select(Title, Status, Access, URL)
+
+ft <- flextable(data_projects_table) %>%
+  set_header_labels(Title="Title", Status="Status", Access="Access", URL="URL") %>%
+  bold(part="header") %>%
+  compose(j="URL", value = as_paragraph(hyperlink_text(x = "Link", url = URL))) %>%
+  width(j="Title",  width=3) %>%
+  width(j="Status", width=1.1) %>%
+  width(j="Access", width=1.4) %>%
+  width(j="URL",    width=0.8)
+
+ft
+
 ```
 
 ### B. Data and modelling to support decision making
 
-```{r data-projects}
+```{r data-projects, tab.cap="DFO and BCSRIF projects associated with data and modelling in support of decision making",tab.id="tbl-decisions"}
 
 make_section_table(projects_df,
                    section_pick = 'Data and modelling to support decision making')
-
-```
-
-\newpage
-
-# Restoration and recovery {#sec:restoration-recovery}
-
-### A. Recovery and rebuilding Programs
-
-```{r recovery-projects}
-
-make_section_table(projects_df,
-                   section_pick = 'Recovery and rebuilding programs')
-
-
-```
-
-### B. Restoration prioritization
-
-```{r restoration-projects}
-
-make_section_table(projects_df,
-                   section_pick = 'Restoration and prioritization')
-
 
 ```
 

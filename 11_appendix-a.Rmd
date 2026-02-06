@@ -12,7 +12,22 @@ link-citations: true
 
 ```{r appendix-a-setup, include=FALSE}
 source(here::here("_common.R"))
-library(gt)
+
+knitr::opts_chunk$set(
+  # Tables in appendix
+  tab.cap.pre = "Table A-",
+  tab.cap.sep = ": ",
+  tab.lp      = "tabA:",
+  tab.topcaption = TRUE,
+
+  # Figures in appendix
+  fig.cap.pre = "Figure A-",
+  fig.cap.sep = ": ",
+  fig.lp      = "figA:",     # optional but recommended for a clean namespace
+  fig.topcaption = TRUE
+)
+
+
 ```
 
 ```{r load-project-data, include=FALSE}

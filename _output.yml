@@ -1,6 +1,6 @@
 officedown::rdocx_document:
   reference_docx: "templates/custom-reference.docx"
-  toc: false
+  toc: true
   toc_depth: 3
   number_sections: false
   plots:
@@ -8,4 +8,9 @@ officedown::rdocx_document:
     align: center
   tables:
     style: Table
-    layout: autofit
+    layout: fixed
+    width: 1
+    caption:
+        style: "TableCaption"  # use a caption style that exists in your template
+  
+

@@ -46,7 +46,7 @@ resume: "Ce rapport décrit les résultats de..."
 ```{r table-settings}
 # recommended table settings to match CSAS table style and accessibility standards
 flextable::set_flextable_defaults(
-  font.size = 9,
+  font.size = 8,
   padding.left = 3, 
   padding.right = 3, 
   padding.top = 1, 

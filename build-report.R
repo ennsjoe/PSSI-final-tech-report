@@ -82,7 +82,7 @@ out_name <- if(!is.null(book_config$book_filename)) book_config$book_filename el
 main_docx_path <- here(paste0(out_name, ".docx"))
 
 # 4. Define final path
-final_docx_path <- here(paste0(out_name, ".docx"))
+final_docx_path <- here(paste0(out_name, "_wFrontMatter.docx"))
 
 # 5. IMPORTANT: Pass your custom template to the post-processor
 # This ensures the front matter uses the same styles as your report

@@ -4,6 +4,23 @@
 ```{r appendix-c-setup, include=FALSE}
 source(here::here("_common.R"))
 
+
+knitr::opts_chunk$set(
+  # Tables in appendix
+  tab.cap.pre = "Table C-",
+  tab.cap.sep = ": ",
+  tab.lp      = "tabC:",
+  tab.topcaption = TRUE,
+
+  # Figures in appendix
+  fig.cap.pre = "Figure C-",
+  fig.cap.sep = ": ",
+  fig.lp      = "figC:",     # optional but recommended for a clean namespace
+  fig.topcaption = TRUE
+)
+
+
+
 # Helper function for including figures from data_tools_figures directory
 include_data_figure <- function(filename, caption = "") {
   data_fig_dir <- here("figures", "data_tools_figures")
@@ -28,7 +45,7 @@ The platform has three main areas: entering and uploading data, learning about s
 
 As STREAM continues to grow, additional funding would allow us to respond to user feedback, develop more tools that improve data quality, and make more information available to the public.
 
-```{r stream-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Figure C.1 - Screen capture of the Salmon Tracking Escapement Assessment and Management (STREAM) Platform with the table of contents visible."}
+```{r stream-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Screen capture of the Salmon Tracking Escapement Assessment and Management (STREAM) Platform with the table of contents visible."}
 
 include_data_figure("Figure1.png")
 ```
@@ -43,7 +60,7 @@ The map includes several optional layers, including census sites, conservation u
 
 Users can download both tabular and spatial data directly from the site, or customize and print map views to support reports, presentations, and research.
 
-```{r salmon-space-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Figure C.2 - Screen capture of Salmon Space showing the Osoyoos-Skaha-Okanagan Sockeye conservation unit (highlighted) with associated information displayed in a pop-up."}
+```{r salmon-space-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Screen capture of Salmon Space showing the Osoyoos-Skaha-Okanagan Sockeye conservation unit (highlighted) with associated information displayed in a pop-up."}
 include_data_figure("Figure2.png")
 ```
 
@@ -57,7 +74,7 @@ STAMP consists of an integration layer that connects field data systems, laborat
 
 As STAMP evolves, future development will focus on expanding support to additional lab types, species, and data systems, strengthening data standards and interoperability, and improving tools for querying, reporting, and stewardship. This will enable more efficient operations, reduce manual effort, and support the integrated analyses required by DFO's modern mandate. 
 
-```{r stamp-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Figure C.3 - Screen capture of STAMP."}
+```{r stamp-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Screen capture of STAMP."}
 include_data_figure("Figure3.png")
 ```
 
@@ -71,7 +88,7 @@ The SILscanner platform consists of a cloud-based optical character recognition 
 
 SILscanner has been rolled out in the Fraser, West Coast Vancouver Island (WCVI), and North Coast (NC) areas and continuing development to scale to additional areas and form types. Future development will focus on expanding regional coverage, improving data extraction accuracy and validation workflows, and strengthening integration with downstream databases. These enhancements will accelerate data availability, improve data quality, and modernize a critical but currently paper-based component of salmon data capture.
 
-```{r silscanner-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Figure C.4 - Screen capture of SILScanner."}
+```{r silscanner-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Screen capture of SILScanner."}
 include_data_figure("Figure4.png")
 ```
 
@@ -85,7 +102,7 @@ The DocFlow platform consists of a document ingestion and OCR pipeline, AI-based
 
 Initially developed as a proof of concept for PATH authorization documents, DocFlow is being scaled to additional document types, programs, and regions, supporting integrative analyses such as cumulative effects assessment, regulatory performance reporting, and long-term data stewardship.
 
-```{r docflow-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Figure C.5 - Screen capture of DocFlow."}
+```{r docflow-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Screen capture of DocFlow."}
 
 include_data_figure("Figure5.png")
 ```
