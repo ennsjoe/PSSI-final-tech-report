@@ -2,3 +2,10 @@ officedown::rdocx_document:
   reference_docx: "templates/custom-reference.docx"
   toc: false
   toc_depth: 3
+  number_sections: false
+  plots:
+    style: Normal
+    align: center
+  tables:
+    style: Table
+    layout: autofit

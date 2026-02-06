@@ -25,6 +25,8 @@ ensure_package('RSQLite')
 ensure_package('readr')
 ensure_package('flextable')
 ensure_package('openxlsx')
+ensure_package('bookdown')
+ensure_package('yaml')
 
 # ===================================================================
 # Define Common Paths

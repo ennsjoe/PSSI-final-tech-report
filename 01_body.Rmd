@@ -31,18 +31,6 @@ The integration and collaboration pillar focused on strengthening collective cap
 
 ```{r}
 
-#| label: tbl-pssi-initiatives
-#| tbl-cap: "\u00A0"     # non-breaking space = “blank” caption
-#| echo: false
-#| results: asis
-
-# A 1x1 “minimal” markdown table
-cat("| |\n|:--|\n| |\n")
-
-```
-
-```{r}
-
 pillars_df <- read_csv(here(rawdata_path, "Table1_PSSI_initiatives.csv")) %>%
   mutate(across(where(is.character), ~ str_replace_all(.x, "[^[:alnum:][:punct:][:space:]]", " ")))
 
@@ -398,22 +386,21 @@ Describe the data-related PSSI sub-initiatives and key projects to improve manag
 ### A. Improving data management and availability
 
 ```{r innovation-projects}
-library(gt)
 
 data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
 
 # Load and clean data
 data_projects_table <- read_csv(data_projects_loc) %>%
   mutate(
-    URL          = URL_link,
-    Title        = str_squish(Title),
-    Status       = str_squish(Status),
-    Accessibility= str_squish(Accessibility),
-    Description  = str_squish(Description)
+    URL           = URL_link,
+    Title         = str_squish(Title),
+    Status        = str_squish(Status),
+    Accessibility = str_squish(Accessibility),
+    Description   = str_squish(Description)
   ) %>%
   select(-URL_link)
 
-# Build stub-style Tool column
+# Build stub-style Tool column + compact flextable
 tbl_word <- data_projects_table %>%
   mutate(
     Tool = paste0(
@@ -424,23 +411,31 @@ tbl_word <- data_projects_table %>%
   ) %>%
   select(Tool, Description)
 
-# Render as a clean Word-friendly table
-gt(tbl_word) |>
-  tab_caption("Innovation-related tools and descriptions") |>
-  opt_row_striping() |>
-  cols_align("left") |>
-  cols_width(
-    Tool ~ px(180),
-    Description ~ px(380)
-  ) |>
-  tab_style(
-    style = cell_text(whitespace = "normal"),
-    locations = cells_body(columns = Description)
-  ) |>
-  tab_options(
-    table.width = pct(100),
-    data_row.padding = px(6)
-  )
+ft <- flextable(tbl_word) %>%
+  set_caption("Innovation-related tools and descriptions") %>%
+  # Compact styling
+  fontsize(part = "all", size = 9) %>%                 # try 8–10
+  line_spacing(space = 0.9, part = "all") %>%          # tighter lines
+  padding(padding = 2, part = "all") %>%               # reduce cell padding
+  align(align = "left", part = "all") %>%
+  valign(valign = "top", part = "all") %>%
+  border_remove() %>%                                  # clean look
+  hline_top(border = fp_border(width = 0.5)) %>%       # subtle outer borders
+  hline_bottom(border = fp_border(width = 0.5)) %>%
+  vline_left(border = fp_border(width = 0.5)) %>%
+  vline_right(border = fp_border(width = 0.5)) %>%
+  # Wrapping + fixed layout improves Word rendering consistency
+  set_table_properties(layout = "fixed", width = 1) %>% # width=1 => 100% in Word
+  # Column widths tuned for compact report output (in inches)
+  width(j = "Tool", width = 2.0) %>%
+  width(j = "Description", width = 4.5) %>%
+  # Make header compact (or remove it entirely below)
+  bold(part = "header") %>%
+  fontsize(part = "header", size = 9) %>%
+  padding(part = "header", padding = 2) %>%
+  autofit()
+
+ft
 ```
 
 ### B. Data and modelling to support decision making
@@ -485,6 +480,6 @@ How have PSSI Research elements met its objectives? How has work completed moved
 
 \newpage
 
-# Acknowledgement
+# Acknowledgements
 
 <!-- Add acknowledgments here -->
