@@ -1,5 +1,5 @@
 ---
-# Development knitting only - ignored by bookdown build
+# Development knitting only - ignored by Quarto book build
 output:
   word_document:
     reference_docx: templates/custom-reference.docx
@@ -10,7 +10,7 @@ link-citations: true
 
 # Project Reports {#sec:project-reports}
 
-```{r load-common, include=FALSE}
+```{r setup, include=FALSE}
 source(here::here("_common.R"))
 ```
 
@@ -18,98 +18,106 @@ This section provides detailed reports for each PSSI-funded research project. Re
 
 ```{r generate-project-reports, results='asis'}
 
-# ===================================================================
-# Verify Template Exists
-# ===================================================================
-
+# Verify template exists
 if (!file.exists(template_path)) {
   stop("Template not found at: ", template_path, "\n",
-       "Ensure templates/project-template.Rmd exists in your project")
+       "Make sure templates/project-template.Rmd exists in your project")
 }
 
-# ===================================================================
-# Prepare Project Data
-# ===================================================================
+# Load project data from database
+con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
+projects_df <- dbReadTable(con, "projects")
+dbDisconnect(con)
 
-# Use projects_df already loaded by _common.R
-# No need to reload from database - it's already in memory
-
-message("\n=== Preparing Project Reports ===")
+message("\n=== Project Data Loaded ===")
 message("Total projects in database: ", nrow(projects_df))
 
-# Filter for projects with actual content to render
+# Filter for DFO Science projects with include='y'
 projects_to_render <- projects_df %>%
+  mutate(project_id = as.character(project_id)) %>%
   filter(
-    # Must have valid ID and title
+    source == "DFO Science",
+    include %in% c("y", "Y"),
     !is.na(project_id),
-    !is.na(project_title),
-    # Must have at least one content field populated
-    !is.na(highlights) | !is.na(background) | !is.na(methods_findings)
+    !is.na(project_title)
   ) %>%
   arrange(project_id)
 
-n_to_render <- nrow(projects_to_render)
-message("Projects with content to render: ", n_to_render)
+# Diagnostics
+projects_with_content <- projects_to_render %>%
+  filter(!is.na(highlights) | !is.na(background) | !is.na(methods_findings))
 
-if (n_to_render == 0) {
-  cat("\n\n*No projects with content found to render.*\n\n")
-  message("WARNING: No projects found with content. Check database filters.")
+projects_without_content <- projects_to_render %>%
+  filter(is.na(highlights) & is.na(background) & is.na(methods_findings))
+
+message("\n=== Rendering Plan ===")
+message("DFO Science projects with include='y': ", nrow(projects_to_render))
+message("  └─ With extracted content: ", nrow(projects_with_content))
+message("  └─ Metadata only (no content): ", nrow(projects_without_content))
+
+if (nrow(projects_to_render) == 0) {
+
+  cat("\n\n**No DFO Science projects found marked for inclusion.**\n\n")
+  cat("Please check that:\n")
+  cat("- Projects have source='DFO Science'\n")
+  cat("- Projects have include='y' or include='Y'\n\n")
+
 } else {
-  
-  # ===================================================================
-  # Generate Individual Project Reports
-  # ===================================================================
-  
-  for (i in seq_len(n_to_render)) {
-    
-    # Extract current project as a list for template
+
+  cat("\n\n")
+
+  successful_renders <- 0
+  failed_renders <- 0
+
+  for (i in seq_len(nrow(projects_to_render))) {
+
     project <- as.list(projects_to_render[i, ])
-    
-    # Progress message
-    title_preview <- substr(project$project_title, 1, 60)
-    if (nchar(project$project_title) > 60) title_preview <- paste0(title_preview, "...")
-    
-    message(sprintf("[%d/%d] Rendering: %s - %s", 
-                    i, n_to_render, 
-                    project$project_id,
-                    title_preview))
-    
-    # Render the template with error handling
+
+    has_content <- !is.na(project$highlights) ||
+                   !is.na(project$background) ||
+                   !is.na(project$methods_findings)
+
+    content_status <- if (has_content) "[Full Content]" else "[Metadata Only]"
+
+    message("\n--- Rendering ", i, "/", nrow(projects_to_render), ": ",
+            project$project_id, " ", content_status, " ---")
+
     tryCatch({
-      
-      # Knit the child template in current environment
-      rendered_content <- knitr::knit_child(
+
+      result <- knitr::knit_child(
         template_path,
         envir = environment(),
         quiet = TRUE
       )
-      
-      # Output the rendered content
-      cat(rendered_content)
-      
-      # Add page break after each project
-      cat("\n\\newpage\n\n")
-      
-    }, error = function(e) {
-      
-      # If rendering fails, create a minimal error report
-      cat(sprintf("\n\n### Project %s: %s\n\n", 
-                  project$project_id, 
-                  project$project_title))
-      cat(sprintf("**Error rendering project report:** %s\n\n", 
-                  conditionMessage(e)))
-      cat("*Please check the project data and template for issues.*\n\n")
-      cat("\n\\newpage\n\n")
-      
-      # Log to console
-      warning(sprintf("ERROR rendering project %s: %s", 
-                      project$project_id, 
-                      conditionMessage(e)))
-    })
-  }
-  
-  message("\n=== Project Reports Complete ===")
-  message("Successfully processed ", n_to_render, " project reports")
-}
 
+      cat(result)
+
+      # TRUE Word page break using OpenXML
+      cat("\n\n```{=openxml}\n<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>\n```\n\n")
+
+      successful_renders <- successful_renders + 1
+      message("    ✓ Success")
+
+    }, error = function(e) {
+
+      cat(paste0("\n\n### Project ", project$project_id, ": ", project$project_title, "\n\n"))
+      cat("**Error rendering this project report.**\n\n")
+      cat("Error: ", conditionMessage(e), "\n\n")
+
+      # Page break after error too
+      cat("\n\n```{=openxml}\n<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>\n```\n\n")
+
+      failed_renders <- failed_renders + 1
+      message("    ✗ ERROR: ", conditionMessage(e))
+    })
+
+  } # end for loop
+
+  message("\n=== Report Generation Complete ===")
+  message("Successfully rendered: ", successful_renders, " projects")
+  if (failed_renders > 0) {
+    message("Failed to render: ", failed_renders, " projects")
+  }
+
+} # end if/else
 ```
