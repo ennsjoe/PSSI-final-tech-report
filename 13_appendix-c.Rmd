@@ -29,6 +29,7 @@ The platform has three main areas: entering and uploading data, learning about s
 As STREAM continues to grow, additional funding would allow us to respond to user feedback, develop more tools that improve data quality, and make more information available to the public.
 
 ```{r stream-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Figure C.1 - Screen capture of the Salmon Tracking Escapement Assessment and Management (STREAM) Platform with the table of contents visible."}
+
 include_data_figure("Figure1.png")
 ```
 
@@ -85,6 +86,7 @@ The DocFlow platform consists of a document ingestion and OCR pipeline, AI-based
 Initially developed as a proof of concept for PATH authorization documents, DocFlow is being scaled to additional document types, programs, and regions, supporting integrative analyses such as cumulative effects assessment, regulatory performance reporting, and long-term data stewardship.
 
 ```{r docflow-figure, echo=FALSE, out.width=NULL, out.height=NULL, fig.cap="Figure C.5 - Screen capture of DocFlow."}
+
 include_data_figure("Figure5.png")
 ```
 
