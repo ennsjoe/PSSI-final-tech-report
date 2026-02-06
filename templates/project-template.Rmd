@@ -3,89 +3,117 @@
 
 `r project$project_title`
 
-```{r}
+```{r create-bookmark, echo=FALSE, results='asis'}
+# Create bookmark using consistent helper function
+# This ensures cross-references in tables work correctly
+bookmark_id <- make_bkm(project$project_id)
+
 officer::fpar(
-     officer::run_bookmark(
-        project$project_id, 
-       officer::ftext(
-         as.character(project$project_id),
-         officer::fp_text(font.size = 1, color = "white")
-       )
-     )
-   )
+  officer::run_bookmark(
+    bookmark_id,
+    officer::ftext(
+      as.character(project$project_id),
+      officer::fp_text(font.size = 1, color = "white")
+    )
+  )
+)
 ```
 
-```{r, results='asis', echo=FALSE}
-# Helper function to safely extract text from project data
+```{r project-metadata, results='asis', echo=FALSE}
+# ===================================================================
+# Helper Function for Safe Text Extraction
+# ===================================================================
+
 safe_text <- function(value) {
   if (is.null(value) || is.na(value)) return(NULL)
-  text <- as.character(value)
+  text <- trimws(as.character(value))
   if (nchar(text) > 0) return(text)
   return(NULL)
 }
 
-# Display project metadata
+# ===================================================================
+# Display Project Metadata
+# ===================================================================
+
 metadata_items <- c()
 
+# Conditionally add each metadata field if present
 if (!is.null(safe_text(project$project_leads))) {
-  metadata_items <- c(metadata_items, paste0("**Project Leads:** ", safe_text(project$project_leads)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Project Leads:** ", safe_text(project$project_leads)))
 }
 
 if (!is.null(safe_text(project$collaborations))) {
-  metadata_items <- c(metadata_items, paste0("**Collaborations:** ", safe_text(project$collaborations)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Collaborations:** ", safe_text(project$collaborations)))
 }
 
 if (!is.null(safe_text(project$location))) {
-  metadata_items <- c(metadata_items, paste0("**Location:** ", safe_text(project$location)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Location:** ", safe_text(project$location)))
 }
 
 if (!is.null(safe_text(project$region))) {
-  metadata_items <- c(metadata_items, paste0("**Region:** ", safe_text(project$region)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Region:** ", safe_text(project$region)))
 }
 
 if (!is.null(safe_text(project$species))) {
-  metadata_items <- c(metadata_items, paste0("**Species:** ", safe_text(project$species)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Species:** ", safe_text(project$species)))
 }
 
 if (!is.null(safe_text(project$waterbodies))) {
-  metadata_items <- c(metadata_items, paste0("**Waterbodies:** ", safe_text(project$waterbodies)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Waterbodies:** ", safe_text(project$waterbodies)))
 }
 
 if (!is.null(safe_text(project$life_history))) {
-  metadata_items <- c(metadata_items, paste0("**Life History:** ", safe_text(project$life_history)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Life History:** ", safe_text(project$life_history)))
 }
 
 if (!is.null(safe_text(project$stock))) {
-  metadata_items <- c(metadata_items, paste0("**Stock:** ", safe_text(project$stock)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Stock:** ", safe_text(project$stock)))
 }
 
 if (!is.null(safe_text(project$population))) {
-  metadata_items <- c(metadata_items, paste0("**Population:** ", safe_text(project$population)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Population:** ", safe_text(project$population)))
 }
 
 if (!is.null(safe_text(project$cu))) {
-  metadata_items <- c(metadata_items, paste0("**Conservation Unit:** ", safe_text(project$cu)))
+  metadata_items <- c(metadata_items, 
+                      paste0("**Conservation Unit:** ", safe_text(project$cu)))
 }
 
+# Output metadata if any exists
 if (length(metadata_items) > 0) {
   cat(paste(metadata_items, collapse = " \n\n "), "\n\n")
 }
+```
 
-# Highlights section
+```{r project-content, results='asis', echo=FALSE}
+# ===================================================================
+# Main Content Sections
+# ===================================================================
+
+# --- Highlights Section ---
 highlights_text <- safe_text(project$highlights)
 if (!is.null(highlights_text)) {
   cat("#### Highlights\n\n")
   cat(highlights_text, "\n\n")
 }
 
-# Background section
+# --- Background Section ---
 background_text <- safe_text(project$background)
 if (!is.null(background_text)) {
   cat("#### Background\n\n")
   cat(background_text, "\n\n")
 }
 
-# Methods and Findings section
+# --- Methods and Findings Section ---
 methods_text <- safe_text(project$methods_findings)
 if (!is.null(methods_text)) {
   cat("#### Methods and Findings\n\n")
@@ -94,38 +122,54 @@ if (!is.null(methods_text)) {
 ```
 
 ```{r tables-and-figures, results='asis', echo=FALSE}
-# Tables and Figures section
+# ===================================================================
+# Tables and Figures Section
+# ===================================================================
+
+# Define figure directory path
 fig_dir <- here::here("figures", "project_figures", project$project_id)
 
-# Check if directory exists and has content
+# Initialize file tracking
 has_files <- FALSE
 img_files <- character(0)
 table_files <- character(0)
 
+# Check if directory exists and scan for files
 if (dir.exists(fig_dir)) {
-  # Find image files (including SVG)
-  img_files <- list.files(fig_dir, 
-                          pattern = "\\.(png|jpg|jpeg|gif|svg)$", 
-                          full.names = TRUE, 
-                          ignore.case = TRUE)
+  
+  # Find image files (PNG, JPG, JPEG, GIF, SVG)
+  img_files <- list.files(
+    fig_dir, 
+    pattern = "\\.(png|jpg|jpeg|gif|svg)$", 
+    full.names = TRUE, 
+    ignore.case = TRUE
+  )
   
   # Find table files (CSV and Excel)
-  table_files <- list.files(fig_dir, 
-                            pattern = "\\.(csv|xlsx|xls)$", 
-                            full.names = TRUE, 
-                            ignore.case = TRUE)
+  table_files <- list.files(
+    fig_dir, 
+    pattern = "\\.(csv|xlsx|xls)$", 
+    full.names = TRUE, 
+    ignore.case = TRUE
+  )
   
   has_files <- length(img_files) > 0 || length(table_files) > 0
+  
+} else {
+  # Directory doesn't exist - this is fine, just log it
+  message("  No figures directory found for project ", project$project_id)
 }
 
-# Also check for text-only tables_figures content
+# Check for text-based figure/table descriptions
 tables_figures_text <- safe_text(project$tables_figures)
 has_text_content <- !is.null(tables_figures_text)
 
+# Only create section if there's content to display
 if (has_files || has_text_content) {
+  
   cat("#### Tables and Figures\n\n")
   
-  # Parse captions from tables_figures field
+  # Parse captions from tables_figures field if present
   captions <- NULL
   if (has_text_content) {
     captions <- strsplit(tables_figures_text, "\n")[[1]]
@@ -133,7 +177,10 @@ if (has_files || has_text_content) {
     captions <- captions[captions != ""]
   }
   
-  # Helper function to find matching caption
+  # ===================================================================
+  # Helper Function: Find Matching Caption
+  # ===================================================================
+  
   find_caption <- function(file_name, captions) {
     if (is.null(captions)) return(file_name)
     
@@ -144,39 +191,45 @@ if (has_files || has_text_content) {
       base_name <- substr(file_name, 1, nchar(file_name) - 1)
     }
     
-    # Convert filename like "Table_1" or "Figure_1" to pattern "Table 1" or "Figure 1"
+    # Convert filename pattern: "Table_1" -> "Table 1"
     search_pattern <- gsub("_", " ", base_name)
     
-    # Try matching with the base pattern (case insensitive)
+    # Try matching with base pattern (case insensitive)
     match_idx <- grep(paste0("^", search_pattern), captions, ignore.case = TRUE)
     
     if (length(match_idx) > 0) {
       return(captions[match_idx[1]])
     }
     
-    # If no match found, return original filename
+    # No match found - return original filename
     return(file_name)
   }
   
-  # Combine all files (tables and figures)
-  all_files <- c(table_files, img_files)
+  # ===================================================================
+  # Process and Display Files
+  # ===================================================================
   
-  if (length(all_files) > 0) {
-    # Sort files so Tables come before Figures, then numerically
+  if (has_files) {
+    
+    # Combine all files (tables and figures)
+    all_files <- c(table_files, img_files)
+    
+    # Sort: Tables first, then Figures, then by number
     file_order <- order(
-      !grepl("^Table", basename(all_files), ignore.case = TRUE),  # Tables first
-      as.numeric(gsub("\\D", "", basename(all_files)))  # Then by number
+      !grepl("^Table", basename(all_files), ignore.case = TRUE),
+      as.numeric(gsub("\\D", "", basename(all_files)))
     )
     all_files <- all_files[file_order]
     
-    # Process files in groups (to handle letter suffixes with single caption)
+    # Process files in groups (handles letter suffixes with single caption)
     i <- 1
     while (i <= length(all_files)) {
+      
       file_path <- all_files[i]
       file_name <- tools::file_path_sans_ext(basename(file_path))
       file_ext <- tolower(tools::file_ext(file_path))
       
-      # Extract base name and check for letter suffix
+      # Extract base name and check for letter suffix (e.g., Figure_1a)
       base_name <- file_name
       has_suffix <- grepl("[a-zA-Z]$", file_name)
       
@@ -185,7 +238,7 @@ if (has_files || has_text_content) {
         base_name <- substr(file_name, 1, nchar(file_name) - 1)
       }
       
-      # Find all files with the same base name (grouped figures like Figure_1a, Figure_1b)
+      # Find all files with same base name (grouped figures)
       group_files <- c(file_path)
       j <- i + 1
       while (j <= length(all_files)) {
@@ -204,7 +257,8 @@ if (has_files || has_text_content) {
       
       # Process the group of files
       tryCatch({
-        # Render all files in the group first (without captions)
+        
+        # Render all files in the group (without individual captions)
         for (gf in group_files) {
           gf_name <- tools::file_path_sans_ext(basename(gf))
           gf_ext <- tolower(tools::file_ext(gf))
@@ -220,23 +274,26 @@ if (has_files || has_text_content) {
               flextable::knit_print.flextable(ft)
               cat("\n\n")
             }
+            
           } else if (gf_ext == "csv") {
             # CSV table
             table_data <- read.csv(gf, stringsAsFactors = FALSE, check.names = FALSE)
             print(knitr::kable(table_data, format = "pandoc", row.names = FALSE))
             cat("\n\n")
+            
           } else if (gf_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
-            # Image - no caption yet
+            # Image file
             cat("![](", gf, ")\n\n", sep = "")
           }
         }
         
-        # Now print the caption ONCE at the end for the whole group
+        # Print single caption for the entire group
         caption <- find_caption(file_name, captions)
         cat("**", caption, "**\n\n", sep = "")
         
       }, error = function(e) {
-        cat("\n\n*Error loading files: ", e$message, "*\n\n", sep = "")
+        cat("\n\n*Error loading file(s): ", e$message, "*\n\n", sep = "")
+        message("  ERROR loading files for project ", project$project_id, ": ", e$message)
       })
       
       # Move to next group
@@ -244,29 +301,33 @@ if (has_files || has_text_content) {
     }
   }
   
-  # If there are captions but no matching files, show the text content
+  # If there are captions but no matching files, show text content
   if (!has_files && has_text_content) {
     cat(tables_figures_text, "\n\n")
   }
 }
 ```
 
-```{r, results='asis', echo=FALSE}
-# Insights section
+```{r additional-sections, results='asis', echo=FALSE}
+# ===================================================================
+# Additional Content Sections
+# ===================================================================
+
+# --- Insights Section ---
 insights_text <- safe_text(project$insights)
 if (!is.null(insights_text)) {
   cat("#### Insights\n\n")
   cat(insights_text, "\n\n")
 }
 
-# Next Steps section
+# --- Next Steps Section ---
 next_steps_text <- safe_text(project$next_steps)
 if (!is.null(next_steps_text)) {
   cat("#### Next Steps\n\n")
   cat(next_steps_text, "\n\n")
 }
 
-# References section
+# --- References Section ---
 references_text <- safe_text(project$references)
 if (!is.null(references_text)) {
   cat("#### References\n\n")
@@ -276,7 +337,7 @@ if (!is.null(references_text)) {
   refs <- trimws(refs)
   refs <- refs[refs != ""]
   
-  # Display each reference
+  # Display each reference with bibliography style
   for (ref in refs) {
     cat("::: {custom-style=\"Bibliography\"}\n")
     cat(ref, "\n")

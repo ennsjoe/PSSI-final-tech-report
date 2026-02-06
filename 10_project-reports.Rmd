@@ -1,5 +1,5 @@
 ---
-# Development knitting only - ignored by Quarto book build
+# Development knitting only - ignored by bookdown build
 output:
   word_document:
     reference_docx: templates/custom-reference.docx
@@ -10,7 +10,7 @@ link-citations: true
 
 # Project Reports {#sec:project-reports}
 
-```{r , include=FALSE}
+```{r load-common, include=FALSE}
 source(here::here("_common.R"))
 ```
 
@@ -18,55 +18,98 @@ This section provides detailed reports for each PSSI-funded research project. Re
 
 ```{r generate-project-reports, results='asis'}
 
-# Verify template exists
+# ===================================================================
+# Verify Template Exists
+# ===================================================================
+
 if (!file.exists(template_path)) {
   stop("Template not found at: ", template_path, "\n",
-       "Make sure templates/project-template.Rmd exists in your project")
+       "Ensure templates/project-template.Rmd exists in your project")
 }
 
-# Load project data from database
-con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
-projects_df <- dbReadTable(con, "projects")
-dbDisconnect(con)
+# ===================================================================
+# Prepare Project Data
+# ===================================================================
 
-message("Loaded ", nrow(projects_df), " projects from database")
+# Use projects_df already loaded by _common.R
+# No need to reload from database - it's already in memory
 
-# Convert project_id to character and filter for projects with content
-projects_df <- projects_df %>%
-  mutate(project_id = as.character(project_id)) %>%
+message("\n=== Preparing Project Reports ===")
+message("Total projects in database: ", nrow(projects_df))
+
+# Filter for projects with actual content to render
+projects_to_render <- projects_df %>%
   filter(
+    # Must have valid ID and title
     !is.na(project_id),
     !is.na(project_title),
-    # Must have at least one content field
+    # Must have at least one content field populated
     !is.na(highlights) | !is.na(background) | !is.na(methods_findings)
   ) %>%
   arrange(project_id)
 
-message("Generating reports for ", nrow(projects_df), " projects with content")
+n_to_render <- nrow(projects_to_render)
+message("Projects with content to render: ", n_to_render)
 
-# Generate a report for each project
-for (i in seq_len(nrow(projects_df))) {
-  # Extract project as a list for easier access in template
-  project <- as.list(projects_df[i, ])
+if (n_to_render == 0) {
+  cat("\n\n*No projects with content found to render.*\n\n")
+  message("WARNING: No projects found with content. Check database filters.")
+} else {
   
-  message("Rendering project ", i, "/", nrow(projects_df), ": ", project$project_id)
+  # ===================================================================
+  # Generate Individual Project Reports
+  # ===================================================================
   
-  # Render the project template
-  tryCatch({
-    cat(knitr::knit_child(
-      template_path,
-      envir = environment(),
-      quiet = TRUE
-    ))
-    cat("\n\\newpage\n")
-  }, error = function(e) {
-    # Display error in document
-    cat(paste0("\n\n### Project ", project$project_id, ": ", project$project_title, "\n\n"))
-    cat(paste0("**Error rendering project:** ", conditionMessage(e), "\n\n"))
-    cat("\n\\newpage\n")
-    message("ERROR: ", conditionMessage(e))
-  })
+  for (i in seq_len(n_to_render)) {
+    
+    # Extract current project as a list for template
+    project <- as.list(projects_to_render[i, ])
+    
+    # Progress message
+    title_preview <- substr(project$project_title, 1, 60)
+    if (nchar(project$project_title) > 60) title_preview <- paste0(title_preview, "...")
+    
+    message(sprintf("[%d/%d] Rendering: %s - %s", 
+                    i, n_to_render, 
+                    project$project_id,
+                    title_preview))
+    
+    # Render the template with error handling
+    tryCatch({
+      
+      # Knit the child template in current environment
+      rendered_content <- knitr::knit_child(
+        template_path,
+        envir = environment(),
+        quiet = TRUE
+      )
+      
+      # Output the rendered content
+      cat(rendered_content)
+      
+      # Add page break after each project
+      cat("\n\\newpage\n\n")
+      
+    }, error = function(e) {
+      
+      # If rendering fails, create a minimal error report
+      cat(sprintf("\n\n### Project %s: %s\n\n", 
+                  project$project_id, 
+                  project$project_title))
+      cat(sprintf("**Error rendering project report:** %s\n\n", 
+                  conditionMessage(e)))
+      cat("*Please check the project data and template for issues.*\n\n")
+      cat("\n\\newpage\n\n")
+      
+      # Log to console
+      warning(sprintf("ERROR rendering project %s: %s", 
+                      project$project_id, 
+                      conditionMessage(e)))
+    })
+  }
+  
+  message("\n=== Project Reports Complete ===")
+  message("Successfully processed ", n_to_render, " project reports")
 }
 
-message("Completed rendering ", nrow(projects_df), " project reports")
 ```
