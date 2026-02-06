@@ -1,5 +1,5 @@
 ---
-title: "Summary of research and findings from the Pacific Salmon Strategy Initiative"
+title: "Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative"
 
 subtitle: |
   Canadian Technical Report of Fisheries and Aquatic Sciences nnnn

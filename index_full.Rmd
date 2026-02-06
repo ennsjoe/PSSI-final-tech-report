@@ -1,5 +1,5 @@
 ---
-report_title: "Summary of research and findings from the Pacific Salmon Strategy Initiative"
+report_title: "Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative"
 doc_series: "Canadian Technical Report of Fisheries and Aquatic Sciences"
 series_number: "nnnn"
 year: 2026
