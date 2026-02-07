@@ -7,6 +7,8 @@
 # 3. Renders the report with Quarto
 
 library(here)
+library(officedown)
+library(officer)
 
 # Ensure we're in the project directory
 project_root <- here::here()
