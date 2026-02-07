@@ -3,146 +3,153 @@ library(dplyr)
 library(purrr)
 library(tibble)
 library(stringr)
-library(DBI)
-library(RSQLite)
 library(here)
 
 # ----------------------------------------------------------
-# Define standard paths - data/ folder is the single source of truth
+# Define standard paths - UPDATED TO data/processed
 # ----------------------------------------------------------
-if (!exists("OUTPUT_DB")) {
-  OUTPUT_DB <- here('data', 'projects.db')
-}
-if (!exists("OUTPUT_CSV")) {
-  OUTPUT_CSV <- here('data', 'pssi_form_data.csv')
-}
-if (!exists("INPUT_DIR")) {
-  INPUT_DIR <- here('data', 'word_docs')
+OUTPUT_CSV <- here('data', 'processed', 'pssi_form_data.csv')
+INPUT_DIR  <- here('data', 'word_docs')
+
+# Ensure the output directory exists
+if (!dir.exists(dirname(OUTPUT_CSV))) {
+  dir.create(dirname(OUTPUT_CSV), recursive = TRUE, showWarnings = FALSE)
 }
 
-# ENSURE DIRECTORY EXISTS BEFORE CONNECTION
-if (!dir.exists(dirname(OUTPUT_DB))) {
-  dir.create(dirname(OUTPUT_DB), recursive = TRUE, showWarnings = FALSE)
-}
-
-message("Using paths:")
-message("  CSV Output: ", OUTPUT_CSV)
-message("  Input:      ", INPUT_DIR)
-message("")
-
-# Fields to extract - Updated to include 'Project Number' to prevent Rmd errors
+# ----------------------------------------------------------
+# Field Definitions
+# ----------------------------------------------------------
 FIELD_LABELS <- c(
   "Project ID (number)" = "project_id",
-  "Project ID" = "project_id",
-  "Project Number" = "project_id", # Maps to project_id for 10_project-reports.Rmd
+  "project_id" = "project_id",
   "Project Title" = "project_title",
+  "project_title" = "project_title",
   "Project Leads" = "project_leads",
+  "project_leads" = "project_leads",
   "Collaborations and External Partners" = "collaborations",
-  "Location (if applicable)" = "location",
-  "Location" = "location",
-  "Salmon species (if applicable)" = "species",
-  "Salmon species" = "species",
-  "Waterbodies (if applicable)" = "waterbodies",
-  "Waterbodies" = "waterbodies",
-  "Life history phases (if applicable)" = "life_history",
-  "Life history phases" = "life_history",
-  "Region" = "region",
-  "Stock (if applicable)" = "stock",
-  "Stock" = "stock",
-  "Population (if applicable)" = "population",
-  "Population" = "population",
-  "Conservation Unit (if applicable)" = "cu",
-  "Conservation Unit" = "cu",
-  "Highlights" = "highlights",
-  "Background" = "background",
-  "Methods and Findings" = "methods_findings",
-  "Insights" = "insights",
-  "Next Steps" = "next_steps",
-  "Tables and Figures" = "tables_figures",
-  "References" = "references"
+  "collaborations" = "collaborations",
+  "location" = "location",
+  "species" = "species",
+  "waterbodies" = "waterbodies",
+  "life_history" = "life_history",
+  "region" = "region",
+  "stock" = "stock",
+  "population" = "population",
+  "cu" = "cu",
+  "highlights" = "highlights",
+  "background" = "background",
+  "methods_findings" = "methods_findings",
+  "insights" = "insights",
+  "next_steps" = "next_steps",
+  "tables_figures" = "tables_figures",
+  "references" = "references"
 )
 
 OUTPUT_FIELDS <- unique(FIELD_LABELS)
 W_NS <- c(w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main")
-
-# [Helper functions: fix_encoding, extract_text_with_breaks, extract_content_controls, 
-#  extract_from_tables, extract_section_content remain the same as your source]
+PLACEHOLDER_PATTERNS <- c("^Click or tap here", "^Enter text here", "^Type here")
 
 # ----------------------------------------------------------
-# Main Processing - Updated with NULL handling and Connection Safety
+# Cleaning Function (Keeps 3682 formatting intact)
 # ----------------------------------------------------------
-extract_docx_content <- function(docx_path) {
-  filename <- basename(docx_path)
-  message("Processing: ", filename)
+
+clean_text <- function(text) {
+  if (is.null(text) || is.na(text) || length(text) == 0) return(NA_character_)
   
-  temp_dir <- tempfile(); dir.create(temp_dir)
-  on.exit(unlink(temp_dir, recursive = TRUE))
+  # Standardize quotes to prevent CSV breakage
+  text <- gsub("[\u201C\u201D]", '"', text)
+  text <- gsub("[\u2018\u2019]", "'", text)
   
-  tryCatch({ unzip(docx_path, exdir = temp_dir) }, error = function(e) return(NULL))
-  doc_path <- file.path(temp_dir, "word", "document.xml")
-  if (!file.exists(doc_path)) return(NULL)
+  # Remove newlines to keep projects on a single row
+  text <- gsub("[\r\n]+", " ", text)
   
-  doc_xml <- read_xml(doc_path, encoding = "UTF-8")
-  results <- setNames(as.list(rep(NA_character_, length(OUTPUT_FIELDS))), OUTPUT_FIELDS)
+  # Strip non-printable characters
+  text <- gsub("[[:cntrl:]]", "", text)
   
-  cc_data <- extract_content_controls(doc_xml)
-  table_data <- extract_from_tables(doc_xml)
-  section_data <- extract_section_content(doc_xml)
+  text <- trimws(text)
+  if (nchar(text) == 0) return(NA_character_)
   
-  for (f in OUTPUT_FIELDS) {
-    # Layered check: Content Controls > Tables > Section Patterns
-    if (!is.null(cc_data[[f]]) && !is.na(cc_data[[f]])) {
-      results[[f]] <- cc_data[[f]]
-    } 
-    if (is.na(results[[f]]) && !is.null(table_data[[f]]) && !is.na(table_data[[f]])) {
-      results[[f]] <- table_data[[f]]
-    }
-    if (is.na(results[[f]]) && !is.null(section_data[[f]]) && !is.na(section_data[[f]])) {
-      results[[f]] <- section_data[[f]]
-    }
+  for (p in PLACEHOLDER_PATTERNS) {
+    if (grepl(p, text, ignore.case = TRUE)) return(NA_character_)
   }
   
-  tibble(source_file = filename, extraction_date = as.character(Sys.Date())) %>%
-    bind_cols(as_tibble(results))
+  return(text)
 }
 
-extract_all_forms <- function(input_dir = INPUT_DIR, output_csv = OUTPUT_CSV, output_db = OUTPUT_DB) {
-  docx_files <- list.files(input_dir, pattern = "\\.docx$", full.names = TRUE, ignore.case = TRUE)
-  docx_files <- docx_files[!grepl("^~\\$", basename(docx_files))]
-  
-  if (length(docx_files) == 0) stop("No Word documents found in: ", input_dir)
-  
-  results <- compact(map(docx_files, extract_docx_content))
-  if (length(results) == 0) stop("No data extracted.")
-  combined <- bind_rows(results)
-  
-  # Save CSV
-  message("\nSaving CSV to: ", output_csv)
-  con_csv <- file(output_csv, "wb")
-  writeBin(charToRaw('\uFEFF'), con_csv)
-  write.table(combined, con_csv, row.names = FALSE, na = "", sep = ",", quote = TRUE, fileEncoding = "UTF-8", col.names = TRUE)
-  close(con_csv)
-  message("✓ CSV saved: ", nrow(combined), " projects")
-  
-  # NOTE: Database write commented out
-  # The merged database (tracking list + content) should be created by init_database() in build-report.R
-  # This ensures all 224 projects are in the database, not just the ones with extracted content
-  
-  # # Save Database with explicit error handling for file locks
-  # tryCatch({
-  #   con_db <- dbConnect(SQLite(), output_db)
-  #   dbWriteTable(con_db, "projects", combined, overwrite = TRUE)
-  #   dbDisconnect(con_db)
-  #   message("\nSuccess! Database and CSV updated in /data.")
-  # }, error = function(e) {
-  #   stop("Could not connect to database: ", e$message, 
-  #        "\nCheck if the file 'projects.db' is open in another program.")
-  # })
-  
-  message("\n=== Extraction Complete ===")
-  message("Next step: Run build-report.R to merge with tracking list and generate report")
-  
-  return(combined)
+extract_text_from_node <- function(node, ns) {
+  t_nodes <- xml_find_all(node, ".//w:t", ns)
+  combined <- paste(xml_text(t_nodes), collapse = "")
+  return(clean_text(combined))
 }
 
-extract_all_forms()
+# ----------------------------------------------------------
+# Extraction Logic
+# ----------------------------------------------------------
+
+extract_content_controls <- function(doc_xml) {
+  results <- setNames(as.list(rep(NA_character_, length(OUTPUT_FIELDS))), OUTPUT_FIELDS)
+  sdt_nodes <- xml_find_all(doc_xml, "//w:sdt", W_NS)
+  
+  for (sdt in sdt_nodes) {
+    alias <- xml_attr(xml_find_first(sdt, ".//w:sdtPr/w:alias", W_NS), "val")
+    tag   <- xml_attr(xml_find_first(sdt, ".//w:sdtPr/w:tag", W_NS), "val")
+    
+    id <- if (!is.na(alias)) alias else if (!is.na(tag)) tag else NULL
+    
+    if (!is.null(id) && id %in% names(FIELD_LABELS)) {
+      col_name <- FIELD_LABELS[[id]]
+      val <- extract_text_from_node(sdt, W_NS)
+      
+      if (!is.na(val)) {
+        if (is.na(results[[col_name]])) {
+          results[[col_name]] <- val
+        } else {
+          results[[col_name]] <- paste(results[[col_name]], val, sep = "; ")
+        }
+      }
+    }
+  }
+  return(results)
+}
+
+extract_docx <- function(path) {
+  message("Processing: ", basename(path))
+  tmp <- tempfile()
+  dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE))
+  
+  tryCatch({
+    unzip(path, exdir = tmp)
+    xml_obj <- read_xml(file.path(tmp, "word", "document.xml"))
+    data <- extract_content_controls(xml_obj)
+    return(bind_cols(tibble(source_file = basename(path), extraction_date = as.character(Sys.Date())), as_tibble(data)))
+  }, error = function(e) {
+    message("  ! Failed: ", path)
+    return(NULL)
+  })
+}
+
+# ----------------------------------------------------------
+# Main Run
+# ----------------------------------------------------------
+
+files <- list.files(INPUT_DIR, pattern = "\\.docx$", full.names = TRUE)
+files <- files[!grepl("^~\\$", basename(files))]
+
+all_data <- map(files, extract_docx) %>% bind_rows()
+
+# Final cleanup and column ordering
+final_df <- all_data %>%
+  mutate(across(everything(), as.character)) 
+
+for (f in OUTPUT_FIELDS) {
+  if (!f %in% names(final_df)) final_df[[f]] <- NA_character_
+}
+
+final_df <- final_df %>% 
+  select(source_file, extraction_date, all_of(OUTPUT_FIELDS))
+
+# Save to CSV (Excel-friendly format)
+write.csv(final_df, OUTPUT_CSV, row.names = FALSE, fileEncoding = "UTF-8", na = "")
+
+message("\n✓ Success: Processed CSV saved to ", OUTPUT_CSV)
