@@ -1,27 +1,37 @@
 
-### Project `r project$project_id`: `r project$project_title`
-
-`r project$project_title`
+### `r project$project_number`: `r project$project_title`
 
 ```{r echo=FALSE, results='asis'}
-# Create bookmark - NO CHUNK LABEL to avoid duplicates
-tryCatch({
-  if (knitr::is_latex_output() || knitr::is_html_output()) {
-    cat(paste0('<a id="project_', project$project_id, '"></a>\n'))
-  } else {
-    officer::fpar(
-      officer::run_bookmark(
-        project$project_id, 
-        officer::ftext(
-          as.character(project$project_id),
-          officer::fp_text(font.size = 1, color = "white")
-        )
-      )
-    )
-  }
-}, error = function(e) {
-  invisible(NULL)
-})
+# tryCatch({
+#   bkm <- as.character(project$project_id)  # e.g., "DFO_3994"
+# 
+#   if (knitr::is_html_output()) {
+#     # HTML anchor (if you ever render HTML)
+#     cat(sprintf('<a id="%s"></a>\n', bkm))
+# 
+#   } else if (knitr::is_latex_output()) {
+#     # LaTeX anchor (if you ever render PDF)
+#     cat(sprintf('\\hypertarget{%s}{} \n', bkm))
+# 
+#   } else {
+#     # Word (officedown::rdocx_document): MUST force-print the run
+#     officedown::knit_print_run(
+#       officer::run_bookmark(
+#         bkm,
+#         officer::ftext(
+#           "",  # empty text; bookmark still exists at this location
+#           officer::fp_text(font.size = 1, color = "white")
+#         )
+#       )
+#     )
+#   }
+# 
+# }, error = function(e) invisible(NULL))
+
+# Just use a standard div with an ID. 
+# Pandoc/Word will turn this into a bookmark/anchor.
+cat(paste0("\n\n::: {#", project$project_id, "}\n:::\n\n"))
+
 ```
 
 ```{r echo=FALSE, results='asis'}
@@ -245,7 +255,8 @@ if (has_files || has_text_content) {
               ft <- flextable::flextable(table_data)
               ft <- flextable::autofit(ft)
               ft <- flextable::theme_booktabs(ft)
-              flextable::knit_print.flextable(ft)
+              #flextable::knit_print.flextable(ft)
+              print(ft)
               cat("\n\n")
             }
           } else if (gf_ext == "csv") {

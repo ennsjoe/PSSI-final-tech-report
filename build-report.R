@@ -65,13 +65,12 @@ cat("✓ Main report rendered\n\n")
 
 # STEP 4: Add CSAS Technical Report Front Matter
 # ===================================================================
-cat("Adding CSAS technical report front matter...\n")
 
 # 1. Source the function
 source(here("add_frontmatter.R"))
 
 # 2. Get Metadata from index.Rmd
-index_content <- readLines(here("index.Rmd"))
+index_content <- readLines(here("index_full.Rmd"))
 yaml_bounds <- which(index_content == "---")
 meta <- yaml::yaml.load(paste(index_content[(yaml_bounds[1]+1):(yaml_bounds[2]-1)], collapse = "\n"))
 

@@ -11,6 +11,7 @@ link-citations: true
 # APPENDIX B. Overview of Phase 2 BCSRIF Projects {#app:BCSRIF}
 
 ```{r appendix-b-setup, include=FALSE}
+library(here)
 source(here("_common.R"))
 
 knitr::opts_chunk$set(

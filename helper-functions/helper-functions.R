@@ -219,8 +219,6 @@ make_bkm <- function(project_id) {
   paste0("project_", gsub("[^A-Za-z0-9]", "_", project_id))
 }
   
-  
-
 # make a table from projects df for selected theme -------------------------------------------------------
 
 # get_section_table <- fuction(df,
@@ -231,14 +229,6 @@ make_bkm <- function(project_id) {
 #            include %in% c("y", "Y")) %>%
 #     select(project_id, source, project_title)
 # }
-
-
-make_id <- function(x, prefix = "proj-") {
-  x <- tolower(as.character(x))
-  x <- gsub("[^a-z0-9]+", "-", x)
-  x <- gsub("(^-|-$)", "", x)
-  paste0(prefix, x)
-}
 
 
 make_section_table <- function(df,
@@ -259,12 +249,6 @@ make_section_table <- function(df,
                               w_num = 1.2,   # inches (Word-friendly)
                               w_title = 5.2  # inches (Word-friendly)
 ) {
-  
-  stopifnot(requireNamespace("dplyr", quietly = TRUE))
-  stopifnot(requireNamespace("stringr", quietly = TRUE))
-  stopifnot(requireNamespace("tibble", quietly = TRUE))
-  stopifnot(requireNamespace("flextable", quietly = TRUE))
-  stopifnot(requireNamespace("officer", quietly = TRUE))
   
   df_sub <- df %>%
     filter(section == section_pick,
@@ -306,21 +290,21 @@ make_section_table <- function(df,
   # rows that are actual projects (not divider rows)
   data_rows <- which(display_df[[num_col]] != "")
   
-  # bookmark names must match the ones created in the template
+  # bookmarks == project_ids (as-is)
   bkms <- display_df[[num_col]][data_rows]
-  
-  # Word REF field with hyperlink switch: REF <bkm> \h
-  bslash <- intToUtf8(92)  # "\" character
-  field_code <- paste0("REF ", bkms, " ", bslash, "h")
   
   ft <- flextable::compose(
     x = ft,
     i = data_rows,
     j = num_col,
     value = flextable::as_paragraph(
-      flextable::as_word_field(field_code)
+      flextable::hyperlink_text(
+        x   = bkms,                 # what the user sees (project_id)
+        url = paste0("#", bkms)     # internal doc link target
+      )
     )
   )
+  
   
   # Optional: style like a hyperlink (blue + underlined)
   ft <- flextable::style(

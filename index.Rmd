@@ -1,13 +1,12 @@
 ---
-report_title: "Summary of research and findings from the Pacific Salmon Strategy Initiative"
-doc_series: "Canadian Technical Report of Fisheries and Aquatic Sciences"
-series_number: "nnnn"
-year: 2026
-citation: "Lagasse, C., Enns, J., Brown, N., Pearsall, I., Huang, A.-M., and Dobson, D (Eds.). 2026. Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative. Canadian Technical Report of Fisheries and Aquatic Sciences nnn."
+title: "Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative"
 
-# Set the official title to null so officedown doesn't print a title page
-title: "" 
-abstract: ""
+subtitle: |
+  Canadian Technical Report of Fisheries and Aquatic Sciences nnnn
+  
+  Fisheries and Oceans Canada  
+  Pacific Biological Station  
+  Nanaimo, BC
 
 authors:
   - name: "Cory Lagasse"
@@ -23,25 +22,9 @@ authors:
   - name: "Diana Dobson (editors)"
     affiliation: "Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo, BC, Canada"
 
-issn_print: "1488-5379"
-issn_online: "1488-5387"
-
-# Optional French/bilingual flags if you need them
-french: false     # or true if French primary
-bilingual: false  # or true if you want bilingual cover
-
-params:
-  front_matter_title: "Canadian Technical Report of Fisheries and Aquatic Sciences"
-  front_matter_series_number: "nnnn"
-  
-bibliography: bib/references.bib
-csl: csl/csas.csl
-link-citations: true
-
-report_abstract: "This report describes the results of..."
-resume: "Ce rapport décrit les résultats de..."
-
+date: "2026"
 ---
+
 
 ```{r table-settings}
 # recommended table settings to match CSAS table style and accessibility standards
@@ -56,5 +39,4 @@ flextable::set_flextable_defaults(
 )
 ```
 
-
-
+`r officedown::knit_print_run(officer::run_pagebreak())`
