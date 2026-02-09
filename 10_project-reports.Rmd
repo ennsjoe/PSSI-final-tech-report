@@ -8,7 +8,7 @@ csl: csl/csas.csl
 link-citations: true
 ---
 
-# Project Reports {#sec:project-reports}
+# DFO Project Reports {#sec:project-reports}
 
 ```{r, include=FALSE}
 source(here::here("_common.R"))
