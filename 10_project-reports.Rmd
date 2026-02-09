@@ -8,18 +8,28 @@ csl: csl/csas.csl
 link-citations: true
 ---
 
-# DFO Project Reports {#sec:project-reports}
+# Project Reports {#sec:project-reports}
 
-```{r, include=FALSE}
+```{r setup, include=FALSE}
 source(here::here("_common.R"))
-# Add this line to allow duplicate labels in child documents
-options(knitr.duplicate.label = "allow")
 ```
 
 This section provides detailed reports for each PSSI-funded research project. Reports are organized by project ID and include highlights, background, methods, findings, insights, and next steps.
 
 ```{r generate-project-reports, results='asis'}
 
+# Verify template exists
+if (!file.exists(template_path)) {
+  stop("Template not found at: ", template_path, "\n",
+       "Make sure templates/project-template.Rmd exists in your project")
+}
+
+# Load project data from database
+con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
+projects_df <- dbReadTable(con, "projects")
+dbDisconnect(con)
+
+message("\n=== Project Data Loaded ===")
 message("Total projects in database: ", nrow(projects_df))
 
 # Filter for DFO Science projects with include='y'
@@ -83,12 +93,7 @@ if (nrow(projects_to_render) == 0) {
       cat(result)
 
       # TRUE Word page break using OpenXML
-      #cat("\n\n```{=openxml}\n<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>\n```\n\n")
-
-      # 2. Insert a SAFE page break that won't corrupt the XML
-      cat("\n\n")
-      officedown::knit_print_run(officer::run_pagebreak())
-      cat("\n\n")
+      cat("\n\n```{=openxml}\n<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>\n```\n\n")
 
       successful_renders <- successful_renders + 1
       message("    ✓ Success")
@@ -100,10 +105,8 @@ if (nrow(projects_to_render) == 0) {
       cat("Error: ", conditionMessage(e), "\n\n")
 
       # Page break after error too
-      cat("\n\n")
-      officedown::knit_print_run(officer::run_pagebreak())
-      cat("\n\n")
-      
+      cat("\n\n```{=openxml}\n<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>\n```\n\n")
+
       failed_renders <- failed_renders + 1
       message("    ✗ ERROR: ", conditionMessage(e))
     })
