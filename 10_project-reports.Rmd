@@ -1,5 +1,4 @@
 ---
-# Development knitting only - ignored by Quarto book build
 output:
   word_document:
     reference_docx: templates/custom-reference.docx
@@ -10,37 +9,18 @@ link-citations: true
 
 # Project Reports {#sec:project-reports}
 
-```{r setup-reports-main, include=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+# Load data from CSVs (no database)
+# include=FALSE suppresses ALL output from this chunk
 source(here::here("_common.R"))
-
-# Set knitr options to prevent code leakage on error
-knitr::opts_chunk$set(
-  echo = FALSE,
-  warning = FALSE,
-  message = FALSE,
-  error = FALSE  # Don't show errors in output
-)
 ```
 
-This section provides detailed reports for each PSSI-funded research project. Reports are organized by project ID and include highlights, background, methods, findings, insights, and next steps.
-
-```{r generate-all-project-reports, results='asis'}
+```{r generate-project-reports, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
 
 # Verify template exists
-template_path <- here::here("templates", "project-template.Rmd")
-
 if (!file.exists(template_path)) {
-  stop("Template not found at: ", template_path, "\n",
-       "Make sure templates/project-template.Rmd exists in your project")
+  stop("Template not found at: ", template_path)
 }
-
-# Load project data from database
-con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
-projects_df <- dbReadTable(con, "projects")
-dbDisconnect(con)
-
-message("\n=== Project Data Loaded ===")
-message("Total projects in database: ", nrow(projects_df))
 
 # Filter for DFO Science projects with include='y'
 projects_to_render <- projects_df %>%
@@ -53,90 +33,57 @@ projects_to_render <- projects_df %>%
   ) %>%
   arrange(project_id)
 
-# Diagnostics
-projects_with_content <- projects_to_render %>%
-  filter(!is.na(highlights) | !is.na(background) | !is.na(methods_findings))
+# Print diagnostics to console (NOT to Word doc)
+message("\n", rep("=", 80), collapse = "")
+message("RENDERING PROJECT REPORTS")
+message(rep("=", 80), collapse = "", "\n")
+message("Projects to render: ", nrow(projects_to_render))
 
-message("\n=== Rendering Plan ===")
-message("DFO Science projects with include='y': ", nrow(projects_to_render))
-message("  └─ With extracted content: ", nrow(projects_with_content))
-
-if (nrow(projects_to_render) == 0) {
-  cat("\n\n**No DFO Science projects found marked for inclusion.**\n\n")
-  cat("Please check that:\n\n")
-  cat("- Projects have source='DFO Science'\n")
-  cat("- Projects have include='y' or include='Y'\n\n")
-} else {
-  
-  successful_renders <- 0
-  failed_renders <- 0
-  failed_project_ids <- character()
-
-  for (i in seq_len(nrow(projects_to_render))) {
-    
-    # Convert to list for template access
-    project <- as.list(projects_to_render[i, ])
-    
-    has_content <- !is.na(project$highlights) ||
-                   !is.na(project$background) ||
-                   !is.na(project$methods_findings)
-    
-    content_status <- if (has_content) "[Full Content]" else "[Metadata Only]"
-    
-    message("\n--- Rendering ", i, "/", nrow(projects_to_render), ": ",
-            project$project_id, " ", content_status, " ---")
-    
-    # Try to render the project
-    render_success <- tryCatch({
-      
-      # Knit the child template
-      result <- knitr::knit_child(
-        template_path,
-        envir = environment(),
-        quiet = TRUE
-      )
-      
-      # Output the rendered result
-      cat(result)
-      
-      # Success!
-      TRUE
-      
-    }, error = function(e) {
-      
-      # Render failed - show minimal error message in document
-      cat("\n\n### Project ", project$project_id, ": ", project$project_title, "\n\n", sep = "")
-      cat("*Error rendering this project report.*\n\n")
-      
-      # Log detailed error to console only
-      message("    ✗ ERROR: ", conditionMessage(e))
-      
-      # Return failure
-      FALSE
-    })
-    
-    # Track success/failure
-    if (render_success) {
-      successful_renders <- successful_renders + 1
-      message("    ✓ Success")
-    } else {
-      failed_renders <- failed_renders + 1
-      failed_project_ids <- c(failed_project_ids, project$project_id)
-    }
-    
-    # Add page break after each project (except the last one)
-    if (i < nrow(projects_to_render)) {
-      cat("\n\n```{=openxml}\n<w:p><w:r><w:br w:type=\"page\"/></w:r></w:p>\n```\n\n")
-    }
-    
-  } # end for loop
-  
-  message("\n=== Report Generation Complete ===")
-  message("Successfully rendered: ", successful_renders, " projects")
-  if (failed_renders > 0) {
-    message("Failed to render: ", failed_renders, " projects")
-    message("Failed project IDs: ", paste(failed_project_ids, collapse = ", "))
-  }
-  
+has_3682 <- any(grepl("3682", projects_to_render$project_id, fixed = TRUE))
+if (has_3682) {
+  position <- which(grepl("3682", projects_to_render$project_id, fixed = TRUE))
+  message("✓ Project 3682 at position ", position)
 }
+message("")
+
+# Generate reports
+successful_renders <- 0
+failed_renders <- 0
+
+for (i in seq_len(nrow(projects_to_render))) {
+  project <- projects_to_render[i, ]
+  
+  # Console message (NOT in Word)
+  message("--- Rendering ", i, "/", nrow(projects_to_render), ": ", project$project_id, " ---")
+  
+  tryCatch({
+    cat(knitr::knit_child(
+      template_path,
+      envir = environment(),
+      quiet = TRUE
+    ))
+    
+    # Page break
+    cat("\n\n\\newpage\n\n")
+    
+    successful_renders <- successful_renders + 1
+    message("    ✓ Success")
+    
+  }, error = function(e) {
+    cat(paste0("\n\n## Project ", project$project_id, "\n\n"))
+    cat(paste0("**Error:** ", e$message, "\n\n"))
+    cat("\n\n\\newpage\n\n")
+    
+    failed_renders <- failed_renders + 1
+    message("    ✗ ERROR: ", e$message)
+  })
+}
+
+# Final summary to console
+message("\n", rep("=", 80), collapse = "")
+message("Successfully rendered: ", successful_renders, " projects")
+if (failed_renders > 0) {
+  message("Failed: ", failed_renders, " projects")
+}
+message(rep("=", 80), collapse = "")
 ```
