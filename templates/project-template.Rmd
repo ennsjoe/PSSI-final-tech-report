@@ -1,107 +1,256 @@
----
-output:
-  word_document:
-    reference_docx: templates/custom-reference.docx
-bibliography: bib/references.bib
-csl: csl/csas.csl
-link-citations: true
----
 
-```{r include=FALSE, echo=FALSE}
-# NO CHUNK LABEL - prevents duplicate label errors
-if (!exists("project")) stop("Project object not found")
-library(knitr)
+### Project `r project$project_number` | `r project$project_title`
 
-get_field <- function(fname) {
-  val <- project[[fname]]
-  if (is.null(val) || length(val) == 0 || is.na(val) || val == "") return(NA_character_)
-  return(as.character(val))
-}
-```
-
-### Project `r get_field("project_id") %||% "UNKNOWN"` {#`r get_field("project_id") %||% "unknown"`}
-
-## `r get_field("project_title") %||% "Untitled Project"`
-
-```{r echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-# Simple metadata
-meta_fields <- list(
-  c("Project Leads", "project_leads"),
-  c("Collaborations", "collaborations"),
-  c("Region", "region"),
-  c("Stock", "stock"),
-  c("Population", "population"),
-  c("Conservation Unit", "cu"),
-  c("Life History", "life_history")
-)
-
-for (mf in meta_fields) {
-  val <- get_field(mf[2])
-  if (!is.na(val)) cat("**", mf[1], ":** ", val, "\n\n", sep = "")
+```{r, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+# Helper function to safely extract text from project data
+safe_text <- function(value) {
+  if (is.null(value) || is.na(value)) return(NULL)
+  text <- as.character(value)
+  if (nchar(text) > 0) return(text)
+  return(NULL)
 }
 
-# List fields
-list_fields <- list(
-  c("Species", "species"),
-  c("Waterbodies", "waterbodies"),
-  c("Location", "location")
-)
-
-for (lf in list_fields) {
-  val <- get_field(lf[2])
-  if (!is.na(val)) {
-    if (grepl("[;,]", val)) {
-      items <- trimws(strsplit(val, "[;,]")[[1]])
-      items <- items[nchar(items) > 0]
-      if (length(items) > 0) {
-        cat("**", lf[1], ":**\n\n", sep = "")
-        for (item in items) cat("- ", item, "\n", sep = "")
-        cat("\n")
-      }
-    } else {
-      cat("**", lf[1], ":** ", val, "\n\n", sep = "")
-    }
-  }
-}
-```
-
-```{r echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-# Content sections with line breaks
-content_fields <- list(
-  c("Highlights", "highlights"),
-  c("Background", "background"),
-  c("Methods and Findings", "methods_findings"),
-  c("Insights", "insights"),
-  c("Next Steps", "next_steps"),
-  c("Tables and Figures", "tables_figures"),
-  c("References", "references")
-)
-
-for (cf in content_fields) {
-  heading <- cf[1]
-  field_name <- cf[2]
+# Helper to render text with line breaks
+render_section <- function(heading, text) {
+  if (is.null(text)) return()
   
-  text <- get_field(field_name)
-  if (is.na(text)) next
+  cat("####", heading, "\n\n")
   
-  text <- trimws(text)
-  if (nchar(text) == 0) next
-  
-  # Output section heading
-  cat("**", heading, "**\n\n", sep = "")
-  
-  # Split on newlines
+  # Split on newlines and render each as a paragraph
   lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
   
-  # Output each line as a paragraph
   for (line in lines) {
     line <- trimws(line)
     if (nchar(line) > 0) {
-      cat(line, "\n\n", sep = "")
+      cat(line, "\n\n")
     } else {
-      # Empty line = extra spacing
+      # Blank line for spacing
       cat("\n")
     }
   }
 }
+
+# Display project metadata
+metadata_items <- c()
+
+if (!is.null(safe_text(project$project_leads))) {
+  metadata_items <- c(metadata_items, paste0("**Project Leads:** ", safe_text(project$project_leads)))
+}
+
+if (!is.null(safe_text(project$collaborations))) {
+  metadata_items <- c(metadata_items, paste0("**Collaborations:** ", safe_text(project$collaborations)))
+}
+
+if (!is.null(safe_text(project$location))) {
+  metadata_items <- c(metadata_items, paste0("**Location:** ", safe_text(project$location)))
+}
+
+if (!is.null(safe_text(project$region))) {
+  metadata_items <- c(metadata_items, paste0("**Region:** ", safe_text(project$region)))
+}
+
+if (!is.null(safe_text(project$species))) {
+  metadata_items <- c(metadata_items, paste0("**Species:** ", safe_text(project$species)))
+}
+
+if (!is.null(safe_text(project$waterbodies))) {
+  metadata_items <- c(metadata_items, paste0("**Waterbodies:** ", safe_text(project$waterbodies)))
+}
+
+if (!is.null(safe_text(project$life_history))) {
+  metadata_items <- c(metadata_items, paste0("**Life History:** ", safe_text(project$life_history)))
+}
+
+if (!is.null(safe_text(project$stock))) {
+  metadata_items <- c(metadata_items, paste0("**Stock:** ", safe_text(project$stock)))
+}
+
+if (!is.null(safe_text(project$population))) {
+  metadata_items <- c(metadata_items, paste0("**Population:** ", safe_text(project$population)))
+}
+
+if (!is.null(safe_text(project$cu))) {
+  metadata_items <- c(metadata_items, paste0("**Conservation Unit:** ", safe_text(project$cu)))
+}
+
+if (length(metadata_items) > 0) {
+  cat(paste(metadata_items, collapse = " \n\n "), "\n\n")
+}
+
+# Render content sections with line break preservation
+render_section("Highlights", safe_text(project$highlights))
+render_section("Background", safe_text(project$background))
+render_section("Methods and Findings", safe_text(project$methods_findings))
 ```
+
+```{r, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+# Tables and Figures section
+# Use project_number for finding figure directories
+if (!is.null(project$project_number) && !is.na(project$project_number)) {
+  fig_project_id <- as.character(project$project_number)
+} else {
+  fig_project_id <- gsub("^DFO_", "", project$project_id)
+}
+
+fig_dir <- here::here("figures", "project_figures", fig_project_id)
+
+# Check if directory exists
+has_files <- dir.exists(fig_dir)
+tables_figures_text <- safe_text(project$tables_figures)
+
+if (has_files || !is.null(tables_figures_text)) {
+  cat("#### Tables and Figures\n\n")
+  
+  # Parse captions from tables_figures text if available
+  caption_map <- list()
+  
+  if (!is.null(tables_figures_text)) {
+    # Split by lines
+    lines <- strsplit(tables_figures_text, "\n", fixed = TRUE)[[1]]
+    
+    for (line in lines) {
+      line <- trimws(line)
+      
+      # Match patterns like "Figure 1: Caption text" or "Table 1: Caption text"
+      # Also match "Figure 1. Caption" or just "Figure 1 - Caption"
+      if (grepl("^(Figure|Fig|Table|Tbl)\\s*\\d+\\s*[:.\\-]", line, ignore.case = TRUE)) {
+        # Extract the number and caption
+        match <- regexec("^(Figure|Fig|Table|Tbl)\\s*(\\d+)\\s*[:.\\-]\\s*(.+)$", line, ignore.case = TRUE)
+        if (match[[1]][1] != -1) {
+          matches <- regmatches(line, match)[[1]]
+          fig_type <- tolower(matches[2])  # "figure" or "table"
+          fig_num <- matches[3]            # "1", "2", etc.
+          caption <- trimws(matches[4])    # The actual caption
+          
+          # Create key like "figure 1" or "table 1"
+          key <- paste(fig_type, fig_num)
+          caption_map[[key]] <- caption
+        }
+      }
+    }
+  }
+  
+  if (has_files) {
+    # Get all files
+    all_files <- list.files(fig_dir, full.names = TRUE)
+    
+    if (length(all_files) > 0) {
+      # Filter for supported file types
+      img_pattern <- "\\.(png|jpg|jpeg|gif|svg)$"
+      table_pattern <- "\\.(csv|xlsx|xls)$"
+      
+      img_files <- all_files[grepl(img_pattern, all_files, ignore.case = TRUE)]
+      table_files <- all_files[grepl(table_pattern, all_files, ignore.case = TRUE)]
+      
+      # Sort each type alphabetically
+      img_files <- sort(img_files)
+      table_files <- sort(table_files)
+      
+      # Tables first, then images
+      all_files_sorted <- c(table_files, img_files)
+      
+      # Process each file
+      for (file_path in all_files_sorted) {
+        file_name <- basename(file_path)
+        file_ext <- tolower(tools::file_ext(file_path))
+        
+        # Try to extract figure/table number from filename
+        # Match "Figure 1", "Fig1", "Table 1", etc.
+        fig_match <- regexec("(Figure|Fig|Table|Tbl)\\s*(\\d+)", file_name, ignore.case = TRUE)
+        
+        caption <- NULL
+        if (fig_match[[1]][1] != -1) {
+          matches <- regmatches(file_name, fig_match)[[1]]
+          fig_type <- tolower(matches[2])
+          fig_num <- matches[3]
+          key <- paste(fig_type, fig_num)
+          
+          # Look up caption in our map
+          if (key %in% names(caption_map)) {
+            caption <- caption_map[[key]]
+          }
+        }
+        
+        # Fallback: use filename without extension if no caption found
+        if (is.null(caption) || nchar(caption) == 0) {
+          caption <- tools::file_path_sans_ext(file_name)
+        }
+        
+        tryCatch({
+          if (file_ext %in% c("xlsx", "xls")) {
+            # Excel table
+            if (requireNamespace("openxlsx", quietly = TRUE) && 
+                requireNamespace("flextable", quietly = TRUE)) {
+              table_data <- openxlsx::read.xlsx(file_path, sheet = 1)
+              ft <- flextable::flextable(table_data)
+              ft <- flextable::autofit(ft)
+              ft <- flextable::theme_booktabs(ft)
+              ft <- flextable::set_caption(ft, caption = caption)
+              flextable::knit_print.flextable(ft)
+              cat("\n\n")
+            }
+          } else if (file_ext == "csv") {
+            # CSV table with caption
+            cat("**", caption, "**\n\n", sep = "")
+            table_data <- read.csv(file_path, stringsAsFactors = FALSE, check.names = FALSE)
+            print(knitr::kable(table_data, format = "pandoc", row.names = FALSE))
+            cat("\n\n")
+          } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
+            # Image - use relative path from project root
+            rel_path <- gsub(paste0("^", here::here()), "", file_path)
+            rel_path <- gsub("^[\\\\/]+", "", rel_path)
+            rel_path <- gsub("\\\\", "/", rel_path)
+            
+            # Insert image with caption
+            cat("![", caption, "](", rel_path, ")\n\n", sep = "")
+          }
+          
+        }, error = function(e) {
+          message("  Warning: Could not load ", file_name, ": ", e$message)
+          cat("*[Could not load ", file_name, "]*\n\n", sep = "")
+        })
+      }
+    } else {
+      message("  Note: Directory ", fig_dir, " is empty")
+    }
+  } else {
+    # No files directory, but we have tables_figures text
+    # Just render the text as-is with line breaks
+    if (!is.null(tables_figures_text)) {
+      lines <- strsplit(tables_figures_text, "\n", fixed = TRUE)[[1]]
+      for (line in lines) {
+        line <- trimws(line)
+        if (nchar(line) > 0) {
+          cat(line, "\n\n")
+        }
+      }
+    }
+  }
+}
+```
+
+```{r, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+# Render remaining sections with line break preservation
+render_section("Insights", safe_text(project$insights))
+render_section("Next Steps", safe_text(project$next_steps))
+
+# References section
+references_text <- safe_text(project$references)
+if (!is.null(references_text)) {
+  cat("#### References\n\n")
+  
+  # Split references by double line breaks
+  refs <- strsplit(references_text, "\n\n")[[1]]
+  refs <- trimws(refs)
+  refs <- refs[refs != ""]
+  
+  # Display each reference
+  for (ref in refs) {
+    cat("::: {custom-style=\"Bibliography\"}\n")
+    cat(ref, "\n")
+    cat(":::\n\n")
+  }
+}
+```
+
+\newpage
