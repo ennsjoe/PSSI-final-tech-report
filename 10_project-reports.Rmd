@@ -1,5 +1,4 @@
 ---
-# Development knitting only - ignored by Quarto book build
 output:
   word_document:
     reference_docx: templates/custom-reference.docx
@@ -10,55 +9,81 @@ link-citations: true
 
 # Project Reports {#sec:project-reports}
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+# Load data from CSVs (no database)
+# include=FALSE suppresses ALL output from this chunk
 source(here::here("_common.R"))
 ```
 
-This section provides detailed reports for each PSSI-funded research project. Reports are organized by project ID and include highlights, background, methods, findings, insights, and next steps.
-
-```{r generate-project-reports, results='asis'}
+```{r generate-project-reports, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
 
 # Verify template exists
 if (!file.exists(template_path)) {
-  stop("Template not found at: ", template_path, "\n",
-       "Make sure templates/project-template.Rmd exists in your project")
+  stop("Template not found at: ", template_path)
 }
 
-# Load project data from database
-con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
-projects_df <- dbReadTable(con, "projects")
-dbDisconnect(con)
-
-# Filter for DFO Science projects only
-projects_df <- projects_df %>%
+# Filter for DFO Science projects with include='y'
+projects_to_render <- projects_df %>%
   mutate(project_id = as.character(project_id)) %>%
   filter(
+    source == "DFO Science",
+    include %in% c("y", "Y"),
     !is.na(project_id),
-    !is.na(project_title),
-    source == "DFO Science"  # Only show DFO Science projects
+    !is.na(project_title)
   ) %>%
   arrange(project_id)
 
-message("Generating reports for ", nrow(projects_df), " DFO Science projects")
+# Print diagnostics to console (NOT to Word doc)
+message("\n", rep("=", 80), collapse = "")
+message("RENDERING PROJECT REPORTS")
+message(rep("=", 80), collapse = "", "\n")
+message("Projects to render: ", nrow(projects_to_render))
 
-# Generate a report section for each project using the template
-for (i in seq_len(nrow(projects_df))) {
-  project <- projects_df[i, ]
+has_3682 <- any(grepl("3682", projects_to_render$project_id, fixed = TRUE))
+if (has_3682) {
+  position <- which(grepl("3682", projects_to_render$project_id, fixed = TRUE))
+  message("✓ Project 3682 at position ", position)
+}
+message("")
+
+# Generate reports
+successful_renders <- 0
+failed_renders <- 0
+
+for (i in seq_len(nrow(projects_to_render))) {
+  project <- projects_to_render[i, ]
   
-  # Render the project template
+  # Console message (NOT in Word)
+  message("--- Rendering ", i, "/", nrow(projects_to_render), ": ", project$project_id, " ---")
+  
   tryCatch({
     cat(knitr::knit_child(
       template_path,
       envir = environment(),
       quiet = TRUE
     ))
-    # Page break (pandoc converts for Word output)
+    
+    # Page break
     cat("\n\n\\newpage\n\n")
+    
+    successful_renders <- successful_renders + 1
+    message("    ✓ Success")
+    
   }, error = function(e) {
     cat(paste0("\n\n## Project ", project$project_id, "\n\n"))
-    cat(paste0("*Error generating report: ", e$message, "*\n\n"))
-    cat(paste0("*Template path: ", template_path, "*\n\n"))
+    cat(paste0("**Error:** ", e$message, "\n\n"))
     cat("\n\n\\newpage\n\n")
+    
+    failed_renders <- failed_renders + 1
+    message("    ✗ ERROR: ", e$message)
   })
 }
+
+# Final summary to console
+message("\n", rep("=", 80), collapse = "")
+message("Successfully rendered: ", successful_renders, " projects")
+if (failed_renders > 0) {
+  message("Failed: ", failed_renders, " projects")
+}
+message(rep("=", 80), collapse = "")
 ```

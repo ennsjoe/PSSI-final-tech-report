@@ -1,13 +1,33 @@
 
-### Project `r project$project_id`: `r project$project_title`
+### Project `r project$project_number` | `r project$project_title`
 
-```{r, results='asis', echo=FALSE}
+```{r, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
 # Helper function to safely extract text from project data
 safe_text <- function(value) {
   if (is.null(value) || is.na(value)) return(NULL)
   text <- as.character(value)
   if (nchar(text) > 0) return(text)
   return(NULL)
+}
+
+# Helper to render text with line breaks
+render_section <- function(heading, text) {
+  if (is.null(text)) return()
+  
+  cat("####", heading, "\n\n")
+  
+  # Split on newlines and render each as a paragraph
+  lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
+  
+  for (line in lines) {
+    line <- trimws(line)
+    if (nchar(line) > 0) {
+      cat(line, "\n\n")
+    } else {
+      # Blank line for spacing
+      cat("\n")
+    }
+  }
 }
 
 # Display project metadata
@@ -57,31 +77,22 @@ if (length(metadata_items) > 0) {
   cat(paste(metadata_items, collapse = " \n\n "), "\n\n")
 }
 
-# Highlights section
-highlights_text <- safe_text(project$highlights)
-if (!is.null(highlights_text)) {
-  cat("#### Highlights\n\n")
-  cat(highlights_text, "\n\n")
-}
-
-# Background section
-background_text <- safe_text(project$background)
-if (!is.null(background_text)) {
-  cat("#### Background\n\n")
-  cat(background_text, "\n\n")
-}
-
-# Methods and Findings section
-methods_text <- safe_text(project$methods_findings)
-if (!is.null(methods_text)) {
-  cat("#### Methods and Findings\n\n")
-  cat(methods_text, "\n\n")
-}
+# Render content sections with line break preservation
+render_section("Highlights", safe_text(project$highlights))
+render_section("Background", safe_text(project$background))
+render_section("Methods and Findings", safe_text(project$methods_findings))
 ```
 
-```{r, results='asis', echo=FALSE}
-# Tables and Figures section - SIMPLIFIED file loading
-fig_dir <- here::here("figures", "project_figures", project$project_id)
+```{r, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+# Tables and Figures section
+# Use project_number for finding figure directories
+if (!is.null(project$project_number) && !is.na(project$project_number)) {
+  fig_project_id <- as.character(project$project_number)
+} else {
+  fig_project_id <- gsub("^DFO_", "", project$project_id)
+}
+
+fig_dir <- here::here("figures", "project_figures", fig_project_id)
 
 # Check if directory exists
 has_files <- dir.exists(fig_dir)
@@ -90,77 +101,138 @@ tables_figures_text <- safe_text(project$tables_figures)
 if (has_files || !is.null(tables_figures_text)) {
   cat("#### Tables and Figures\n\n")
   
-  if (has_files) {
-    # Get all files (images and tables)
-    all_files <- list.files(fig_dir, full.names = TRUE)
+  # Parse captions from tables_figures text if available
+  caption_map <- list()
+  
+  if (!is.null(tables_figures_text)) {
+    # Split by lines
+    lines <- strsplit(tables_figures_text, "\n", fixed = TRUE)[[1]]
     
-    # Filter for supported file types
-    img_pattern <- "\\.(png|jpg|jpeg|gif|svg)$"
-    table_pattern <- "\\.(csv|xlsx|xls)$"
-    
-    img_files <- all_files[grepl(img_pattern, all_files, ignore.case = TRUE)]
-    table_files <- all_files[grepl(table_pattern, all_files, ignore.case = TRUE)]
-    
-    # Combine and sort: tables first, then images
-    all_files <- c(table_files, img_files)
-    
-    # Process each file individually (no complex grouping logic)
-    for (file_path in all_files) {
-      file_name <- tools::file_path_sans_ext(basename(file_path))
-      file_ext <- tolower(tools::file_ext(file_path))
+    for (line in lines) {
+      line <- trimws(line)
       
-      tryCatch({
-        if (file_ext %in% c("xlsx", "xls")) {
-          # Excel table
-          if (requireNamespace("openxlsx", quietly = TRUE) && 
-              requireNamespace("flextable", quietly = TRUE)) {
-            table_data <- openxlsx::read.xlsx(file_path, sheet = 1)
-            ft <- flextable::flextable(table_data)
-            ft <- flextable::autofit(ft)
-            ft <- flextable::theme_booktabs(ft)
-            flextable::knit_print.flextable(ft)
-            cat("\n\n")
-          }
-        } else if (file_ext == "csv") {
-          # CSV table
-          table_data <- read.csv(file_path, stringsAsFactors = FALSE, check.names = FALSE)
-          print(knitr::kable(table_data, format = "pandoc", row.names = FALSE))
-          cat("\n\n")
-        } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
-          # Image
-          cat("![](", file_path, ")\n\n", sep = "")
+      # Match patterns like "Figure 1: Caption text" or "Table 1: Caption text"
+      # Also match "Figure 1. Caption" or just "Figure 1 - Caption"
+      if (grepl("^(Figure|Fig|Table|Tbl)\\s*\\d+\\s*[:.\\-]", line, ignore.case = TRUE)) {
+        # Extract the number and caption
+        match <- regexec("^(Figure|Fig|Table|Tbl)\\s*(\\d+)\\s*[:.\\-]\\s*(.+)$", line, ignore.case = TRUE)
+        if (match[[1]][1] != -1) {
+          matches <- regmatches(line, match)[[1]]
+          fig_type <- tolower(matches[2])  # "figure" or "table"
+          fig_num <- matches[3]            # "1", "2", etc.
+          caption <- trimws(matches[4])    # The actual caption
+          
+          # Create key like "figure 1" or "table 1"
+          key <- paste(fig_type, fig_num)
+          caption_map[[key]] <- caption
         }
-        
-        # Add caption as filename (you can enhance this later)
-        cat("**", file_name, "**\n\n", sep = "")
-        
-      }, error = function(e) {
-        cat("\n\n*Error loading file ", basename(file_path), ": ", e$message, "*\n\n", sep = "")
-      })
+      }
     }
   }
   
-  # Also show text content if present
-  if (!is.null(tables_figures_text)) {
-    cat("\n\n", tables_figures_text, "\n\n")
+  if (has_files) {
+    # Get all files
+    all_files <- list.files(fig_dir, full.names = TRUE)
+    
+    if (length(all_files) > 0) {
+      # Filter for supported file types
+      img_pattern <- "\\.(png|jpg|jpeg|gif|svg)$"
+      table_pattern <- "\\.(csv|xlsx|xls)$"
+      
+      img_files <- all_files[grepl(img_pattern, all_files, ignore.case = TRUE)]
+      table_files <- all_files[grepl(table_pattern, all_files, ignore.case = TRUE)]
+      
+      # Sort each type alphabetically
+      img_files <- sort(img_files)
+      table_files <- sort(table_files)
+      
+      # Tables first, then images
+      all_files_sorted <- c(table_files, img_files)
+      
+      # Process each file
+      for (file_path in all_files_sorted) {
+        file_name <- basename(file_path)
+        file_ext <- tolower(tools::file_ext(file_path))
+        
+        # Try to extract figure/table number from filename
+        # Match "Figure 1", "Fig1", "Table 1", etc.
+        fig_match <- regexec("(Figure|Fig|Table|Tbl)\\s*(\\d+)", file_name, ignore.case = TRUE)
+        
+        caption <- NULL
+        if (fig_match[[1]][1] != -1) {
+          matches <- regmatches(file_name, fig_match)[[1]]
+          fig_type <- tolower(matches[2])
+          fig_num <- matches[3]
+          key <- paste(fig_type, fig_num)
+          
+          # Look up caption in our map
+          if (key %in% names(caption_map)) {
+            caption <- caption_map[[key]]
+          }
+        }
+        
+        # Fallback: use filename without extension if no caption found
+        if (is.null(caption) || nchar(caption) == 0) {
+          caption <- tools::file_path_sans_ext(file_name)
+        }
+        
+        tryCatch({
+          if (file_ext %in% c("xlsx", "xls")) {
+            # Excel table
+            if (requireNamespace("openxlsx", quietly = TRUE) && 
+                requireNamespace("flextable", quietly = TRUE)) {
+              table_data <- openxlsx::read.xlsx(file_path, sheet = 1)
+              ft <- flextable::flextable(table_data)
+              ft <- flextable::autofit(ft)
+              ft <- flextable::theme_booktabs(ft)
+              ft <- flextable::set_caption(ft, caption = caption)
+              flextable::knit_print.flextable(ft)
+              cat("\n\n")
+            }
+          } else if (file_ext == "csv") {
+            # CSV table with caption
+            cat("**", caption, "**\n\n", sep = "")
+            table_data <- read.csv(file_path, stringsAsFactors = FALSE, check.names = FALSE)
+            print(knitr::kable(table_data, format = "pandoc", row.names = FALSE))
+            cat("\n\n")
+          } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
+            # Image - use relative path from project root
+            rel_path <- gsub(paste0("^", here::here()), "", file_path)
+            rel_path <- gsub("^[\\\\/]+", "", rel_path)
+            rel_path <- gsub("\\\\", "/", rel_path)
+            
+            # Insert image with caption
+            cat("![", caption, "](", rel_path, ")\n\n", sep = "")
+          }
+          
+        }, error = function(e) {
+          message("  Warning: Could not load ", file_name, ": ", e$message)
+          cat("*[Could not load ", file_name, "]*\n\n", sep = "")
+        })
+      }
+    } else {
+      message("  Note: Directory ", fig_dir, " is empty")
+    }
+  } else {
+    # No files directory, but we have tables_figures text
+    # Just render the text as-is with line breaks
+    if (!is.null(tables_figures_text)) {
+      lines <- strsplit(tables_figures_text, "\n", fixed = TRUE)[[1]]
+      for (line in lines) {
+        line <- trimws(line)
+        if (nchar(line) > 0) {
+          cat(line, "\n\n")
+        }
+      }
+    }
   }
 }
 ```
 
-```{r, results='asis', echo=FALSE}
-# Insights section
-insights_text <- safe_text(project$insights)
-if (!is.null(insights_text)) {
-  cat("#### Insights\n\n")
-  cat(insights_text, "\n\n")
-}
-
-# Next Steps section
-next_steps_text <- safe_text(project$next_steps)
-if (!is.null(next_steps_text)) {
-  cat("#### Next Steps\n\n")
-  cat(next_steps_text, "\n\n")
-}
+```{r, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+# Render remaining sections with line break preservation
+render_section("Insights", safe_text(project$insights))
+render_section("Next Steps", safe_text(project$next_steps))
 
 # References section
 references_text <- safe_text(project$references)
