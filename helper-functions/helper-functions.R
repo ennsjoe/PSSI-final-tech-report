@@ -323,13 +323,7 @@ new_appendix <- function() {
 make_bkm <- function(project_id) {
   paste0("project_", gsub("[^A-Za-z0-9]", "_", project_id))
 }
-<<<<<<< HEAD
-  
-=======
 
-
-
->>>>>>> joe-temp
 # make a table from projects df for selected theme -------------------------------------------------------
 
 # get_section_table <- fuction(df,
