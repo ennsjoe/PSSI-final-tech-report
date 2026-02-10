@@ -176,7 +176,7 @@ Summarize research and key findings related to building understanding of marine 
 ```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
 
 make_section_table(projects_df,
-                   section_pick = 'Climate change vulnerabiliity')
+                   section_pick = 'Climate change vulnerability')
 ```
 
 **Highlights**
