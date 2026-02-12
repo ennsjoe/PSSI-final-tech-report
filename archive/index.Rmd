@@ -1,0 +1,42 @@
+---
+title: "Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative"
+
+subtitle: |
+  Canadian Technical Report of Fisheries and Aquatic Sciences nnnn
+  
+  Fisheries and Oceans Canada  
+  Pacific Biological Station  
+  Nanaimo, BC
+
+authors:
+  - name: "Cory Lagasse"
+    affiliation: "Fisheries and Oceans Canada, Institute of Ocean Sciences, Sidney, BC, Canada"
+  - name: "Joe Enns"
+    affiliation: "Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo, BC, Canada"
+  - name: "Nicholas Brown"
+    affiliation: "Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo, BC, Canada"
+  - name: "Isobel Pearsall"
+    affiliation: "Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo, BC, Canada"
+  - name: "Ann-Marie Huang"
+    affiliation: "Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo, BC, Canada"
+  - name: "Diana Dobson (editors)"
+    affiliation: "Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo, BC, Canada"
+
+date: "2026"
+---
+
+
+```{r table-settings}
+# recommended table settings to match CSAS table style and accessibility standards
+flextable::set_flextable_defaults(
+  font.size = 8,
+  padding.left = 3, 
+  padding.right = 3, 
+  padding.top = 1, 
+  padding.bottom = 1,
+  na_str = "-",
+  theme_fun = "theme_booktabs"
+)
+```
+
+`r officedown::knit_print_run(officer::run_pagebreak())`
