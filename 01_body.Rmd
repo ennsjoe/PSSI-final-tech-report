@@ -83,7 +83,7 @@ make_section_table(projects_df,
 
 ```
 
-### B. Life cycle approaches
+### B. Salmon life cycle approaches {#life-cycle}
 
 #### Follow the Fish (IP)
 
@@ -143,7 +143,7 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
     -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
 
-### D. Marine ecosystems (IP/NB)
+### D. Marine ecosystems (IP/NB) {#marine-ecosystems}
 
 ```{r marine-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with marine ecosystems and stressors theme.",tab.id="tbl-marine-eco"}
 
@@ -171,7 +171,7 @@ Summarize research and key findings related to building understanding of marine 
 
     -   Quantifying salmon predation by sea lions (Came ron Freshwater)
 
-### E. Climate change vulnerability (CL)
+### E. Climate change vulnerability (CL) {#climate-change-vulnerability}
 
 ```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
 
@@ -235,7 +235,7 @@ Incorporating climate vulnerability information into decision-making and plannin
 
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
-### A. Genetics
+### A. Genetics {#genetics}
 
 ```{r genetics-projects, tab.cap="DFO and BCSRIF projects associated with genetics.",tab.id="tbl-genetics"}
 make_section_table(projects_df,
@@ -268,7 +268,7 @@ Projects and themes include:
 
     -   Genetic variation linked to early maturation in male Chinook salmon
 
-### B. Fish health and hatchery practices
+### B. Fish health and hatchery practices {#hatcheries}
 
 ```{r health-projects, tab.cap="DFO and BCSRIF projects associated with the fish health theme.",tab.id="tbl-health"}
 
@@ -314,7 +314,7 @@ Projects and themes include:
 
 \newpage
 
-# Fishery monitoring and harvest techniques (NB/CL/FM) {#fishery-monitoring}
+# Fishery monitoring and harvest techniques (NB/CL/FM) {#harvest}
 
 ```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
 make_section_table(projects_df,
@@ -363,7 +363,7 @@ Complementary efforts are exploring selective harvest and monitoring tools in Fi
 
 \newpage
 
-# Stock assessment - Fisheries Science Advisory Reports (AMH) {#sec:fsar}
+# Stock assessment - Fisheries Science Advisory Reports (AMH) {#stock-assessment}
 
 Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks that occurred during PSSI and FSARs that were completed or are still underway. Describe emergent themes, trends, or challenges across FSARs and stocks that were assessed.
 
@@ -371,11 +371,11 @@ Include a table or figure with list of FSARs.
 
 \newpage
 
-# Data management and tools {#sec:data-management}
+# Data management and tools
 
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
 
-### A. Improving data management and availability
+### A. Improving data management and availability {#data-management}
 
 ```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.",tab.id="tbl-data-projects"}
 
@@ -404,7 +404,7 @@ ft
 
 ```
 
-### B. Data and modelling to support decision making
+### B. Data and modelling to support decision making {#modelling}
 
 ```{r data-projects, tab.cap="DFO and BCSRIF projects associated with data and modelling in support of decision making",tab.id="tbl-decisions"}
 

@@ -231,6 +231,13 @@ make_bkm <- function(project_id) {
   paste0("project_", gsub("[^A-Za-z0-9]", "_", project_id))
 }
 
+#' Format a project_id for display (replaces underscore with space)
+#' "PSSI_2400" -> "PSSI 2400"
+#' Bookmark/internal IDs use underscores; display uses spaces.
+display_id <- function(project_id) {
+  sub("^(PSSI|DFO|BCSRIF)_", "\\1 ", as.character(project_id))
+}
+
 # ============================================================================
 # 5. Icon maps
 # ============================================================================
@@ -352,36 +359,63 @@ make_section_table <- function(df,
     }) %>%
     ungroup()
   
+  # Keep source alongside display columns so we can decide link type per row
+  df_div_src  <- df_div %>% mutate(.row_source = .data[[source_col]])
+  
   group_rows  <- which(df_div$.is_group)
   display_df  <- df_div[, c(num_col, title_col), drop = FALSE]
   data_rows   <- which(display_df[[num_col]] != "")
-  bkms        <- display_df[[num_col]][data_rows]
+  
+  # Which data rows are DFO Science (only these have bookmarks in the report)
+  dfo_rows   <- data_rows[df_div_src$.row_source[data_rows] == "DFO Science"]
+  other_rows <- setdiff(data_rows, dfo_rows)
   
   # 3. Build flextable
   ft <- flextable::flextable(display_df)
   
-  # 4. Project ID cells — Word REF field hyperlinks to project page bookmarks
-  #    The bookmark name in project-template.Rmd is set to project$project_id
-  #    directly, so REF <project_id> \h resolves correctly.
-  bslash     <- intToUtf8(92)
-  field_code <- paste0("REF ", bkms, " ", bslash, "h")
-  
-  ft <- flextable::compose(
-    x     = ft,
-    i     = data_rows,
-    j     = num_col,
-    value = flextable::as_paragraph(
-      flextable::as_word_field(field_code)
+  # 4a. DFO Science rows — clickable hyperlink to project page bookmark.
+  #     hyperlink_text() creates a proper Word hyperlink relationship with
+  #     display text (the project ID). The "#bookmark" URL format navigates
+  #     within the same document on click (supported by Word 2016+).
+  #     This avoids REF fields, which embed bookmark content and cause
+  #     nested table corruption.
+  if (length(dfo_rows) > 0) {
+    dfo_ids  <- display_df[[num_col]][dfo_rows]
+    
+    ft <- flextable::compose(
+      x     = ft,
+      i     = dfo_rows,
+      j     = num_col,
+      value = flextable::as_paragraph(
+        flextable::hyperlink_text(
+          x   = display_id(dfo_ids),   # "PSSI 2400" displayed
+          url = paste0("#", dfo_ids)    # "#PSSI_2400" bookmark target
+        )
+      )
     )
-  )
+    
+    ft <- flextable::style(
+      x    = ft,
+      i    = dfo_rows,
+      j    = num_col,
+      pr_t = flextable::fp_text_default(color = "#0563C1", underlined = TRUE),
+      part = "body"
+    )
+  }
   
-  ft <- flextable::style(
-    x    = ft,
-    i    = data_rows,
-    j    = num_col,
-    pr_t = flextable::fp_text_default(color = "#0563C1", underlined = TRUE),
-    part = "body"
-  )
+  # 4b. Non-DFO rows (BCSRIF, etc.) — plain text, no hyperlink
+  #     These projects have no project page, so REF fields would fail.
+  if (length(other_rows) > 0) {
+    other_ids <- display_df[[num_col]][other_rows]
+    ft <- flextable::compose(
+      x     = ft,
+      i     = other_rows,
+      j     = num_col,
+      value = flextable::as_paragraph(
+        flextable::as_chunk(display_id(other_ids))
+      )
+    )
+  }
   
   # 5. Header labels
   label_map <- stats::setNames(c(num_label, title_label), c(num_col, title_col))
@@ -482,7 +516,7 @@ make_project_banner <- function(project,
   
   # 3. Two-row data frame (4 columns)
   df <- data.frame(
-    col1 = c(paste0(proj_id, "  \u2022  ", section_lbl),
+    col1 = c(paste0(display_id(proj_id), "  \u2022  ", section_lbl),
              paste0("\U0001F464 ", leads_val)),
     col2 = c(proj_title, paste0("\U0001F41F ", species_val)),
     col3 = c("",         paste0("\U0001F5FA ", region_val)),
@@ -504,7 +538,7 @@ make_project_banner <- function(project,
         flextable::as_image(src = icon_path, width = icon_size, height = icon_size),
         "  ",
         flextable::as_chunk(
-          paste0(proj_id, "  \u2022  ", section_lbl),
+          paste0(display_id(proj_id), "  \u2022  ", section_lbl),
           props = flextable::fp_text_default(color = "white", bold = TRUE, font.size = 9)
         )
       )

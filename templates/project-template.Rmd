@@ -1,7 +1,7 @@
 
 `r officer::run_bookmark(project$project_id, officer::ftext(""))`
 
-### `r project$project_id`
+### `r display_id(project$project_id)`
 
 ```{r proj-banner, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -218,5 +218,3 @@ if (!is.null(references_text)) {
   }
 }
 ```
-
-`r officer::run_pagebreak()`
