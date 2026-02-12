@@ -1,131 +1,113 @@
-# _common.R - Fixed version that properly loads content from CSV
+# _common.R
+# Sourced at the top of index.Rmd and by build-report.R.
+# Loads packages, sets paths, merges project data, and loads icon maps.
 
-# ===================================================================
-# Package Loading with Auto-Install
-# ===================================================================
+# ============================================================================
+# 1. Packages
+# ============================================================================
 
 ensure_package <- function(pkg) {
   if (!require(pkg, character.only = TRUE, quietly = TRUE)) {
-    message('Installing missing package: ', pkg)
-    install.packages(pkg, repos = 'https://cloud.r-project.org/')
+    message("Installing missing package: ", pkg)
+    install.packages(pkg, repos = "https://cloud.r-project.org/")
     library(pkg, character.only = TRUE)
   }
 }
 
-ensure_package('here')
-ensure_package('tidyverse')
-ensure_package('knitr')
-ensure_package('readr')
-ensure_package('flextable')
-ensure_package('openxlsx')
-ensure_package('bookdown')
-ensure_package('officer')
-ensure_package('officedown')
-ensure_package('yaml')
+ensure_package("here")
+ensure_package("tidyverse")
+ensure_package("knitr")
+ensure_package("readr")
+ensure_package("DBI")
+ensure_package("RSQLite")
+ensure_package("flextable")
+ensure_package("openxlsx")
+ensure_package("officer")
+ensure_package("officedown")
+ensure_package("yaml")
 
-# ===================================================================
-# Define Common Paths
-# ===================================================================
+# ============================================================================
+# 2. Paths
+# ============================================================================
 
-template_path <<- here('templates', 'project-template.Rmd')
-rawdata_path <<- here('data', 'raw')
+template_path  <<- here("templates", "project-template.Rmd")
+rawdata_path   <<- here("data", "raw")
+OUTPUT_DB      <<- here("data", "projects.db")
+TABLE_NAME      <- "projects"
 
-# CSV file paths
-TRACKING_CSV <- here('data', 'raw', 'report_project_list.csv')
-CONTENT_CSV <- here('data', 'processed', 'pssi_form_data.csv')
+TRACKING_CSV <- here("data", "raw",       "report_project_list.csv")
+CONTENT_CSV  <- here("data", "processed", "pssi_form_data.csv")
 
-# ===================================================================
-# Source Helper Functions (for tables only)
-# ===================================================================
+# ============================================================================
+# 3. Helper functions
+# ============================================================================
 
-# Load just the table-making function from helper-functions
-if (file.exists(here("helper-functions", "helper-functions.R"))) {
-  # Source it but ignore the database parts
-  suppressMessages({
-    source(here("helper-functions", "helper-functions.R"))
-  })
+helper_file <- here("helper-functions", "helper-functions.R")
+
+if (file.exists(helper_file)) {
+  suppressMessages(source(helper_file))
+} else {
+  stop("helper-functions.R not found at: ", helper_file)
 }
 
-# ===================================================================
-# Load Project Data DIRECTLY from CSVs
-# ===================================================================
+# ============================================================================
+# 4. Load and merge project data from CSVs
+# ============================================================================
 
-cat("\n")
-cat(rep("=", 80), "\n", sep = "")
-cat("LOADING PROJECT DATA FROM CSV FILES ONLY\n")
-cat(rep("=", 80), "\n\n", sep = "")
+message("\n", strrep("=", 70))
+message("LOADING PROJECT DATA")
+message(strrep("=", 70))
 
-# Step 1: Load tracking/metadata CSV
-cat("STEP 1: Loading tracking data\n")
-cat(rep("-", 80), "\n", sep = "")
+# -- 4a. Tracking CSV (metadata, section, include flags) ---------------------
 
-if (!file.exists(TRACKING_CSV)) {
-  stop("Tracking CSV not found: ", TRACKING_CSV)
-}
+if (!file.exists(TRACKING_CSV)) stop("Tracking CSV not found: ", TRACKING_CSV)
 
 tracking_df <- read_csv(TRACKING_CSV, show_col_types = FALSE) %>%
   mutate(project_id = as.character(project_id))
 
-cat("✓ Loaded tracking CSV:", nrow(tracking_df), "projects\n")
-cat("  File:", TRACKING_CSV, "\n")
-cat("  Columns:", paste(names(tracking_df), collapse = ", "), "\n\n")
+message("✓ Tracking CSV:  ", nrow(tracking_df), " rows  |  ", TRACKING_CSV)
 
-# Step 2: Load content CSV (has line breaks)
-cat("STEP 2: Loading content data (with line breaks preserved)\n")
-cat(rep("-", 80), "\n", sep = "")
+# -- 4b. Content CSV (form extractions: highlights, background, etc.) --------
 
-if (!file.exists(CONTENT_CSV)) {
-  stop("Content CSV not found: ", CONTENT_CSV)
-}
+if (!file.exists(CONTENT_CSV)) stop("Content CSV not found: ", CONTENT_CSV)
 
 content_df <- read_csv(CONTENT_CSV, show_col_types = FALSE) %>%
-  mutate(project_id = as.character(project_id)) %>%
-  # PRESERVE original project_id as project_number for figure directories
-  mutate(project_number = project_id)
+  mutate(
+    project_id     = as.character(project_id),
+    project_number = project_id   # preserve bare number for figure directories
+  )
 
-cat("✓ Loaded content CSV:", nrow(content_df), "projects\n")
-cat("  File:", CONTENT_CSV, "\n")
-cat("  Columns:", paste(names(content_df), collapse = ", "), "\n")
+message("✓ Content CSV:   ", nrow(content_df), " rows  |  ", CONTENT_CSV)
 
-# Verify line breaks are preserved
+# Verify line breaks are preserved in content fields
 test_bg <- content_df$background[!is.na(content_df$background)][1]
 if (!is.na(test_bg)) {
-  has_newlines <- grepl("\n", test_bg, fixed = TRUE)
-  if (has_newlines) {
-    n_lines <- length(strsplit(test_bg, "\n", fixed = TRUE)[[1]])
-    cat("  ✓ Line breaks preserved! Sample field has", n_lines, "lines\n")
+  if (grepl("\n", test_bg, fixed = TRUE)) {
+    message("✓ Line breaks preserved in content CSV")
   } else {
-    warning("  ⚠ Line breaks NOT found in content CSV")
+    warning("Line breaks NOT detected in content CSV — check extraction output")
   }
 }
-cat("\n")
 
-# Step 3: Merge tracking + content
-cat("STEP 3: Merging tracking and content data\n")
-cat(rep("-", 80), "\n", sep = "")
+# -- 4c. Merge ----------------------------------------------------------------
 
-# Define content fields
-content_fields <- c('highlights', 'background', 'methods_findings', 
-                    'insights', 'next_steps', 'tables_figures', 'references')
+content_fields <- c("highlights", "background", "methods_findings",
+                    "insights", "next_steps", "tables_figures", "references")
 
-# Remove content fields from tracking (if they exist)
-tracking_clean <- tracking_df %>%
-  select(-any_of(content_fields))
-
-# Merge - keep project_number from content_df
-projects_df <- tracking_clean %>%
+projects_df <- tracking_df %>%
+  select(-any_of(content_fields)) %>%
   left_join(
-    content_df %>% select(project_id, source_file, project_number, all_of(content_fields)), 
+    content_df %>%
+      select(project_id, source_file, project_number, all_of(content_fields)),
     by = "project_id"
   )
 
-cat("✓ Merged data:", nrow(projects_df), "projects\n")
-cat("  Columns:", ncol(projects_df), "\n")
-cat("  ✓ Preserved project_number from content CSV\n\n")
+message("✓ Merged:        ", nrow(projects_df), " projects, ",
+        ncol(projects_df), " columns")
 
-# Step 4: Add DFO_ prefix to DFO Science project IDs
-cat("STEP 4: Transforming project IDs (for display)\n")
-cat(rep("-", 80), "\n", sep = "")
+# -- 4d. Add DFO_ prefix to DFO Science project IDs -------------------------
+# project_id becomes the display ID and Word bookmark name (e.g. DFO_042).
+# project_number retains the bare numeric ID for figure directory lookups.
 
 projects_df <- projects_df %>%
   mutate(
@@ -136,73 +118,51 @@ projects_df <- projects_df %>%
     )
   )
 
-n_transformed <- sum(grepl("^DFO_", projects_df$project_id), na.rm = TRUE)
-cat("✓ Transformed", n_transformed, "DFO Science project IDs\n")
-cat("  Note: project_number (for figures) remains unchanged\n\n")
+n_dfo <- sum(grepl("^DFO_", projects_df$project_id), na.rm = TRUE)
+message("✓ DFO_ prefix:   ", n_dfo, " DFO Science IDs transformed")
+message("  (project_number unchanged for figure directory lookups)")
 
-# Step 5: Summary statistics
-cat("STEP 5: Data summary\n")
-cat(rep("-", 80), "\n", sep = "")
+# -- 4e. Summary --------------------------------------------------------------
 
-cat("Total projects:", nrow(projects_df), "\n")
-cat("Projects by source:\n")
-source_counts <- table(projects_df$source, useNA = "always")
-for (src in names(source_counts)) {
-  cat("  ", src, ": ", source_counts[src], "\n", sep = "")
+message("\nProjects by source:")
+source_counts <- sort(table(projects_df$source), decreasing = TRUE)
+for (nm in names(source_counts)) {
+  message("  ", nm, ": ", source_counts[nm])
 }
 
-cat("\nDFO Science projects by include:\n")
-dfo_include <- projects_df %>%
-  filter(source == "DFO Science") %>%
-  count(include, .drop = FALSE)
-print(dfo_include)
+dfo_y <- projects_df %>%
+  filter(source == "DFO Science", include %in% c("y", "Y")) %>%
+  nrow()
+message("\nDFO Science projects flagged include='y': ", dfo_y)
 
-cat("\nDFO Science projects to render (include='y'):\n")
-dfo_to_render <- projects_df %>%
-  filter(source == "DFO Science", include %in% c("y", "Y"))
-cat("  ", nrow(dfo_to_render), " projects\n", sep = "")
+message(strrep("=", 70))
+message("PROJECT DATA LOADED\n")
 
-# Check for project 3682
-has_3682 <- any(grepl("3682", projects_df$project_id, fixed = TRUE))
-if (has_3682) {
-  p3682 <- projects_df %>% filter(grepl("3682", project_id, fixed = TRUE))
-  cat("\n✓ Project 3682 found:\n")
-  cat("    ID:", p3682$project_id, "\n")
-  cat("    Number:", p3682$project_number, "(for figures)\n")
-  cat("    Source:", p3682$source, "\n")
-  cat("    Include:", p3682$include, "\n")
-  cat("    Background:", nchar(p3682$background), "chars\n")
-  
-  if (p3682$source == "DFO Science" && p3682$include %in% c("y", "Y")) {
-    cat("    ✓ Will be rendered\n")
-    cat("    ✓ Figures at: figures/project_figures/", p3682$project_number, "/\n", sep = "")
-  } else {
-    cat("    ✗ Will NOT be rendered (check source/include)\n")
-  }
-} else {
-  cat("\n⚠ Project 3682 NOT found in data\n")
-}
-
-cat("\n")
-cat(rep("=", 80), "\n", sep = "")
-cat("DATA LOADED SUCCESSFULLY FROM CSV FILES\n")
-cat(rep("=", 80), "\n\n", sep = "")
-
-# ===================================================================
-# Set global variables
-# ===================================================================
+# ============================================================================
+# 5. Global variables
+# ============================================================================
 
 n_projects <<- nrow(projects_df)
 
-# ===================================================================
-# Knitr Options
-# ===================================================================
+# ============================================================================
+# 6. Icon maps for project page banners
+# ============================================================================
+# Reads assets/icons/icon_map.csv to build SECTION_ICON_MAP, SECTION_COLOUR_MAP,
+# and SECTION_ANCHOR_MAP. The CSV and PNG files are managed manually —
+# no icon generation script is needed.
+# Columns required in icon_map.csv: section, icon_file, colour, anchor
+
+load_icon_maps()
+
+# ============================================================================
+# 7. Knitr options
+# ============================================================================
 
 knitr::opts_chunk$set(
-  echo = FALSE,
+  echo    = FALSE,
   warning = FALSE,
   message = FALSE,
-  fig.path = 'figures/generated/'
+  fig.path = "figures/generated/"
 )
 
-message('=== _common.R loaded successfully (CSV-only mode) ===\n')
+message("=== _common.R loaded successfully ===\n")
