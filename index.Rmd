@@ -1,12 +1,16 @@
 ---
-title: "Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative"
+# =============================================================================
+# PSSI Technical Report - Master Document
+# Renders via: rmarkdown::render("index.Rmd") or source("build-report.R")
+# Replaces: index.Rmd + index_full.Rmd + _bookdown.yml
+# =============================================================================
 
-subtitle: |
-  Canadian Technical Report of Fisheries and Aquatic Sciences nnnn
-  
-  Fisheries and Oceans Canada  
-  Pacific Biological Station  
-  Nanaimo, BC
+# --- Report metadata (used by build-report.R / add_frontmatter.R) ------------
+report_title: "Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative"
+doc_series: "Canadian Technical Report of Fisheries and Aquatic Sciences"
+series_number: "nnnn"
+year: 2026
+citation: "Lagasse, C., Enns, J., Brown, N., Pearsall, I., Huang, A.-M., and Dobson, D (Eds.). 2026. Summary of research and preliminary findings from the Pacific Salmon Strategy Initiative. Canadian Technical Report of Fisheries and Aquatic Sciences nnn."
 
 authors:
   - name: "Cory Lagasse"
@@ -22,21 +26,114 @@ authors:
   - name: "Diana Dobson (editors)"
     affiliation: "Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo, BC, Canada"
 
-date: "2026"
+issn_print: "1488-5379"
+issn_online: "1488-5387"
+french: false
+bilingual: false
+
+# --- Suppress officedown's default title page (custom cover added by
+#     add_frontmatter.R in a post-processing step) ---------------------------
+title: ""
+
+# --- Abstract text (used by add_frontmatter.R for the front matter page) ---
+# Do NOT add 'abstract:' here - officedown renders it as a heading even when empty.
+# add_frontmatter.R reads report_abstract separately from this YAML.
+report_abstract: >
+  The Pacific Salmon Strategy Initiative (PSSI) was a five-year, $647 million
+  investment by the Government of Canada to help restore and sustain Pacific
+  salmon populations and their habitats. This report summarizes scientific
+  research and preliminary findings from PSSI-funded projects led by Fisheries
+  and Oceans Canada (DFO) Science in the Pacific Region. [Replace with final abstract text.]
+
+# --- Bibliography ------------------------------------------------------------
+bibliography: bib/references.bib
+csl: csl/csas.csl
+link-citations: true
+
+# --- Output format -----------------------------------------------------------
+output:
+  officedown::rdocx_document:
+    reference_docx: templates/custom-reference.docx
+    keep_md: false
+    tables:
+      style: Table
+      layout: autofit
+      width: 1.0
+      topcaption: true
+      caption:
+        style: Table Caption
+        pre: "Table "
+        sep: ". "
+    plots:
+      style: Normal
+      align: center
+      caption:
+        style: Image Caption
+        pre: "Figure "
+        sep: ". "
+    page_size:
+      width: 8.5
+      height: 11
+      orient: portrait
+    page_margins:
+      top: 1.0
+      bottom: 1.0
+      left: 1.0
+      right: 1.0
+      header: 0.5
+      footer: 0.5
+      gutter: 0.0
+    lists:
+      ol.style: null
+      ul.style: null
 ---
 
+```{r setup, include=FALSE}
+# Allow child documents to reuse chunk labels without collision
+options(knitr.duplicate.label = "allow")
 
-```{r table-settings}
-# recommended table settings to match CSAS table style and accessibility standards
-flextable::set_flextable_defaults(
-  font.size = 8,
-  padding.left = 3, 
-  padding.right = 3, 
-  padding.top = 1, 
-  padding.bottom = 1,
-  na_str = "-",
-  theme_fun = "theme_booktabs"
+knitr::opts_chunk$set(
+  echo    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.path = "figures/generated/"
 )
 ```
 
-`r officedown::knit_print_run(officer::run_pagebreak())`
+```{r common, include=FALSE}
+# Load packages, initialise database, build projects_df, load icon maps
+source(here::here("_common.R"))
+```
+
+```{r flextable-defaults, include=FALSE}
+# Global flextable defaults to match CSAS style and accessibility standards
+flextable::set_flextable_defaults(
+  font.size      = 8,
+  padding.left   = 3,
+  padding.right  = 3,
+  padding.top    = 1,
+  padding.bottom = 1,
+  na_str         = "-",
+  theme_fun      = "theme_booktabs"
+)
+```
+
+```{r body, child="01_body.Rmd"}
+```
+
+```{r references, child="99_references.Rmd"}
+```
+
+```{r project-reports, child="10_project-reports.Rmd"}
+```
+
+```{r appendix-a, child="11_appendix-a.Rmd"}
+```
+
+```{r appendix-b, child="12_appendix-b.Rmd"}
+```
+
+```{r appendix-c, child="13_appendix-c.Rmd"}
+```
+
+
