@@ -112,14 +112,14 @@ message("✓ Merged:        ", nrow(projects_df), " projects, ",
 projects_df <- projects_df %>%
   mutate(
     project_id = if_else(
-      source == "DFO Science" & !str_starts(project_id, "DFO_"),
-      paste0("DFO_", project_id),
+      source == "DFO Science" & !str_starts(project_id, "PSSI_"),
+      paste0("PSSI_", project_id),
       project_id
     )
   )
 
-n_dfo <- sum(grepl("^DFO_", projects_df$project_id), na.rm = TRUE)
-message("✓ DFO_ prefix:   ", n_dfo, " DFO Science IDs transformed")
+n_pssi <- sum(grepl("^PSSI_", projects_df$project_id), na.rm = TRUE)
+message("✓ PSSI_ prefix:  ", n_pssi, " DFO Science IDs transformed")
 message("  (project_number unchanged for figure directory lookups)")
 
 # -- 4e. Summary --------------------------------------------------------------
