@@ -71,9 +71,9 @@ In this report, we summarize the outcomes and findings of research projects fund
 
 \newpage
 
-# Improved Understanding of Salmon Ecosystems {#sec:salmon-ecosystems}
+# Improved Understanding of Salmon Ecosystems {#salmon-ecosystems}
 
-### A. Salmon population monitoring
+### A. Salmon population monitoring {#salmon-population-monitoring}
 
 ```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
 
@@ -105,7 +105,7 @@ make_section_table(projects_df,
 
 ```
 
-### C. Freshwater ecosystems (JE)
+### C. Freshwater ecosystems (JE) {#freshwater-ecosystems}
 
 ```{r freshwater-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with freshwater ecosystems theme.",tab.id="tbl-fweco"}
 
@@ -314,7 +314,7 @@ Projects and themes include:
 
 \newpage
 
-# Fishery monitoring and harvest techniques (NB/CL/FM) {#sec:fishery-monitoring}
+# Fishery monitoring and harvest techniques (NB/CL/FM) {#fishery-monitoring}
 
 ```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
 make_section_table(projects_df,
