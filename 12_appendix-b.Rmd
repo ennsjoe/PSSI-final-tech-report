@@ -1,49 +1,31 @@
----
-# Development knitting only - ignored by Quarto book build
-output:
-  word_document:
-    reference_docx: templates/custom-reference.docx
-bibliography: bib/references.bib
-csl: csl/csas.csl
-link-citations: true
----
-
-# APPENDIX B. Overview of Phase 2 BCSRIF Projects {#app:BCSRIF}
+# APPENDIX B. Overview of Phase 2 BCSRIF Projects {#app-bcsrif}
 
 ```{r appendix-b-setup, include=FALSE}
-library(here)
-source(here("_common.R"))
-
 knitr::opts_chunk$set(
-  # Tables in appendix
-  tab.cap.pre = "Table B-",
-  tab.cap.sep = ": ",
-  tab.lp      = "tabB:",
+  tab.cap.pre    = "Table B-",
+  tab.cap.sep    = ": ",
+  tab.lp         = "tabB:",
   tab.topcaption = TRUE,
-
-  # Figures in appendix
-  fig.cap.pre = "Figure B-",
-  fig.cap.sep = ": ",
-  fig.lp      = "figB:",     # optional but recommended for a clean namespace
+  fig.cap.pre    = "Figure B-",
+  fig.cap.sep    = ": ",
+  fig.lp         = "figB:",
   fig.topcaption = TRUE
 )
-
-
-
 ```
 
-```{r bcsrif-table, echo=FALSE, tab.cap="BCSRIF Projects",tab.id="bcsrif-projects",tab.topcaption=TRUE}
-# Load and filter BCSRIF projects
-csv_path <- here("data", "raw", "report_project_list.csv")
+```{r bcsrif-table, echo=FALSE, tab.cap="BCSRIF Projects", tab.id="bcsrif-projects", tab.topcaption=TRUE}
 
-if (file.exists(csv_path)) {
+# Use projects_df (already loaded by _common.R) so project_id values match
+# exactly what add_table_row_bookmarks() will look for when injecting bookmarks.
 
-  raw <- read.csv(
-    csv_path,
-    stringsAsFactors = FALSE,
-    na.strings = c("", "NA")
-  ) %>%
-    filter(source == "BCSRIF", include == "y") %>%
+if (!exists("projects_df") || nrow(projects_df) == 0) {
+
+  cat("*No project data available. Ensure _common.R has been sourced.*\n")
+
+} else {
+
+  raw <- projects_df %>%
+    filter(source == "BCSRIF", include %in% c("y", "Y")) %>%
     select(project_id, project_title, recipient, description, collaborators) %>%
     mutate(
       project_id    = str_squish(as.character(project_id)),
@@ -52,56 +34,39 @@ if (file.exists(csv_path)) {
       collaborators = str_squish(as.character(collaborators)),
       description   = str_squish(as.character(description))
     ) %>%
-    # make sure NAs become empty strings so compose() never sees NULL/NA
     mutate(across(everything(), ~ ifelse(is.na(.x), "", .x)))
 
   if (nrow(raw) > 0) {
 
-    # 2-column table (Project + wide Description)
     tbl <- raw %>%
       transmute(
-        Project      = "",                 # placeholder; filled with compose()
-        Description  = description,
+        Project       = "",   # placeholder; filled with compose()
+        Description   = description,
         project_id,
         project_title,
         recipient,
         collaborators
       )
 
-    # Optional collaborator line (blank when none)
-    collab_line <- ifelse(
-      tbl$collaborators == "",
-      "",
-      tbl$collaborators
-    )
-    
-    
-sep_body   <- fp_border(color = "darkgrey", width = 0.5)
-sep_header <- fp_border(color = "black", width = 0.9)
+    collab_line <- ifelse(tbl$collaborators == "", "", tbl$collaborators)
 
+    sep_body   <- fp_border(color = "darkgrey", width = 0.5)
+    sep_header <- fp_border(color = "black",    width = 0.9)
 
     ft <- flextable(tbl %>% select(Project, Description)) %>%
       set_caption("BCSRIF Projects") %>%
       set_header_labels(Project = "Project", Description = "Description") %>%
 
-      # ---- Build the Project stub with bold LABEL chunks only ----
       compose(
         j = "Project",
         value = as_paragraph(
-          # Line 1: project id (normal, per your request)
           as_chunk(tbl$project_id),
           as_chunk("\n"),
-
-          # Line 2: Title label (bold) + value (normal)
-          as_chunk("Title: ", props = fp_text(bold = TRUE)),
+          as_chunk("Title: ",     props = fp_text(bold = TRUE)),
           as_chunk(tbl$project_title),
           as_chunk("\n"),
-
-          # Line 3: Recipient label (bold) + value (normal)
           as_chunk("Recipient: ", props = fp_text(bold = TRUE)),
           as_chunk(tbl$recipient),
-
-          # Line 4 (optional): Collaborators label (bold) + value (normal)
           as_chunk(ifelse(collab_line == "", "", "\n")),
           as_chunk(ifelse(collab_line == "", "", "Collaborators: "),
                    props = fp_text(bold = TRUE)),
@@ -109,20 +74,15 @@ sep_header <- fp_border(color = "black", width = 0.9)
         )
       ) %>%
 
-      # ---- Styling: readable & report-friendly (portrait Word, normal margins) ----
       bold(part = "header") %>%
       align(part = "header", align = "left") %>%
-
       fontsize(part = "all", size = 9) %>%
       line_spacing(part = "all", space = 1.0) %>%
       padding(part = "all", padding = 3) %>%
       align(part = "all", align = "left") %>%
       valign(part = "all", valign = "top") %>%
-      
-      border_inner_h(border = sep_body, part = "body") %>%   
-      hline(i = 1, border = sep_header, part = "header")  %>%  
-
-      # Stable Word rendering + wide Description
+      border_inner_h(border = sep_body,   part = "body") %>%
+      hline(i = 1, border = sep_header,   part = "header") %>%
       width(j = "Project",     width = 2) %>%
       width(j = "Description", width = 4.5)
 
@@ -131,11 +91,7 @@ sep_header <- fp_border(color = "black", width = 0.9)
   } else {
     cat("*No BCSRIF projects found with include = 'y'.*\n")
   }
-
-} else {
-  cat("*Project data file not found at:* ", csv_path, "\n")
 }
-
 ```
 
 \newpage

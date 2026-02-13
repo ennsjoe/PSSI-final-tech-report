@@ -5,28 +5,28 @@
 
 ```{r proj-banner, echo=FALSE, message=FALSE, warning=FALSE}
 
-# ── Project banner ────────────────────────────────────────────────────────────
-# The ### heading above is the Word navigation anchor for this project.
-# This chunk renders the styled flextable banner below the heading.
+if (exists("make_project_banner") && !is.null(SECTION_ICON_MAP)) {
 
-if (exists("make_project_banner") &&
-    exists("SECTION_ICON_MAP")    &&
-    exists("SECTION_ANCHOR_MAP")) {
-
-  tryCatch(
+  banner_ft <- tryCatch({
     make_project_banner(
       project    = project,
       icon_map   = SECTION_ICON_MAP,
-      anchor_map = SECTION_ANCHOR_MAP
-    ),
-    error = function(e) {
-      message("Banner failed for ", project$project_id, ": ", e$message)
-      NULL
-    }
-  )
+      banner_dir = BANNER_DIR
+    )
+  }, error = function(e) {
+    message("Banner failed for ", project$project_id, ": ", e$message)
+    NULL
+  })
+
+  if (!is.null(banner_ft)) {
+    # Directly call knit_print without wrapping it in print()
+    knitr::knit_print(banner_ft) 
+  }
 
 }
 ```
+
+<br>
 
 ```{r proj-content, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
 
