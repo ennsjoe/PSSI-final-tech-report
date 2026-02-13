@@ -16,7 +16,7 @@ options(knitr.duplicate.label = "allow")
 
 ```
 
-# Introduction {#sec:introduction}
+# Introduction {#introduction}
 
 ## Pacific Salmon Strategy Initiative Overview
 
@@ -85,7 +85,7 @@ make_section_table(projects_df,
 
 ### B. Salmon life cycle approaches {#life-cycle}
 
-#### Follow the Fish (IP)
+#### Follow the Fish (IP) {#follow-the-fish}
 
 Provide an overview of the follow the fish program, how risk assessments and limiting factors (RAMS) were used to guide research priorities, key insights, and next steps to support rebuilding of WCVI Chinook salmon.
 
@@ -96,7 +96,7 @@ make_section_table(projects_df,
 
 ```
 
-#### Bottlenecks to survival (IP)
+#### Bottlenecks to survival (IP) {#bottlenecks}
 
 ```{r bottleneck-projects, tab.cap="DFO and BCSRIF projects associated with bottlenecks to survival.",tab.id="tbl-bottlenecks"}
 
@@ -231,7 +231,7 @@ Incorporating climate vulnerability information into decision-making and plannin
 
 \newpage
 
-# Science to support hatchery modernization (CL/SEP) {#sec:hatcheries}
+# Science to support hatchery modernization (CL/SEP) {#hatcheries}
 
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
