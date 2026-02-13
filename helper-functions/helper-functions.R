@@ -239,6 +239,196 @@ display_id <- function(project_id) {
 }
 
 # ============================================================================
+# 4b. Fix internal hyperlinks in rendered docx
+# ============================================================================
+#' Post-process a docx to convert external "#fragment" hyperlinks to proper
+#' Word-native w:anchor internal bookmark links.
+#'
+#' flextable's hyperlink_text(url = "#bookmark") creates an external
+#' relationship with Target="#bookmark". Word treats these as external URLs
+#' and requires Ctrl+Click. The correct Word internal link uses the w:anchor
+#' attribute on w:hyperlink instead of r:id. This function converts them.
+#'
+#' @param docx_path Path to the .docx file to fix (modified in place)
+fix_internal_hyperlinks <- function(docx_path) {
+  
+  stopifnot(requireNamespace("xml2",  quietly = TRUE))
+  stopifnot(requireNamespace("zip",   quietly = TRUE))
+  
+  tmp <- tempfile()
+  dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE))
+  
+  # 1. Unzip
+  utils::unzip(docx_path, exdir = tmp)
+  
+  doc_xml_path  <- file.path(tmp, "word", "document.xml")
+  rels_xml_path <- file.path(tmp, "word", "_rels", "document.xml.rels")
+  
+  doc_xml  <- xml2::read_xml(doc_xml_path)
+  rels_xml <- xml2::read_xml(rels_xml_path)
+  
+  wns  <- "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  rns  <- "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+  pkns <- "http://schemas.openxmlformats.org/package/2006/relationships"
+  
+  # 2. Find all relationships with Target starting with "#"
+  rels      <- xml2::xml_find_all(rels_xml, "//pkns:Relationship", c(pkns = pkns))
+  anchor_ids <- character(0)
+  anchor_map_local <- character(0)
+  
+  for (rel in rels) {
+    target <- xml2::xml_attr(rel, "Target")
+    if (!is.na(target) && startsWith(target, "#")) {
+      rid    <- xml2::xml_attr(rel, "Id")
+      anchor <- sub("^#", "", target)
+      anchor_ids        <- c(anchor_ids, rid)
+      anchor_map_local  <- c(anchor_map_local, setNames(anchor, rid))
+    }
+  }
+  
+  if (length(anchor_ids) == 0) {
+    message("  fix_internal_hyperlinks: no #fragment hyperlinks found — nothing to convert")
+    return(invisible(docx_path))
+  }
+  
+  message("  fix_internal_hyperlinks: converting ", length(anchor_ids),
+          " internal hyperlinks to w:anchor format")
+  
+  # 3. Find w:hyperlink elements that use these r:ids and convert them
+  hyperlinks <- xml2::xml_find_all(doc_xml,
+                                   "//w:hyperlink[@r:id]",
+                                   c(w = wns, r = rns)
+  )
+  
+  converted <- 0
+  for (hl in hyperlinks) {
+    rid <- xml2::xml_attr(hl, paste0("{", rns, "}id"))
+    if (!is.na(rid) && rid %in% anchor_ids) {
+      anchor_val <- anchor_map_local[[rid]]
+      # Add w:anchor attribute
+      xml2::xml_set_attr(hl, paste0("{", wns, "}anchor"), anchor_val)
+      # Remove r:id attribute
+      xml2::xml_set_attr(hl, paste0("{", rns, "}id"), NULL)
+      converted <- converted + 1
+    }
+  }
+  
+  # 4. Remove the converted relationships from rels file
+  for (rel in rels) {
+    rid <- xml2::xml_attr(rel, "Id")
+    if (!is.na(rid) && rid %in% anchor_ids) {
+      xml2::xml_remove(rel)
+    }
+  }
+  
+  # 5. Save modified XML files
+  xml2::write_xml(doc_xml,  doc_xml_path)
+  xml2::write_xml(rels_xml, rels_xml_path)
+  
+  # 6. Repack docx (zip utility)
+  orig_wd <- getwd()
+  setwd(tmp)
+  all_files <- list.files(tmp, recursive = TRUE, full.names = FALSE)
+  zip::zip(docx_path, files = all_files, mode = "cherry-pick")
+  setwd(orig_wd)
+  
+  message("  fix_internal_hyperlinks: converted ", converted, " hyperlinks — saved to ", docx_path)
+  invisible(docx_path)
+}
+
+# ============================================================================
+# 4c. Add row-level bookmarks to a table in a rendered docx
+# ============================================================================
+#' Post-process a docx to inject Word bookmarks into table cells whose text
+#' matches supplied project IDs. Used to make BCSRIF rows in appendix B
+#' navigable from hyperlinks in the body section tables.
+#'
+#' @param docx_path  Path to .docx (modified in place)
+#' @param project_ids Character vector of project IDs to bookmark
+#'                    (must match text content of cells exactly)
+add_table_row_bookmarks <- function(docx_path, project_ids) {
+  
+  stopifnot(requireNamespace("xml2", quietly = TRUE))
+  stopifnot(requireNamespace("zip",  quietly = TRUE))
+  
+  tmp <- tempfile()
+  dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE))
+  
+  utils::unzip(docx_path, exdir = tmp)
+  
+  doc_xml_path <- file.path(tmp, "word", "document.xml")
+  doc_xml      <- xml2::read_xml(doc_xml_path)
+  wns          <- "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  
+  # Get the highest existing bookmark ID so we don't collide
+  existing_ids <- xml2::xml_attr(
+    xml2::xml_find_all(doc_xml, "//w:bookmarkStart", c(w = wns)),
+    paste0("{", wns, "}id")
+  )
+  next_id <- max(c(0L, as.integer(na.omit(existing_ids))), na.rm = TRUE) + 1L
+  
+  added <- 0
+  
+  for (pid in project_ids) {
+    # Find all w:t nodes whose text content matches this project ID exactly
+    t_nodes <- xml2::xml_find_all(doc_xml, "//w:t", c(w = wns))
+    matching <- t_nodes[xml2::xml_text(t_nodes) == pid]
+    
+    if (length(matching) == 0) next
+    
+    # Use first match (should be in the appendix table)
+    t_node <- matching[[1]]
+    
+    # Walk up to the containing w:p (paragraph)
+    para <- t_node
+    while (!is.na(xml2::xml_name(para)) && xml2::xml_name(para) != "p") {
+      para <- xml2::xml_parent(para)
+    }
+    if (xml2::xml_name(para) != "p") next
+    
+    # Build bookmark start and end nodes
+    bkm_start <- xml2::read_xml(sprintf(
+      '<w:bookmarkStart xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" w:id="%d" w:name="%s"/>',
+      next_id, pid
+    ))
+    bkm_end <- xml2::read_xml(sprintf(
+      '<w:bookmarkEnd xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" w:id="%d"/>',
+      next_id
+    ))
+    
+    # Insert bookmarkStart before first child run, bookmarkEnd after last run
+    children <- xml2::xml_children(para)
+    runs      <- children[xml2::xml_name(children) == "r"]
+    
+    if (length(runs) > 0) {
+      xml2::xml_add_sibling(runs[[1]], bkm_start, .where = "before")
+      xml2::xml_add_sibling(runs[[length(runs)]], bkm_end, .where = "after")
+    } else {
+      # Fallback: prepend to paragraph
+      xml2::xml_add_child(para, bkm_start, .where = 0)
+      xml2::xml_add_child(para, bkm_end)
+    }
+    
+    next_id <- next_id + 1L
+    added   <- added + 1
+  }
+  
+  xml2::write_xml(doc_xml, doc_xml_path)
+  
+  orig_wd <- getwd()
+  setwd(tmp)
+  all_files <- list.files(tmp, recursive = TRUE, full.names = FALSE)
+  zip::zip(docx_path, files = all_files, mode = "cherry-pick")
+  setwd(orig_wd)
+  
+  message("  add_table_row_bookmarks: added ", added, " / ", length(project_ids),
+          " bookmarks to ", basename(docx_path))
+  invisible(docx_path)
+}
+
+# ============================================================================
 # 5. Icon maps
 # ============================================================================
 # Loads SECTION_ICON_MAP and SECTION_COLOUR_MAP from assets/icons/icon_map.csv.
@@ -403,17 +593,31 @@ make_section_table <- function(df,
     )
   }
   
-  # 4b. Non-DFO rows (BCSRIF, etc.) — plain text, no hyperlink
-  #     These projects have no project page, so REF fields would fail.
+  # 4b. Non-DFO rows (BCSRIF, etc.) — hyperlink to appendix B bookmark.
+  #     Bookmarks are injected into the appendix B table by
+  #     add_table_row_bookmarks() during the build post-processing step.
+  #     The bookmark name == project_id (underscore form, not display_id form).
   if (length(other_rows) > 0) {
     other_ids <- display_df[[num_col]][other_rows]
+    
     ft <- flextable::compose(
       x     = ft,
       i     = other_rows,
       j     = num_col,
       value = flextable::as_paragraph(
-        flextable::as_chunk(display_id(other_ids))
+        flextable::hyperlink_text(
+          x   = display_id(other_ids),   # "BCSRIF 2022-442" displayed
+          url = paste0("#", other_ids)    # "#BCSRIF_2022_442" bookmark target
+        )
       )
+    )
+    
+    ft <- flextable::style(
+      x    = ft,
+      i    = other_rows,
+      j    = num_col,
+      pr_t = flextable::fp_text_default(color = "#555555", underlined = TRUE),
+      part = "body"
     )
   }
   
@@ -530,15 +734,47 @@ make_project_banner <- function(project,
   # Merge title row cols 2-4
   ft <- flextable::merge_at(ft, i = 1, j = 2:4, part = "body")
   
-  # 4. Row 1, col 1 — icon + ID text
-  if (!is.null(icon_path)) {
+  # 4. Row 1, col 1 — icon + ID + section label
+  #    The section label text is a hyperlink back to the theme heading when
+  #    an anchor is available. Images can't be hyperlinked in flextable, so
+  #    the clickable element is the text beside the icon.
+  id_label <- paste0(display_id(proj_id), "  \u2022  ", section_lbl)
+  
+  if (!is.null(icon_path) && !is.null(anchor) && nchar(anchor) > 0) {
+    # Icon + hyperlinked text
+    ft <- flextable::compose(
+      x     = ft, i = 1, j = 1, part = "body",
+      value = flextable::as_paragraph(
+        flextable::as_image(src = icon_path, width = icon_size, height = icon_size),
+        "  ",
+        flextable::hyperlink_text(
+          x   = id_label,
+          url = paste0("#", anchor),
+          props = flextable::fp_text_default(color = "white", bold = TRUE,
+                                             font.size = 9, underlined = TRUE)
+        )
+      )
+    )
+  } else if (!is.null(icon_path)) {
+    # Icon + plain text (no anchor defined)
     ft <- flextable::compose(
       x     = ft, i = 1, j = 1, part = "body",
       value = flextable::as_paragraph(
         flextable::as_image(src = icon_path, width = icon_size, height = icon_size),
         "  ",
         flextable::as_chunk(
-          paste0(display_id(proj_id), "  \u2022  ", section_lbl),
+          id_label,
+          props = flextable::fp_text_default(color = "white", bold = TRUE, font.size = 9)
+        )
+      )
+    )
+  } else {
+    # No icon — plain text only
+    ft <- flextable::compose(
+      x     = ft, i = 1, j = 1, part = "body",
+      value = flextable::as_paragraph(
+        flextable::as_chunk(
+          id_label,
           props = flextable::fp_text_default(color = "white", bold = TRUE, font.size = 9)
         )
       )

@@ -25,6 +25,8 @@ ensure_package("openxlsx")
 ensure_package("officer")
 ensure_package("officedown")
 ensure_package("yaml")
+ensure_package("xml2")
+ensure_package("zip")
 
 # ============================================================================
 # 2. Paths
