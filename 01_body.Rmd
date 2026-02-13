@@ -20,9 +20,9 @@ options(knitr.duplicate.label = "allow")
 
 ## Pacific Salmon Strategy Initiative Overview
 
-The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. Over its five year span beginning in 2021, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon. In doing so, the initiative sought to respond to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery.
+The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. PSSI was initiated in 2021 in response to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery. Over its five year span, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon. 
 
-PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars—Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration—each of which involved multiple sectors within DFO and included several initiatives (**Table** \@ref(tab:pssi-initiatives)). The pillars were intended to provide a framework for aligning actions across habitat, hatcheries, fisheries, and governance in support of the long‑term persistence and resilience of Pacific salmon.
+PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars intended to provide a framework for aligning and coordinating actions across habitat, hatcheries, fisheries, and governance. The four pillars —Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration— each involved multiple sectors within DFO and were composed of several "initiatives", which were distinct elements for funding and reporting (**Table** \@ref(tab:pssi-initiatives)). 
 
 The conservation and stewardship pillar focused on new activities and investments supporting the long-term persistence and rebuilding of Pacific salmon populations. Key components included a doubling of the British Columbia Salmon Restoration and Innovation Fund (BCSRIF), investing in research to improve our understanding of salmon and their ecosystems, advancing integrated planning for salmon ecosystems to mitigate pressures on freshwater habitats, developing integrated rebuilding plans for vulnerable salmon populations, improving supports for salmon stewardship activities through engagement, and capacity-building with First Nations and community partners.
 
@@ -77,17 +77,7 @@ knitr::include_graphics(here::here("figures/PSSI-theme-diagram.png"))
 
 # Improved Understanding of Salmon Ecosystems {#salmon-ecosystems}
 
-### A. Salmon population monitoring {#salmon-population-monitoring}
-
-```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
-
-make_section_table(projects_df,
-                   section_pick = "Salmon population monitoring")
-
-
-```
-
-### B. Salmon life cycle approaches {#life-cycle}
+### A. Life cycle assessment and monitoring {#life-cycle}
 
 #### Follow the Fish (IP) {#follow-the-fish}
 
@@ -108,6 +98,44 @@ make_section_table(projects_df,
                    section_pick = 'Life cycle assessment - Bottlenecks to survival')
 
 ```
+
+#### Population monitoring {#salmon-population-monitoring}
+
+```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
+
+make_section_table(projects_df,
+                   section_pick = "Salmon population monitoring")
+
+
+```
+
+### B. Marine ecosystems (IP/NB) {#marine-ecosystems}
+
+```{r marine-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with marine ecosystems and stressors theme.",tab.id="tbl-marine-eco"}
+
+make_section_table(projects_df,
+                   section_pick = 'Marine ecosystems')
+```
+
+Summarize research and key findings related to building understanding of marine ecosystems and key stressors. Projects and themes include:
+
+-   Oceanographic studies monitoring marine conditions to understand their influence on salmon productivity
+
+    -   Zooplankton and krill monitoring (Akash Sastri)
+
+    -   Hypoxia and temperature within Vancouver Island fjords (Laura Bianucci)
+
+    -   Acoustic monitoring of salmon and salmon prey (Stephane Gauthier)
+
+    -   Monitoring harmful algal biotoxins (Andrew Ross)
+
+    -   Contaminants monitoring (Lisa Loseto)
+
+-   Research and monitoring on marine ecosystems and predators
+
+    -   eDNA monitoring in WCVI (Christoph Deeg)
+
+    -   Quantifying salmon predation by sea lions (Came ron Freshwater)
 
 ### C. Freshwater ecosystems (JE) {#freshwater-ecosystems}
 
@@ -147,35 +175,9 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
     -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
 
-### D. Marine ecosystems (IP/NB) {#marine-ecosystems}
 
-```{r marine-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with marine ecosystems and stressors theme.",tab.id="tbl-marine-eco"}
 
-make_section_table(projects_df,
-                   section_pick = 'Marine ecosystems')
-```
-
-Summarize research and key findings related to building understanding of marine ecosystems and key stressors. Projects and themes include:
-
--   Oceanographic studies monitoring marine conditions to understand their influence on salmon productivity
-
-    -   Zooplankton and krill monitoring (Akash Sastri)
-
-    -   Hypoxia and temperature within Vancouver Island fjords (Laura Bianucci)
-
-    -   Acoustic monitoring of salmon and salmon prey (Stephane Gauthier)
-
-    -   Monitoring harmful algal biotoxins (Andrew Ross)
-
-    -   Contaminants monitoring (Lisa Loseto)
-
--   Research and monitoring on marine ecosystems and predators
-
-    -   eDNA monitoring in WCVI (Christoph Deeg)
-
-    -   Quantifying salmon predation by sea lions (Came ron Freshwater)
-
-### E. Climate change vulnerability (CL) {#climate-change-vulnerability}
+### D. Climate change vulnerability (CL) {#climate-change-vulnerability}
 
 ```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
 
@@ -233,13 +235,65 @@ Changes in the frequency of extreme events, such as flooding, marine heat-waves,
 
 Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
 
+
+# Stock assessment - Fisheries Science Advisory Reports (AMH) {#stock-assessment}
+
+Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks that occurred during PSSI and FSARs that were completed or are still underway. Describe emergent themes, trends, or challenges across FSARs and stocks that were assessed.
+
+Include a table or figure with list of FSARs.
+
+\newpage
+
+
+# Data management and tools
+
+Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
+
+### A. Improving data management and availability {#data-management}
+
+```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.",tab.id="tbl-data-projects"}
+
+data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
+
+# Load + clean + keep some fields
+data_projects_table <- read_csv(data_projects_loc) %>%
+  mutate(
+    Title  = str_squish(Title),
+    Status = str_squish(Status),
+    Access = str_squish(Accessibility),
+    URL    = URL_link
+  ) %>%
+  select(Title, Status, Access, URL)
+
+ft <- flextable(data_projects_table) %>%
+  set_header_labels(Title="Title", Status="Status", Access="Access", URL="URL") %>%
+  bold(part="header") %>%
+  compose(j="URL", value = as_paragraph(hyperlink_text(x = "Link", url = URL))) %>%
+  width(j="Title",  width=3) %>%
+  width(j="Status", width=1.1) %>%
+  width(j="Access", width=1.4) %>%
+  width(j="URL",    width=0.8)
+
+ft
+
+```
+
+### B. Data and modelling to support decision making {#modelling}
+
+```{r data-projects, tab.cap="DFO and BCSRIF projects associated with data and modelling in support of decision making",tab.id="tbl-decisions"}
+
+make_section_table(projects_df,
+                   section_pick = 'Data and modelling to support decision making')
+
+```
+
 \newpage
 
 # Science to support hatchery modernization (CL/SEP) {#hatcheries}
 
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
-### A. Genetics {#fish-health-and-genetics}
+### A. Hatchery Fitness and Genetics {#fish-health-and-genetics}
 
 ```{r genetics-projects, tab.cap="DFO and BCSRIF projects associated with genetics.",tab.id="tbl-genetics"}
 make_section_table(projects_df,
@@ -367,55 +421,7 @@ Complementary efforts are exploring selective harvest and monitoring tools in Fi
 
 \newpage
 
-# Stock assessment - Fisheries Science Advisory Reports (AMH) {#stock-assessment}
 
-Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks that occurred during PSSI and FSARs that were completed or are still underway. Describe emergent themes, trends, or challenges across FSARs and stocks that were assessed.
-
-Include a table or figure with list of FSARs.
-
-\newpage
-
-# Data management and tools
-
-Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon.
-
-### A. Improving data management and availability {#data-management}
-
-```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.",tab.id="tbl-data-projects"}
-
-data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
-
-# Load + clean + keep some fields
-data_projects_table <- read_csv(data_projects_loc) %>%
-  mutate(
-    Title  = str_squish(Title),
-    Status = str_squish(Status),
-    Access = str_squish(Accessibility),
-    URL    = URL_link
-  ) %>%
-  select(Title, Status, Access, URL)
-
-ft <- flextable(data_projects_table) %>%
-  set_header_labels(Title="Title", Status="Status", Access="Access", URL="URL") %>%
-  bold(part="header") %>%
-  compose(j="URL", value = as_paragraph(hyperlink_text(x = "Link", url = URL))) %>%
-  width(j="Title",  width=3) %>%
-  width(j="Status", width=1.1) %>%
-  width(j="Access", width=1.4) %>%
-  width(j="URL",    width=0.8)
-
-ft
-
-```
-
-### B. Data and modelling to support decision making {#modelling}
-
-```{r data-projects, tab.cap="DFO and BCSRIF projects associated with data and modelling in support of decision making",tab.id="tbl-decisions"}
-
-make_section_table(projects_df,
-                   section_pick = 'Data and modelling to support decision making')
-
-```
 
 \newpage
 
