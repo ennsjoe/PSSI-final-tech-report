@@ -7,7 +7,7 @@ csl: csl/csas.csl
 link-citations: true
 ---
 
-# Project Reports {#sec:project-reports}
+# Project Reports {#project-reports}
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 # Load data from CSVs (no database)

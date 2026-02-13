@@ -8,7 +8,7 @@ csl: csl/csas.csl
 link-citations: true
 ---
 
-# References {#sec:references}
+# References {#references}
 
 ::: {#refs custom-style="Bibliography"}
 :::
