@@ -67,7 +67,11 @@ The largest PSSI initiative led by DFO Science was Improved Understanding of Sal
 
 The second major DFO Science initiative, Science to Support Hatchery Modernization, was a part of the PSSI Salmon Enhancement pillar. This initiative was designed to provide scientific advice and information to inform planning and program implementation, advance the use of molecular genetics and other tools for assessment, and expand fishery and escapement sampling programs. These research activities were intended to support the expansion of hatchery programs under PSSI, informing effective enhancement for population rebuilding and providing harvest opportunities while reducing risks for wild salmon populations. Research priorities were co-developed by a steering committee representing the Salmonid Enhancement Program and DFO Science.
 
-In this report, we summarize the outcomes and findings of research projects funded through the PSSI, with a focus on work led by DFO Science in the Pacific Region. We synthesize results across several research themes aligned with the major PSSI initiatives(Figure 1), providing an overview of findings from a diverse set of multi-disciplinary projects. For the Improved Understanding of Salmon Ecosystems initiative, we review research within five thematic areas: salmon population monitoring, life-cycle approaches, freshwater ecosystems, marine ecosystems, and climate change vulnerability. For the Science to Support Hatchery Modernization sub-initiative, we outline research conducted under the Genetics, Fish Health, and Hatchery Practices themes. In addition, we describe broader research and monitoring activities supported by PSSI, including work related to fisheries monitoring and new harvest techniques, stock assessment advice, and new tools for data mobilization and management. We provide project summaries for `n_projects` DFO-led research projects, offering a snapshot of the current state of Pacific salmon science under PSSI. Although the synthesis is not comprehensive of all research conducted under PSSI, it highlights the insights, knowledge gaps and future priorities identified during the five years of the initiative as they relate to thematic areas.
+In this report, we summarize the outcomes and findings of research projects funded through the PSSI, with a focus on work led by DFO Science in the Pacific Region. We synthesize results across several research themes aligned with the major PSSI initiatives(Figure \@ref(fig:pssi-themes)), providing an overview of findings from a diverse set of multi-disciplinary projects. For the Improved Understanding of Salmon Ecosystems initiative, we review research within five thematic areas: salmon population monitoring, life-cycle approaches, freshwater ecosystems, marine ecosystems, and climate change vulnerability. For the Science to Support Hatchery Modernization sub-initiative, we outline research conducted under the Genetics, Fish Health, and Hatchery Practices themes. In addition, we describe broader research and monitoring activities supported by PSSI, including work related to fisheries monitoring and new harvest techniques, stock assessment advice, and new tools for data mobilization and management. We provide project summaries for `n_projects` DFO-led research projects, offering a snapshot of the current state of Pacific salmon science under PSSI. Although the synthesis is not comprehensive of all research conducted under PSSI, it highlights the insights, knowledge gaps and future priorities identified during the five years of the initiative as they relate to thematic areas.
+
+```{r pssi-themes, echo=FALSE, fig.cap="Conceptual diagram of research themes aligned with the major PSSI initiatives.", out.width="100%"}
+knitr::include_graphics(here::here("figures/PSSI-theme-diagram.png"))
+```
 
 \newpage
 
@@ -268,7 +272,7 @@ Projects and themes include:
 
     -   Genetic variation linked to early maturation in male Chinook salmon
 
-### B. Fish health and hatchery practices {#hatcheries}
+### B. Fish health and hatchery practices
 
 ```{r health-projects, tab.cap="DFO and BCSRIF projects associated with the fish health theme.",tab.id="tbl-health"}
 
