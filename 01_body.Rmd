@@ -235,7 +235,7 @@ Incorporating climate vulnerability information into decision-making and plannin
 
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
-### A. Genetics {#genetics}
+### A. Genetics {#fish-health-and-genetics}
 
 ```{r genetics-projects, tab.cap="DFO and BCSRIF projects associated with genetics.",tab.id="tbl-genetics"}
 make_section_table(projects_df,
