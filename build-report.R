@@ -15,6 +15,7 @@ library(rmarkdown)
 library(officedown)
 library(officer)
 library(yaml)
+library(magick)
 
 cat("\n================================================================\n")
 cat(" PSSI Technical Report - Build Script\n")
