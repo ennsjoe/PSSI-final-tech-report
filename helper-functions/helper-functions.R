@@ -478,8 +478,7 @@ make_project_banner <- function(
   ft <- flextable::set_table_properties(ft, layout = "fixed")
   
   ft
-} # Added missing closing brace
-
+}
 # --- ID Formatting Helper ----------------------------------------------------
 
 #' display_id
