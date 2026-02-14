@@ -1,7 +1,7 @@
 
 `r officer::run_bookmark(project$project_id, officer::ftext(""))`
 
-### `r display_id(project$project_id)`
+#### `r display_id(project$project_id)`
 
 ```{r proj-banner, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -41,7 +41,7 @@ safe_text <- function(value) {
 
 render_section <- function(heading, text) {
   if (is.null(text)) return()
-  cat("####", heading, "\n\n")
+  cat("#####", heading, "\n\n")
   lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
   for (line in lines) {
     line <- trimws(line)
@@ -120,7 +120,7 @@ tables_figures_text <- safe_text(project$tables_figures)
 
 if (has_files || !is.null(tables_figures_text)) {
 
-  cat("#### Tables and Figures\n\n")
+  cat("##### Tables and Figures\n\n")
 
   # Build caption lookup from tables_figures text field
   caption_map <- list()
@@ -208,7 +208,7 @@ render_section("Next Steps", safe_text(project$next_steps))
 # References
 references_text <- safe_text(project$references)
 if (!is.null(references_text)) {
-  cat("#### References\n\n")
+  cat("##### References\n\n")
   refs <- trimws(strsplit(references_text, "\n\n")[[1]])
   refs <- refs[nchar(refs) > 0]
   for (ref in refs) {
