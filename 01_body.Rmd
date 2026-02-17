@@ -20,9 +20,9 @@ options(knitr.duplicate.label = "allow")
 
 ## Pacific Salmon Strategy Initiative Overview
 
-The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. PSSI was initiated in 2021 in response to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery. Over its five year span, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon. 
+The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. PSSI was initiated in 2021 in response to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery. Over its five year span, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon.
 
-PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars intended to provide a framework for aligning and coordinating actions across habitat, hatcheries, fisheries, and governance. The four pillars —Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration— each involved multiple sectors within DFO and were composed of several "initiatives", which were distinct elements for funding and reporting (**Table** \@ref(tab:pssi-initiatives)). 
+PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars intended to provide a framework for aligning and coordinating actions across habitat, hatcheries, fisheries, and governance. The four pillars —Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration— each involved multiple sectors within DFO and were composed of several "initiatives", which were distinct elements for funding and reporting (**Table** \@ref(tab:pssi-initiatives)).
 
 The conservation and stewardship pillar focused on new activities and investments supporting the long-term persistence and rebuilding of Pacific salmon populations. Key components included a doubling of the British Columbia Salmon Restoration and Innovation Fund (BCSRIF), investing in research to improve our understanding of salmon and their ecosystems, advancing integrated planning for salmon ecosystems to mitigate pressures on freshwater habitats, developing integrated rebuilding plans for vulnerable salmon populations, improving supports for salmon stewardship activities through engagement, and capacity-building with First Nations and community partners.
 
@@ -175,8 +175,6 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
     -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
 
-
-
 ### D. Climate change vulnerability (CL) {#climate-change-vulnerability}
 
 ```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
@@ -235,7 +233,6 @@ Changes in the frequency of extreme events, such as flooding, marine heat-waves,
 
 Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
 
-
 # Stock assessment - Fisheries Science Advisory Reports (AMH) {#stock-assessment}
 
 Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks that occurred during PSSI and FSARs that were completed or are still underway. Describe emergent themes, trends, or challenges across FSARs and stocks that were assessed.
@@ -243,7 +240,6 @@ Summarize policy context and rationale for FSARs. Describe Salmon Sprint Weeks t
 Include a table or figure with list of FSARs.
 
 \newpage
-
 
 # Data management and tools
 
@@ -418,10 +414,6 @@ Several research initiatives focused on improving the timeliness, accuracy, and 
 DFO fishery management indicated that expanded fishery observer coverage is required on the North Coast. This motivated efforts to advance electronic monitoring for commercial vessels as an alternative or offset to the costly at-sea observer program. A pilot study was conducted by the United Fishermen & Allied Workers Union, Teem Fish Monitoring, and Ecotrust Canada  during a Skeena River gillnet demonstration fishery. The electronic monitoring system accurately captured core information, including fishing effort, retained catch, released catch, and fish condition at release. Species identification, camera placement, and potential for crew members to block the view were important limitations, but these might be diminished through improved camera placement, lighting, and fisher cooperation. Future integration of automated image analysis and artificial intelligence could further improve data processing and cost efficiency, emphasizing the value of continuing to develop electronic monitoring systems for commercial salmon fisheries .
 
 Complementary efforts are exploring selective harvest and monitoring tools in First Nation terminal fisheries. A pilot study led by the A‑Tlegay Fisheries Society is revitalizing traditional salmon trap technologies in the Campbell–Quinsam estuary to enable selective harvest of hatchery salmon while safely releasing wild salmon and steelhead. To support improved First Nation terminal fishery management and monitoring, the Pacific Salmon Foundation is developing deep‑learning approaches to automate salmon counting and species identification from video and sonar data, with the goal of linking these tools to escapement monitoring programs on the North and Central Coast. By enabling near‑real‑time data integration, this work supports more responsive management of terminal fisheries. Together, these projects illustrate how selective fishing methods, combined with modern monitoring technologies and Indigenous leadership, can yield more flexible and precautionary fisheries.
-
-\newpage
-
-
 
 \newpage
 

@@ -10,80 +10,111 @@ link-citations: true
 # Project Reports {#project-reports}
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-# Load data from CSVs (no database)
-# include=FALSE suppresses ALL output from this chunk
 source(here::here("_common.R"))
 ```
 
 ```{r generate-project-reports, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
 
-# Verify template exists
 if (!file.exists(template_path)) {
-  stop("Template not found at: ", template_path)
+  stop("Project template not found at: ", template_path)
 }
 
-# Filter for DFO Science projects with include='y'
+# ------------------------------------------------------------------
+# Identify form-data projects directly from projects_df.
+#
+# init_database() builds the DB from two sets:
+#   Set A -- rows from pssi_form_data.csv joined with tracking metadata
+#   Set B -- fallback rows built purely from the tracking sheet
+#
+# Set B never touches form-only columns (highlights, project_leads,
+# collaborations, region, species, waterbodies, life_history, stock,
+# population, cu, references, tables_figures). After bind_rows() those
+# columns are NA for every Set B row. Any project with at least one of
+# those columns non-NA must have come from the form.
+# ------------------------------------------------------------------
+
+form_only_cols <- intersect(
+  c("highlights", "project_leads", "collaborations", "region", "species",
+    "waterbodies", "life_history", "stock", "population", "cu",
+    "references", "tables_figures"),
+  names(projects_df)
+)
+
+message("Form-only columns present in projects_df: ",
+        paste(form_only_cols, collapse = ", "))
+
 projects_to_render <- projects_df %>%
-  mutate(project_id = as.character(project_id)) %>%
-  filter(
-    source == "DFO Science",
+  dplyr::mutate(
+    project_id   = as.character(project_id),
+    broad_header = tidyr::replace_na(as.character(broad_header), "Other"),
+    section      = tidyr::replace_na(as.character(section),      "Other")
+  ) %>%
+  dplyr::filter(
+    source  == "DFO Science",
     include %in% c("y", "Y"),
     !is.na(project_id),
-    !is.na(project_title)
+    !is.na(project_title),
+    # Keep only rows where at least one form-only column is populated;
+    # pure tracking-sheet (Set B) rows have NA for all of these.
+    dplyr::if_any(dplyr::all_of(form_only_cols), ~ !is.na(.))
   ) %>%
-  arrange(project_id)
+  dplyr::arrange(broad_header, section, project_id)
 
-# Print diagnostics to console (NOT to Word doc)
-message("\n", rep("=", 80), collapse = "")
+message("\n", rep("=", 80))
 message("RENDERING PROJECT REPORTS")
-message(rep("=", 80), collapse = "", "\n")
-message("Projects to render: ", nrow(projects_to_render))
-
-has_3682 <- any(grepl("3682", projects_to_render$project_id, fixed = TRUE))
-if (has_3682) {
-  position <- which(grepl("3682", projects_to_render$project_id, fixed = TRUE))
-  message("✓ Project 3682 at position ", position)
-}
+message(rep("=", 80), "\n")
+message("Total rows in projects_df : ", nrow(projects_df))
+message("Form-data projects found  : ", nrow(projects_to_render))
 message("")
 
-# Generate reports
-successful_renders <- 0
-failed_renders <- 0
+successful_renders   <- 0
+failed_renders       <- 0
+current_broad_header <- NULL
+current_section      <- NULL
+first_group          <- TRUE
 
 for (i in seq_len(nrow(projects_to_render))) {
   project <- projects_to_render[i, ]
-  
-  # Console message (NOT in Word)
-  message("--- Rendering ", i, "/", nrow(projects_to_render), ": ", project$project_id, " ---")
-  
+
+  # -- Broad header heading --------------------------------------------
+  if (is.null(current_broad_header) ||
+      !identical(project$broad_header, current_broad_header)) {
+    current_broad_header <- project$broad_header
+    current_section      <- NULL
+
+    if (!first_group) cat("\n\n\\newpage\n\n")
+    first_group <- FALSE
+
+    cat("## ", current_broad_header, "\n\n", sep = "")
+  }
+
+  # -- Section heading -------------------------------------------------
+  if (is.null(current_section) ||
+      !identical(project$section, current_section)) {
+    current_section <- project$section
+    cat("### ", current_section, "\n\n", sep = "")
+  }
+
+  # -- Project page ----------------------------------------------------
+  message("  Rendering ", i, "/", nrow(projects_to_render),
+          " [", project$section, "]: ", project$project_id)
+
   tryCatch({
-    cat(knitr::knit_child(
-      template_path,
-      envir = environment(),
-      quiet = TRUE
-    ))
-    
-    # Page break
+    cat(knitr::knit_child(template_path, envir = environment(), quiet = TRUE))
     cat("\n\n\\newpage\n\n")
-    
     successful_renders <- successful_renders + 1
-    message("    ✓ Success")
-    
+    message("    \u2713 Success")
   }, error = function(e) {
-    cat(paste0("\n\n## Project ", project$project_id, "\n\n"))
-    cat(paste0("**Error:** ", e$message, "\n\n"))
+    cat("\n\n#### Project ", project$project_id, "\n\n", sep = "")
+    cat("**Error:** ", e$message, "\n\n", sep = "")
     cat("\n\n\\newpage\n\n")
-    
-    failed_renders <- failed_renders + 1
-    message("    ✗ ERROR: ", e$message)
+    failed_renders <<- failed_renders + 1
+    message("    \u2717 ERROR: ", e$message)
   })
 }
 
-# Final summary to console
-message("\n", rep("=", 80), collapse = "")
+message("\n", rep("=", 80))
 message("Successfully rendered: ", successful_renders, " projects")
-if (failed_renders > 0) {
-  message("Failed: ", failed_renders, " projects")
-}
-message(rep("=", 80), collapse = "")
+if (failed_renders > 0) message("Failed: ", failed_renders, " projects")
+message(rep("=", 80))
 ```
