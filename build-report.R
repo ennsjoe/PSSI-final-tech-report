@@ -88,45 +88,43 @@ tryCatch({
 })
 
 
-# ── STEP 3.5: Fix internal hyperlinks ────────────────────────────────────────
-# flextable hyperlink_text(url = "#bookmark") creates external relationships.
-# fix_internal_hyperlinks() converts them to Word-native w:anchor links so
-# Ctrl+Click (and regular click in reading view) navigates within the document.
 
-cat("STEP 3.5: Fixing internal hyperlinks and adding BCSRIF bookmarks ...\n")
+
+# ── STEP 3.2: Inject missing _rels/.rels ─────────────────────────────────────
+# Pandoc does not always emit _rels/.rels in its docx output. Officer (used by
+# add_frontmatter in Step 4) requires this file to open the document.
+# ensure_root_rels() injects a standard one if absent; no-ops if already there.
+
+cat("STEP 3.2: Ensuring root _rels/.rels is present ...
+")
 
 tryCatch({
   rendered_docx <- here("PSSI-Technical-Report-2026.docx")
-  
-  if (!file.exists(rendered_docx)) {
-    cat("  ⚠ Rendered docx not found — skipping\n\n")
+  if (file.exists(rendered_docx)) {
+    ensure_root_rels(rendered_docx)
+    cat("  ✓ Root relationships verified
+
+")
   } else {
-    
-    # 3.5a: Convert #fragment external hyperlinks to w:anchor internal links
-    fix_internal_hyperlinks(rendered_docx)
-    cat("  ✓ Internal hyperlinks converted\n")
-    
-    # 3.5b: Inject row-level bookmarks into the appendix B BCSRIF table
-    bcsrif_ids <- projects_df %>%
-      filter(source != "DFO Science", include %in% c("y", "Y")) %>%
-      pull(project_id) %>%
-      as.character() %>%
-      unique()
-    
-    if (length(bcsrif_ids) > 0) {
-      add_table_row_bookmarks(rendered_docx, bcsrif_ids)
-      cat("  ✓ BCSRIF appendix bookmarks added\n")
-    } else {
-      cat("  ℹ No BCSRIF projects found — skipping appendix bookmarks\n")
-    }
-    
-    cat("\n")
+    cat("  ⚠ Rendered docx not found - skipping
+
+")
   }
-  
 }, error = function(e) {
-  cat("  ⚠ Post-processing failed:", conditionMessage(e), "\n")
-  cat("  Links may require Ctrl+Click — continuing build\n\n")
+  cat("  ⚠ ensure_root_rels failed:", conditionMessage(e), "
+
+")
 })
+
+# ── STEP 3.5 temporarily disabled ──────────────────────────────────────────
+# Hyperlink conversion has a bug being investigated separately.
+# Internal links will require Ctrl+Click for now.
+
+# tryCatch({
+#   ...entire step 3.5 block...
+# })
+
+cat("STEP 3.5: Skipped (temporarily disabled)\n\n")
 
 # ── STEP 4: Post-process — prepend CSAS front matter ────────────────────────
 
