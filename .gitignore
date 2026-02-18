@@ -4,3 +4,6 @@
 .Ruserdata
 
 /.quarto/
+*.docx 
+*.pdf 
+PSSI-Technical-Report-*.* 
