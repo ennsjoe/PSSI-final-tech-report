@@ -65,6 +65,155 @@ render_section <- function(heading, text) {
   }
 }
 
+# Table rendering function with proper Word table formatting
+render_word_table <- function(data, caption, table_number = NULL) {
+  
+  if (is.null(data) || nrow(data) == 0 || ncol(data) == 0) {
+    if (!is.null(table_number)) {
+      cat("Table ", table_number, ". ", caption, "\n\n")
+    } else {
+      cat(caption, "\n\n")
+    }
+    cat("*[No data available]*\n\n")
+    return()
+  }
+  
+  # Clean data
+  clean_data <- as.data.frame(data, stringsAsFactors = FALSE)
+  
+  # Fix column names
+  if (any(is.na(names(clean_data))) || any(names(clean_data) == "")) {
+    names(clean_data) <- paste0("Column", seq_along(clean_data))
+  }
+  
+  # Clean column names for display (remove underscores, etc.)
+  display_names <- names(clean_data)
+  display_names <- gsub("_", " ", display_names)
+  display_names <- gsub("\\.", " ", display_names)
+  
+  # Clean cell data
+  for (i in 1:ncol(clean_data)) {
+    clean_data[[i]] <- as.character(clean_data[[i]])
+    clean_data[[i]][is.na(clean_data[[i]])] <- ""
+    clean_data[[i]] <- gsub("[\r\n\t]", " ", clean_data[[i]])
+    clean_data[[i]] <- trimws(clean_data[[i]])
+  }
+  
+  # Limit rows for readability
+  max_rows <- 40
+  if (nrow(clean_data) > max_rows) {
+    clean_data <- clean_data[1:max_rows, ]
+    truncated <- TRUE
+  } else {
+    truncated <- FALSE
+  }
+  
+  # Display caption with table number (NOT BOLD)
+  if (!is.null(table_number)) {
+    cat("Table ", table_number, ". ", caption, "\n\n")
+  } else {
+    cat(caption, "\n\n")
+  }
+  
+  # Set display names for the table
+  names(clean_data) <- display_names
+  
+  # Try pandoc format first (best for Word tables with borders)
+  tryCatch({
+    
+    table_output <- knitr::kable(
+      clean_data,
+      row.names = FALSE,
+      format = "pandoc",
+      align = rep("l", ncol(clean_data)),
+      table.attr = "style='border-collapse: collapse; border: 1px solid black;'"
+    )
+    
+    cat(table_output, sep = "\n")
+    cat("\n")
+    
+    if (truncated) {
+      cat("*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n")
+    }
+    cat("\n")
+    
+  }, error = function(e) {
+    message("Pandoc table failed, trying pipe format: ", e$message)
+    
+    # Fallback: try pipe format
+    tryCatch({
+      
+      table_output <- knitr::kable(
+        clean_data,
+        row.names = FALSE,
+        format = "pipe",
+        align = rep("l", ncol(clean_data))
+      )
+      
+      cat(table_output, sep = "\n")
+      cat("\n")
+      
+      if (truncated) {
+        cat("*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n")
+      }
+      cat("\n")
+      
+    }, error = function(e2) {
+      message("All table formats failed, using text fallback: ", e2$message)
+      
+      # Final fallback: simple text table
+      cat("```\n")
+      
+      # Calculate column widths
+      col_widths <- integer(ncol(clean_data))
+      for (i in 1:ncol(clean_data)) {
+        col_widths[i] <- max(
+          nchar(display_names[i]),
+          if (nrow(clean_data) > 0) max(nchar(clean_data[[i]]), na.rm = TRUE) else 0,
+          na.rm = TRUE
+        )
+        col_widths[i] <- min(col_widths[i], 25)  # Cap width
+      }
+      
+      # Header
+      header_parts <- character(ncol(clean_data))
+      for (i in 1:ncol(clean_data)) {
+        header_parts[i] <- sprintf(paste0("%-", col_widths[i], "s"), 
+                                  substr(display_names[i], 1, col_widths[i]))
+      }
+      cat(paste(header_parts, collapse = " | "), "\n")
+      
+      # Separator line
+      sep_parts <- character(ncol(clean_data))
+      for (i in 1:ncol(clean_data)) {
+        sep_parts[i] <- paste(rep("-", col_widths[i]), collapse = "")
+      }
+      cat(paste(sep_parts, collapse = "-|-"), "\n")
+      
+      # Data rows
+      display_rows <- min(nrow(clean_data), 20)
+      for (i in 1:display_rows) {
+        row_parts <- character(ncol(clean_data))
+        for (j in 1:ncol(clean_data)) {
+          cell_value <- substr(clean_data[i, j], 1, col_widths[j])
+          row_parts[j] <- sprintf(paste0("%-", col_widths[j], "s"), cell_value)
+        }
+        cat(paste(row_parts, collapse = " | "), "\n")
+      }
+      
+      if (nrow(clean_data) > display_rows) {
+        cat("... (", nrow(clean_data) - display_rows, " more rows)\n")
+      }
+      cat("```\n")
+      
+      if (truncated) {
+        cat("*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n")
+      }
+      cat("\n")
+    })
+  })
+}
+
 # ── Metadata block ────────────────────────────────────────────────────────────
 
 metadata_items <- c()
@@ -159,54 +308,90 @@ if (has_files || !is.null(tables_figures_text)) {
     img_files   <- sort(all_files[grepl("\\.(png|jpg|jpeg|gif|svg)$", all_files, ignore.case = TRUE)])
     table_files <- sort(all_files[grepl("\\.(csv|xlsx|xls)$",         all_files, ignore.case = TRUE)])
 
+    # Track table and figure numbers
+    table_counter <- 1
+    figure_counter <- 1
+
     for (file_path in c(table_files, img_files)) {
 
       file_name <- basename(file_path)
       file_ext  <- tolower(tools::file_ext(file_path))
 
-      # Look up caption by filename convention (e.g. "Figure_1_..." -> key "figure 1")
+      # Look up caption by filename convention
       caption <- NULL
+      table_number <- NULL
+      figure_number <- NULL
+      
       fm <- regexec("(Figure|Fig|Table|Tbl)\\s*(\\d+)", file_name, ignore.case = TRUE)
       if (fm[[1]][1] != -1) {
-        parts   <- regmatches(file_name, fm)[[1]]
-        key     <- paste(tolower(parts[2]), parts[3])
+        parts <- regmatches(file_name, fm)[[1]]
+        key <- paste(tolower(parts[2]), parts[3])
         caption <- caption_map[[key]]
+        
+        # Extract number for proper display
+        if (tolower(parts[2]) %in% c("table", "tbl")) {
+          table_number <- parts[3]
+        } else if (tolower(parts[2]) %in% c("figure", "fig")) {
+          figure_number <- parts[3]
+        }
       }
-      if (is.null(caption) || nchar(caption) == 0)
+      
+      if (is.null(caption) || nchar(caption) == 0) {
         caption <- tools::file_path_sans_ext(file_name)
+      }
 
       tryCatch({
         if (file_ext %in% c("xlsx", "xls")) {
+          
+          message("Processing Excel file: ", file_name)
           tbl_data <- openxlsx::read.xlsx(file_path, sheet = 1)
-          ft <- flextable::flextable(tbl_data)
-          ft <- flextable::autofit(flextable::theme_booktabs(ft))
-          ft <- flextable::set_caption(ft, caption = caption)
-          print(knitr::knit_print(ft))
-          cat("\n\n")
+          
+          # Use extracted table number or auto-increment
+          if (is.null(table_number)) {
+            table_number <- table_counter
+            table_counter <- table_counter + 1
+          }
+          
+          render_word_table(tbl_data, caption, table_number)
 
         } else if (file_ext == "csv") {
-          cat("**", caption, "**\n\n", sep = "")
-          print(knitr::kable(
-            read.csv(file_path, stringsAsFactors = FALSE, check.names = FALSE),
-            format = "pandoc", row.names = FALSE
-          ))
-          cat("\n\n")
+          
+          message("Processing CSV file: ", file_name)
+          csv_data <- read.csv(file_path, stringsAsFactors = FALSE, check.names = FALSE)
+          
+          # Use extracted table number or auto-increment
+          if (is.null(table_number)) {
+            table_number <- table_counter
+            table_counter <- table_counter + 1
+          }
+          
+          render_word_table(csv_data, caption, table_number)
 
         } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
+          
           rel_path <- gsub(paste0("^", here::here()), "", file_path)
           rel_path <- gsub("^[\\\\/]+", "", rel_path)
           rel_path <- gsub("\\\\", "/", rel_path)
-          cat("![", caption, "](", rel_path, ")\n\n", sep = "")
+          
+          # Use extracted figure number or auto-increment
+          if (is.null(figure_number)) {
+            figure_number <- figure_counter
+            figure_counter <- figure_counter + 1
+          }
+          
+          cat("Figure ", figure_number, ". ", caption, "\n\n")
+          cat("![](", rel_path, ")\n\n", sep = "")
         }
 
       }, error = function(e) {
         message("  Warning: could not load ", file_name, ": ", e$message)
-        cat("*[Could not load ", file_name, "]*\n\n", sep = "")
+        cat(caption, "\n\n")
+        cat("*[Could not load ", file_name, ": ", e$message, "]*\n\n")
       })
     }
 
   } else if (!is.null(tables_figures_text)) {
-    # No figure directory - render raw text from the form field
+    # Render text from form field (like project 2408)
     for (line in trimws(strsplit(tables_figures_text, "\n", fixed = TRUE)[[1]])) {
       if (nchar(line) > 0) cat(line, "\n\n")
     }
