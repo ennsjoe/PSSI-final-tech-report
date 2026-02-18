@@ -3,18 +3,6 @@
 .RData
 .DS_Store
 
-_book
-csas-style
-knitr-cache-docx
-knitr-cache-pdf
-knitr-cache-tex
-knitr-figs-docx
-knitr-figs-pdf
-reference-materials
-models*
-
-techreport.Rmd
-techreport.tex
 
 *.aux
 *.jpg
@@ -29,6 +17,7 @@ techreport.tex
 *.sty
 *.upa
 *.utf8.md
+*.docx
 
 data/word_docs/*
 archive/*
