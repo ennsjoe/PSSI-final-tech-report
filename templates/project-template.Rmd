@@ -1,11 +1,12 @@
 
 `r officer::run_bookmark(project$project_id, officer::ftext(""))`
 
-#### `r display_id(project$project_id)`
+### `r display_id(project$project_id)`
 
 ```{r proj-banner, echo=FALSE, message=FALSE, warning=FALSE}
 
-if (exists("make_project_banner") && !is.null(SECTION_ICON_MAP)) {
+if (exists("make_project_banner") && exists("SECTION_ICON_MAP") && 
+    !is.null(SECTION_ICON_MAP)) {
 
   banner_ft <- tryCatch({
     make_project_banner(
@@ -19,7 +20,6 @@ if (exists("make_project_banner") && !is.null(SECTION_ICON_MAP)) {
   })
 
   if (!is.null(banner_ft)) {
-    # Directly call knit_print without wrapping it in print()
     knitr::knit_print(banner_ft) 
   }
 
@@ -33,15 +33,31 @@ if (exists("make_project_banner") && !is.null(SECTION_ICON_MAP)) {
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 safe_text <- function(value) {
-  if (is.null(value) || is.na(value)) return(NULL)
+  # Return NULL for actual NULL or missing values
+  if (is.null(value)) return(NULL)
+  
+  # Convert to character
   text <- as.character(value)
-  if (nchar(trimws(text)) > 0) return(text)
-  return(NULL)
+  
+  # Return NULL if length is 0 (e.g., from as.character(NULL))
+  if (length(text) == 0) return(NULL)
+  
+  # Return NULL for NA values
+  if (is.na(text)) return(NULL)
+  
+  # Return NULL for literal strings "NULL", "NA", "<NA>"
+  if (toupper(trimws(text)) %in% c("NULL", "NA", "<NA>")) return(NULL)
+  
+  # Return NULL for empty or whitespace-only strings
+  if (nchar(trimws(text)) == 0) return(NULL)
+  
+  # Otherwise return the trimmed text
+  return(trimws(text))
 }
 
 render_section <- function(heading, text) {
   if (is.null(text)) return()
-  cat("#####", heading, "\n\n")
+  cat("####", heading, "\n\n")
   lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
   for (line in lines) {
     line <- trimws(line)
@@ -120,7 +136,7 @@ tables_figures_text <- safe_text(project$tables_figures)
 
 if (has_files || !is.null(tables_figures_text)) {
 
-  cat("##### Tables and Figures\n\n")
+  cat("#### Tables and Figures\n\n")
 
   # Build caption lookup from tables_figures text field
   caption_map <- list()
@@ -208,7 +224,7 @@ render_section("Next Steps", safe_text(project$next_steps))
 # References
 references_text <- safe_text(project$references)
 if (!is.null(references_text)) {
-  cat("##### References\n\n")
+  cat("#### References\n\n")
   refs <- trimws(strsplit(references_text, "\n\n")[[1]])
   refs <- refs[nchar(refs) > 0]
   for (ref in refs) {

@@ -10,7 +10,85 @@ link-citations: true
 # Project Reports {#project-reports}
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
-source(here::here("_common.R"))
+library(here)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(knitr)
+
+# Load display_id helper function if available
+if (file.exists(here::here("helper-functions.R"))) {
+  source(here::here("helper-functions.R"))
+} else {
+  # Fallback: define display_id inline
+  display_id <- function(x) {
+    if (is.null(x) || is.na(x)) return("")
+    clean_id <- gsub("^DFO_PSSI_", "", as.character(x), ignore.case = TRUE)
+    clean_id <- gsub("^_", "", clean_id)
+    paste("PSSI", clean_id)
+  }
+}
+
+# Set template path
+template_path <- here::here("templates", "project-template.Rmd")
+```
+
+```{r load-data, include=FALSE, message=FALSE, warning=FALSE}
+
+# ------------------------------------------------------------------
+# Load CSV files
+# ------------------------------------------------------------------
+
+# Helper to find CSV files in common locations
+find_csv <- function(filename) {
+  paths <- c(
+    here::here(filename),
+    here::here("data", filename),
+    here::here("data", "raw", filename),
+    here::here("data", "processed", filename)
+  )
+  for (path in paths) {
+    if (file.exists(path)) return(path)
+  }
+  return(NULL)
+}
+
+# Find the CSV files
+tracking_csv <- find_csv("report_project_list.csv")
+form_csv     <- find_csv("pssi_form_data.csv")
+icon_csv     <- find_csv("icon_map.csv")
+
+if (is.null(tracking_csv)) {
+  stop("Could not find report_project_list.csv")
+}
+
+message("\n=== Loading Data ===")
+message("Tracking CSV: ", tracking_csv)
+message("Form CSV    : ", ifelse(is.null(form_csv), "NOT FOUND", form_csv))
+message("Icon CSV    : ", ifelse(is.null(icon_csv), "NOT FOUND", icon_csv))
+
+# Load tracking data
+tracking_df <- readr::read_csv(tracking_csv, show_col_types = FALSE) %>%
+  dplyr::mutate(project_id = as.character(project_id))
+
+# Load form data (if exists)
+if (!is.null(form_csv) && file.exists(form_csv)) {
+  form_df <- readr::read_csv(form_csv, show_col_types = FALSE) %>%
+    dplyr::mutate(project_id = as.character(project_id))
+  message("Form data rows: ", nrow(form_df))
+} else {
+  form_df <- NULL
+  warning("pssi_form_data.csv not found - no projects will be rendered")
+}
+
+# Load icon map for ordering
+if (!is.null(icon_csv) && file.exists(icon_csv)) {
+  icon_map <- readr::read_csv(icon_csv, show_col_types = FALSE)
+  message("Icon map rows : ", nrow(icon_map))
+} else {
+  icon_map <- NULL
+  message("icon_map.csv not found - sections will use alphabetical order")
+}
 ```
 
 ```{r generate-project-reports, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
@@ -19,102 +97,121 @@ if (!file.exists(template_path)) {
   stop("Project template not found at: ", template_path)
 }
 
-# ------------------------------------------------------------------
-# Identify form-data projects directly from projects_df.
-#
-# init_database() builds the DB from two sets:
-#   Set A -- rows from pssi_form_data.csv joined with tracking metadata
-#   Set B -- fallback rows built purely from the tracking sheet
-#
-# Set B never touches form-only columns (highlights, project_leads,
-# collaborations, region, species, waterbodies, life_history, stock,
-# population, cu, references, tables_figures). After bind_rows() those
-# columns are NA for every Set B row. Any project with at least one of
-# those columns non-NA must have come from the form.
-# ------------------------------------------------------------------
+if (is.null(form_df)) {
+  message("No form data available - skipping project reports")
+} else {
 
-form_only_cols <- intersect(
-  c("highlights", "project_leads", "collaborations", "region", "species",
-    "waterbodies", "life_history", "stock", "population", "cu",
-    "references", "tables_figures"),
-  names(projects_df)
-)
-
-message("Form-only columns present in projects_df: ",
-        paste(form_only_cols, collapse = ", "))
-
-projects_to_render <- projects_df %>%
-  dplyr::mutate(
-    project_id   = as.character(project_id),
-    broad_header = tidyr::replace_na(as.character(broad_header), "Other"),
-    section      = tidyr::replace_na(as.character(section),      "Other")
-  ) %>%
-  dplyr::filter(
-    source  == "DFO Science",
-    include %in% c("y", "Y"),
-    !is.na(project_id),
-    !is.na(project_title),
-    # Keep only rows where at least one form-only column is populated;
-    # pure tracking-sheet (Set B) rows have NA for all of these.
-    dplyr::if_any(dplyr::all_of(form_only_cols), ~ !is.na(.))
-  ) %>%
-  dplyr::arrange(broad_header, section, project_id)
-
-message("\n", rep("=", 80))
-message("RENDERING PROJECT REPORTS")
-message(rep("=", 80), "\n")
-message("Total rows in projects_df : ", nrow(projects_df))
-message("Form-data projects found  : ", nrow(projects_to_render))
-message("")
-
-successful_renders   <- 0
-failed_renders       <- 0
-current_broad_header <- NULL
-current_section      <- NULL
-first_group          <- TRUE
-
-for (i in seq_len(nrow(projects_to_render))) {
-  project <- projects_to_render[i, ]
-
-  # -- Broad header heading --------------------------------------------
-  if (is.null(current_broad_header) ||
-      !identical(project$broad_header, current_broad_header)) {
-    current_broad_header <- project$broad_header
-    current_section      <- NULL
-
-    if (!first_group) cat("\n\n\\newpage\n\n")
-    first_group <- FALSE
-
-    cat("## ", current_broad_header, "\n\n", sep = "")
+  # ------------------------------------------------------------------
+  # Build projects dataset by joining form + tracking data
+  # (mirrors the logic from init_database() Set A)
+  # ------------------------------------------------------------------
+  
+  projects_to_render <- form_df %>%
+    dplyr::left_join(
+      tracking_df %>% 
+        dplyr::select(project_id, source, section, broad_header, include),
+      by = "project_id"
+    ) %>%
+    dplyr::mutate(
+      project_id   = as.character(project_id),
+      section      = tidyr::replace_na(as.character(section), "Other"),
+      broad_header = tidyr::replace_na(as.character(broad_header), "Other")
+    ) %>%
+    dplyr::filter(
+      source  == "DFO Science",
+      include %in% c("y", "Y"),
+      !is.na(project_id),
+      !is.na(project_title)
+    )
+  
+  # ------------------------------------------------------------------
+  # Apply ordering from icon_map.csv
+  # ------------------------------------------------------------------
+  
+  if (!is.null(icon_map) && 
+      all(c("order", "theme_section") %in% names(icon_map))) {
+    
+    # Extract section order
+    section_order <- icon_map %>%
+      dplyr::arrange(order) %>%
+      dplyr::pull(theme_section)
+    
+    message("\n=== Section Ordering (from icon_map.csv) ===")
+    for (i in seq_along(section_order)) {
+      message(sprintf("%2d. %s", i, section_order[i]))
+    }
+    
+    # Apply ordering
+    projects_to_render <- projects_to_render %>%
+      dplyr::mutate(
+        section = factor(section, 
+                        levels = c(section_order, 
+                                   setdiff(unique(section), section_order)))
+      ) %>%
+      dplyr::arrange(section, broad_header, project_id) %>%
+      dplyr::mutate(section = as.character(section))
+    
+  } else {
+    message("\nUsing alphabetical section order")
+    projects_to_render <- projects_to_render %>%
+      dplyr::arrange(section, broad_header, project_id)
   }
-
-  # -- Section heading -------------------------------------------------
-  if (is.null(current_section) ||
-      !identical(project$section, current_section)) {
-    current_section <- project$section
-    cat("### ", current_section, "\n\n", sep = "")
+  
+  # ------------------------------------------------------------------
+  # Render project pages
+  # ------------------------------------------------------------------
+  
+  message("\n", rep("=", 80))
+  message("RENDERING PROJECT REPORTS")
+  message(rep("=", 80), "\n")
+  message("Projects to render: ", nrow(projects_to_render))
+  if (nrow(projects_to_render) > 0) {
+    message("First section     : ", projects_to_render$section[1])
+    message("Last section      : ", 
+            projects_to_render$section[nrow(projects_to_render)])
   }
-
-  # -- Project page ----------------------------------------------------
-  message("  Rendering ", i, "/", nrow(projects_to_render),
-          " [", project$section, "]: ", project$project_id)
-
-  tryCatch({
-    cat(knitr::knit_child(template_path, envir = environment(), quiet = TRUE))
-    cat("\n\n\\newpage\n\n")
-    successful_renders <- successful_renders + 1
-    message("    \u2713 Success")
-  }, error = function(e) {
-    cat("\n\n#### Project ", project$project_id, "\n\n", sep = "")
-    cat("**Error:** ", e$message, "\n\n", sep = "")
-    cat("\n\n\\newpage\n\n")
-    failed_renders <<- failed_renders + 1
-    message("    \u2717 ERROR: ", e$message)
-  })
+  message("")
+  
+  successful_renders <- 0
+  failed_renders     <- 0
+  current_section    <- NULL
+  first_section      <- TRUE
+  
+  for (i in seq_len(nrow(projects_to_render))) {
+    project <- projects_to_render[i, ]
+  
+    # -- Section heading (top-level grouping) --------------------------
+    if (is.null(current_section) ||
+        !identical(project$section, current_section)) {
+      current_section <- project$section
+      
+      if (!first_section) cat("\n\n\\newpage\n\n")
+      first_section <- FALSE
+      
+      cat("## ", current_section, "\n\n", sep = "")
+    }
+  
+    # -- Project page --------------------------------------------------
+    message("  Rendering ", i, "/", nrow(projects_to_render),
+            " [", project$section, "]: ", project$project_id)
+  
+    tryCatch({
+      cat(knitr::knit_child(template_path, envir = environment(), quiet = TRUE))
+      cat("\n\n\\newpage\n\n")
+      successful_renders <- successful_renders + 1
+      message("    \u2713 Success")
+    }, error = function(e) {
+      cat("\n\n#### Project ", project$project_id, "\n\n", sep = "")
+      cat("**Error:** ", e$message, "\n\n", sep = "")
+      cat("\n\n\\newpage\n\n")
+      failed_renders <<- failed_renders + 1
+      message("    \u2717 ERROR: ", e$message)
+    })
+  }
+  
+  message("\n", rep("=", 80))
+  message("Successfully rendered: ", successful_renders, " projects")
+  if (failed_renders > 0) message("Failed: ", failed_renders, " projects")
+  message(rep("=", 80))
 }
-
-message("\n", rep("=", 80))
-message("Successfully rendered: ", successful_renders, " projects")
-if (failed_renders > 0) message("Failed: ", failed_renders, " projects")
-message(rep("=", 80))
 ```
