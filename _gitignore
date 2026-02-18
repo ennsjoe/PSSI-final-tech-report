@@ -3,7 +3,10 @@
 .RData
 .DS_Store
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 *.aux
 *.jpg
 *.html
@@ -21,3 +24,5 @@
 
 data/word_docs/*
 archive/*
+
+
