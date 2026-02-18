@@ -1,21 +1,11 @@
-﻿theme_section,icon_file,anchor
-Life cycle approaches,life-cycle.png,life-cycle
-Freshwater ecosystems,freshwater-ecosystems.png,freshwater-ecosystems
-Marine ecosystems,marine-ecosystems.png,marine-ecosystems
-Climate change vulnerability,climate-change-vulnerability.png,climate-change-vulnerability
-Genetics,fish-health-and-genetics.png,fish-health-and-genetics
-Fish health and hatchery practices,hatcheries.png,hatcheries
-Fishery monitoring and harvest techniques,harvest.png,harvest
-Stock assessment,stock-assessment.png,stock-assessment
-Improving data management and availability,data-management.png,data-management
-Data and modelling to support decision making,modelling.png,modelling
-,,
-,,
-,,
-,,
-,,
-,,
-,,
-,,
-,,
-,,
+﻿order,theme_section,icon_file,anchor
+1,Life cycle approaches,life-cycle.png,life-cycle
+2,Marine ecosystems,marine-ecosystems.png,marine-ecosystems
+3,Freshwater ecosystems,freshwater-ecosystems.png,freshwater-ecosystems
+4,Climate change vulnerability,climate-change-vulnerability.png,climate-change-vulnerability
+5,Stock assessment,stock-assessment.png,stock-assessment
+6,Improving data management and availability,data-management.png,data-management
+7,Data and modelling to support decision making,modelling.png,modelling
+8,Hatchery Fitness and Genetics,hatchery-fitness-and-genetics.png,hatchery-fitness-and-genetics
+9,Fish health and hatchery practices,fish-health.png,fish-health
+10,Fishery monitoring and harvest techniques,harvest.png,harvest

@@ -1,6 +1,23 @@
 .Rproj.user
 .Rhistory
 .RData
-.Ruserdata
+.DS_Store
 
-/.quarto/
+*.aux
+*.jpg
+*.html
+*.knit.md
+*.log
+*.pdf
+*.png
+*.rda
+*.rds
+*.Rproj
+*.sty
+*.upa
+*.utf8.md
+
+data/word_docs/*
+archive/* 
+
+PSSI-Technical-Report-*.* 

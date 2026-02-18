@@ -137,7 +137,7 @@ Summarize research and key findings related to building understanding of marine 
 
     -   Quantifying salmon predation by sea lions (Came ron Freshwater)
 
-### C. Freshwater ecosystems (JE) {#freshwater-ecosystems}
+### C. Freshwater ecosystems {#freshwater-ecosystems}
 
 ```{r freshwater-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with freshwater ecosystems theme.",tab.id="tbl-fweco"}
 
@@ -289,7 +289,7 @@ make_section_table(projects_df,
 
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
-### A. Hatchery Fitness and Genetics {#fish-health-and-genetics}
+### A. Hatchery Fitness and Genetics {#hatchery-fitness-and-genetics}
 
 ```{r genetics-projects, tab.cap="DFO and BCSRIF projects associated with genetics.",tab.id="tbl-genetics"}
 make_section_table(projects_df,
@@ -322,7 +322,7 @@ Projects and themes include:
 
     -   Genetic variation linked to early maturation in male Chinook salmon
 
-### B. Fish health and hatchery practices
+### B. Fish health and hatchery practices {#fish-health}
 
 ```{r health-projects, tab.cap="DFO and BCSRIF projects associated with the fish health theme.",tab.id="tbl-health"}
 

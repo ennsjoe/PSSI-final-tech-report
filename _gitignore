@@ -3,6 +3,10 @@
 .RData
 .DS_Store
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> main
 *.aux
 *.jpg
 *.html
