@@ -1,16 +1,268 @@
 ---
-# Development knitting only - ignored by Quarto book build
 output:
   word_document:
     reference_docx: templates/custom-reference.docx
 bibliography: bib/references.bib
 csl: csl/csas.csl
 link-citations: true
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 # References {#references}
 
 ::: {#refs custom-style="Bibliography"}
+:::
+
+::: {custom-style="Bibliography"}
+## ISOBEL'S REFERENCES
+
+Anzalone, S. E., Fuller, N. W., Hartz, K. E. H., Fulton, C. A., Whitledge, G. W., Magnuson, J. T., ...
+and Lydy, M. J.
+2022.
+Pesticide residues in juvenile Chinook salmon and prey items of the Sacramento River watershed, California–a comparison of riverine and floodplain habitats.
+Environmental Pollution, 303, 119102.
+
+Balk, L., Hägerroth, PÅ., Gustavsson, H.
+et al. 2016.
+Widespread episodic thiamine deficiency in Northern Hemisphere wildlife.
+Sci Rep 6, 38821 <https://doi.org/10.1038/srep38821>
+
+Bolt, M., Hutchinson, J., Carson, C., and Kwasnecha, K.
+2023.
+West Coast Vancouver Island Chinook Freshwater Risk Assessment Synthesis Report.
+Redd Fish Restoration Society Technical Report
+
+Chasco, B., Kaplan, I., Thomas, A., Acevedo-Gutiérrez, A., Noren, D., Ford, M., Hanson, M., Scordino, J., Jeffries, S., Marshall, K., Shelton, A., Matkin, C., Burke, B., and Ward, E.
+2017a.
+Competing tradeoffs between increasing marine mammal predation and fisheries harvest of Chinook salmon.
+Scientific Reports, 7.
+
+Chasco, B., Kaplan, I., Thomas, A., Acevedo-Gutiérrez, A., Noren, D., Ford, M., Hanson, M., Scordino, J., Jeffries, S., Pearson, S., Marshall, K., and Ward, E.
+2017b.
+Estimates of Chinook salmon consumption in Washington State inland waters by four marine mammal predators from 1970 to 2015.
+Canadian Journal of Fisheries and Aquatic Sciences 74: 1173-1194.
+
+Foreman, M.G.G., Chandler, P.C., Bianucci, L., Wan, D., Krassovski, M.V., Thupaki, P., Cooper, G.
+and Lin, Y.
+2024.
+A circulation model for inlets along the central West Coast of Vancouver Island.
+Atmosphere-Ocean, 62(1), pp.58-89.
+
+Graham, C., Taylor, S., Radchenko, V., Pakhomov, E., Farley, E., Weitkamp, L.,Beamish, D., Riddell, B., King, J., Neville, C., Sato, S., Urawa, S., et al. 2021.
+The international year of the salmon pan-pacific high seas expedition 2022.
+N.
+Pac.
+Anadr.
+Fish Comm.
+Tech.
+Rep. 17, 72–73.
+
+Hinch, S.G., Johnston, S.D., Lunzmann-Cooke, E.L., Zinn, K., and Hendriks, B.J.L., 2024.
+Enhancing the sustainability of capture and release marine recreational Pacific salmon fisheries using new tools and novel technologies.
+Final Report on Project 2019_058 submitted to the British Columbia Salmon Restoration and Innovation Fund.
+
+Irvine, J.R., Luedke, W., Pearsall, I., Sastri, A., Carson, C., Menendez, C., Hutchinson, J., Miller-Saunders, K.M., and Hawkins, T.
+2024.
+Marine Risk Assessment for Natural- Origin West Coast Vancouver Island Chinook Salmon (Oncorhynchus tschawytscha).
+Canadian Technical Report of Fisheries and Aquatic Sciences.
+3603: ix + 308 p.
+
+Johannessen, S.C., Macdonald, R.W., and Strivens.
+J.E.
+2021.
+Has primary production declined in the Salish Sea?
+Can.
+J. Fish.
+Aquat.
+Sci.
+Can.
+
+J. Fish.
+Aquat.
+Sci.
+78: 312–321 dx.doi.org/10.1139/cjfas-2020-0115
+
+Lefebvre, K.A., Elder, N.E., Hershberger, P.K., Trainer, V.L., Stehr, C.M., and Scholz, N.L.
+(2005).
+Dissolved saxitoxin causes transient inhibition of sensorimotor function in larval Pacific herring (Clupea harengus pallasi).
+Marine Biology 147: 1393-1402.
+
+Lundin, J. I., Chittaro, P. M., Ylitalo, G. M., Kern, J. W., Kuligowski, D. R., Sol, S. Y., ...
+and Scholz, N. L.
+2021.
+Decreased growth rate associated with tissue contaminants in juvenile Chinook salmon out-migrating through an industrial waterway.
+Environmental Science & Technology, 55(14), 9968-9978.
+
+Lundin, J. I., Chittaro, P. M., Schultz, I. R., Arkoosh, M. R., Baker, M. C., Baldwin, D. H., ...
+and Dietrich, J. P. 2023.
+Dietary Exposure to Environmentally Relevant Levels of Chemical Contaminants Reduces Growth and Survival in Juvenile Chinook Salmon.
+Environmental Science & Technology, 58(1), 132-142.
+
+Mackas, D.L., Galbraith, M.D., Faust, D., Masson, D., Young, K., Shaw, W., Romaine, S., Trudel, M., Dower, J., Campbell, R., Sastri, A., Bornhold Pechter, E.A., Pakhomov, E., and El-Sabaawi, R.
+2013.
+Zooplankton time series from the Strait of Georgia: Results from year-round sampling at deep water locations, 1990–2010.
+Prog.
+Oceanogr., 115, pp. 129-159
+
+Meador, J. P. 2014.
+Do chemically contaminated river estuaries in Puget Sound (Washington, USA) affect the survival rate of hatchery-reared Chinook salmon?.
+Canadian Journal of Fisheries and Aquatic Sciences, 71(1), 162-180.
+
+Naydenko, S. V., and Somov A.
+2022.
+“Long‐Term Dynamics of Forage Base and Food Supply for Nekton in the Upper Epipelagic Layer of the Western Bering Sea.
+Part 2.
+Food Supply for Nekton.” Izvestiya TINRO 202, no. 1: 34–60.
+(in Russian).
+
+Nelson, B.W., McAllister, M.K., Trites, A.W., Thomas, A.C.
+and Walters, C.J.
+2024.
+Quantifying impacts of harbor seal Phoca vitulina predation on juvenile Coho Salmon in the Strait of Georgia, British Columbia.
+Marine and Coastal Fisheries 16(1), p.e210271.
+
+Northern Hemisphere Pink Salmon Expert Group.
+2023.
+A Review of Pink Salmon in the Pacific, Arctic, and Atlantic Oceans.
+N. Pac.
+Anadr.
+Fish Comm.
+Tech.
+Rep. 21, 58 pp. 10.23849/TFOY9313.
+
+Olson, E.M., Allen, S.E., Do, V., Dunphy, M., and Ianson, D.
+2020.
+Assessment of nutrient supply by a tidal jet in the northern Strait of Georgia based on a biogeochemical model.
+J.
+Geophys.
+Res.
+Ocean, 125, pp. 1-25
+
+O'Neill, S. M., Carey, A. J., Harding, L. B., West, J. E., Ylitalo, G. M., and Chamberlin, J. W.
+2020.
+Chemical tracers guide identification of the location and source of persistent organic pollutants in juvenile Chinook salmon (Oncorhynchus tshawytscha), migrating seaward through an estuary with multiple contaminant inputs.
+Science of the Total Environment, 712, 135516.
+
+Pearsall I., M. Schmidt, I. Kemp, and B.
+Riddell.
+2021 Synthesis of findings of the Salish Sea Marine Survival Project, Version 1.0.
+From www.marinesurvivalproject.com
+
+Peña, M.A., Masson, D., and Callendar, W.
+2016.
+Annual plankton dynamics in a coupled physical–biological model of the Strait of Georgia, British Columbia.
+Prog.
+Oceanogr., 146, pp. 58-74
+
+Perry, R.I., Young, K., Galbraith, M.D., Chandler, P.C., Velez-Espino, A., and Baillie, S.
+2021.
+Zooplankton variability in the Strait of Georgia, Canada, and relationships with marine survivals of Chinook and Coho salmon.
+PLoS One, 16 (1), p. e0245941
+
+Ramshaw, B., Luedke, W., and Korman, J.
+2019.
+Recovery Potential Assessment for the Sakinaw Lake Sockeye Salmon (Oncorhynchus nerka) (2017).
+DFO Can.
+Sci.
+Advis.
+Sec.
+Res.
+Doc.
+2019/027.
+ix + 99 p.
+
+Rosen, S., Bianucci, L., Jackson, J.M., Hare, A., Greengrove, C., Monks, R., Bartlett, M.
+and Dick, J., 2022.
+Seasonal near-surface hypoxia in a temperate fjord in Clayoquot Sound, British Columbia.
+Frontiers in Marine Science, 9, p.1000041.
+
+Ross, A.R.S. (2025) Seasonal trends in harmful algal biotoxins & salmon enhancement.
+Fish Health & Hatchery Biology Seminar Series, March 18.
+
+Ross, A.R.S., Mueller, M., Ip, B., Hundal, N., Matthews, N., Surridge, B., Hartmann, H., Nesbitt, B., McKenzie, P., Frederickson, N., Esenkulova, S., Pearsall, I., Sastri, A., Hennekes, M., Galbraith, M., Young, K., Taves, R., Raftery, E., Kafrissen, S., Loro, F.
+and Perry,
+
+R.I.
+(2025) ‘Marine biotoxin monitoring in B.C.
+coastal waters’, in Boldt, J.L., Joyce, E., Tucker, S., Gauthier, S.
+and Jackson, J.
+(eds.) State of the physical, biological and selected fishery resources of Pacific Canadian marine ecosystems in 2024.
+Can.
+Tech.
+Rep. Fish.
+Aquat.
+Sci.
+3687.
+Nanaimo, B.C.: Fisheries and Oceans Canada, pp. 337.
+<https://www.dfo-mpo.gc.ca/oceans/publications/soto-rceo/2024/pac-technical-report-rapport-technique-eng.html>
+
+Suchy, K.D., E. Olson, S.E. Allen, M. Galbraith, B. Herrmann, J.E. Keister, R.I. Perry, A.R. Sastri, and K.
+Young.
+2023.
+Seasonal and regional variability of model-based zooplankton biomass in the Salish Sea and evaluation against observations.
+Progress in Oceanography, Volume 219.
+
+Suchy, K.D., Young, K., Galbraith, M.D., Perry, R.I., Costa, M., 2022.
+Match/mismatch between phytoplankton and crustacean zooplankton phenology in the Strait of Georgia, Canada.
+Front Mar Sci 759.
+
+Troina, G.C., Pakhomov, E.A., Weitkamp, L., Somov, A., and Hunt B.P.V. 2024.
+The Hunger Games: Stable Isotopes Indicate Winter Inter-Guild Competition for Resources by Marine Meso-Predators in the Sub-Arctic North Pacific.
+Ecol Evol.
+Nov 26;14(11):e70535.
+doi: 10.1002/ece3.70535.
+PMID: 39600924; PMCID: PMC11597504.
+
+Walters, C.J., McAllister, M.K., and Christensen, V. 2020.
+Has Steller sea lion predation impacted survival of Fraser River sockeye salmon?
+Fish.
+45: 597-604.
+
+## CORY'S REFERENCES
+
+Buxton, Rachel T., Elizabeth A. Nyboer, Karine E. Pigeon, Graham D. Raby, Trina Rytwinski, Austin J. Gallagher, Richard Schuster, et al. 2021.
+“Avoiding Wasted Research Resources in Conservation Science.” Conservation Science and Practice 3 (2).
+<https://doi.org/10.1111/CSP2.329>.
+Chittenden, Cedar M., Richard J. Beamish, and R.
+Scott McKinley.
+2009.
+“A Critical Review of Pacific Salmon Marine Research Relating to Climate.” ICES Journal of Marine Science 66 (10): 2195–2204.
+<https://doi.org/10.1093/icesjms/fsp174>.
+Crozier, Lisa G., Michelle M. McClure, Tim Beechie, Steven J. Bograd, David A. Boughton, Mark Carr, Thomas D. Cooney, et al. 2019.
+“Climate Vulnerability Assessment for Pacific Salmon and Steelhead in the California Current Large Marine Ecosystem.” PLoS ONE 14 (7).
+<https://doi.org/10.1371/journal.pone.0217711>.
+Crozier, Lisa G., and Jared E. Siegel.
+2025.
+“From Threats to Solutions: A Literature Review of Climate Adaptation in Anadromous Salmon and Trout.” Ecosphere 16 (1): e70054.
+<https://doi.org/10.1002/ecs2.70054>.
+Grant, Sue C H, Bronwyn L MacDonald, and Mark L Winston.
+2019.
+State of Canadian Pacific Salmon: Responses to Changing Climate and Habitats.
+Vol.
+3332.
+Lagasse, Cory R., Christina A. Czember, Ann-Marie Huang, and Diana Dobson.
+2024.
+“DFO Pacific Salmon Science Workshop 2022: Addressing Conservation and Management Challenges Now and into the Future.” 3267.
+Can.
+Man.
+Rep. Fish.
+Aquat.
+Sci.
+Nanaimo, BC. Macdonald, B., and S.C.H Grant.
+2023.
+“State of Canadian Pacific Salmon: Considerations for Pacific Salmon Management in a Changing Climate,” 27 p.
+Mantua, Nathan, Ingrid Tohver, and Alan Hamlet.
+2010.
+“Climate Change Impacts on Streamflow Extremes and Summertime Stream Temperature and Their Possible Consequences for Freshwater Salmon Habitat in Washington State.” Climatic Change 102 (1-2): 187–223.
+<https://doi.org/10.1007/s10584-010-9845-2>.
+McClure, Michelle M., Melissa A. Haltuch, Ellen Willis-Norton, David D. Huff, Elliott L. Hazen, Lisa G. Crozier, Michael G. Jacox, et al. 2023.
+“Vulnerability to Climate Change of Managed Stocks in the California Current Large Marine Ecosystem.” Frontiers in Marine Science 10 (February): 1–21.
+<https://doi.org/10.3389/fmars.2023.1103767>.
+Schoen, Erik R., Mark S. Wipfli, E. Jamie Trammell, Daniel J. Rinella, Angelica L. Floyd, Jess Grunblatt, Molly D. McCarthy, et al. 2017.
+“Future of Pacific Salmon in the Face of Environmental Change: Lessons from One of the World’s Remaining Productive Salmon Regions.” Fisheries 42 (10): 538–53.
+<https://doi.org/10.1080/03632415.2017.1374251>.
 :::
 
 \newpage
