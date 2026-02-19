@@ -90,7 +90,7 @@ tryCatch({
 
 
 
-# ── STEP 3.2: Inject missing _rels/.rels ─────────────────────────────────────
+#--- STEP 3.2: Inject missing _rels/.rels ----
 # Pandoc does not always emit _rels/.rels in its docx output. Officer (used by
 # add_frontmatter in Step 4) requires this file to open the document.
 # ensure_root_rels() injects a standard one if absent; no-ops if already there.
@@ -116,7 +116,7 @@ tryCatch({
 ")
 })
 
-# ── STEP 3.5 temporarily disabled ──────────────────────────────────────────
+# --- STEP 3.5 temporarily disabled ----
 # Hyperlink conversion has a bug being investigated separately.
 # Internal links will require Ctrl+Click for now.
 
@@ -126,7 +126,7 @@ tryCatch({
 
 cat("STEP 3.5: Skipped (temporarily disabled)\n\n")
 
-# ── STEP 4: Post-process — prepend CSAS front matter ────────────────────────
+# --- STEP 4: Post-process — prepend CSAS front matter ----
 
 cat("STEP 4: Adding CSAS front matter ...\n")
 
@@ -187,8 +187,7 @@ tryCatch({
 })
 
 
-# ── Done ─────────────────────────────────────────────────────────────────────
-
+# --- Done ----
 cat("================================================================\n")
 cat(" Build complete\n")
 cat("================================================================\n\n")

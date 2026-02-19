@@ -1,5 +1,5 @@
 
-# APPENDIX C. Summary of DFO Science PSSI Data Projects {#app:data}
+# APPENDIX C. Summary of DFO Science PSSI Data Projects {#app-data}
 
 ```{r appendix-c-setup, include=FALSE}
 source(here::here("_common.R"))
