@@ -225,23 +225,28 @@ Fish.
 Buxton, Rachel T., Elizabeth A. Nyboer, Karine E. Pigeon, Graham D. Raby, Trina Rytwinski, Austin J. Gallagher, Richard Schuster, et al. 2021.
 “Avoiding Wasted Research Resources in Conservation Science.” Conservation Science and Practice 3 (2).
 <https://doi.org/10.1111/CSP2.329>.
+
 Chittenden, Cedar M., Richard J. Beamish, and R.
 Scott McKinley.
 2009.
 “A Critical Review of Pacific Salmon Marine Research Relating to Climate.” ICES Journal of Marine Science 66 (10): 2195–2204.
 <https://doi.org/10.1093/icesjms/fsp174>.
+
 Crozier, Lisa G., Michelle M. McClure, Tim Beechie, Steven J. Bograd, David A. Boughton, Mark Carr, Thomas D. Cooney, et al. 2019.
 “Climate Vulnerability Assessment for Pacific Salmon and Steelhead in the California Current Large Marine Ecosystem.” PLoS ONE 14 (7).
 <https://doi.org/10.1371/journal.pone.0217711>.
+
 Crozier, Lisa G., and Jared E. Siegel.
 2025.
 “From Threats to Solutions: A Literature Review of Climate Adaptation in Anadromous Salmon and Trout.” Ecosphere 16 (1): e70054.
 <https://doi.org/10.1002/ecs2.70054>.
+
 Grant, Sue C H, Bronwyn L MacDonald, and Mark L Winston.
 2019.
 State of Canadian Pacific Salmon: Responses to Changing Climate and Habitats.
 Vol.
 3332.
+
 Lagasse, Cory R., Christina A. Czember, Ann-Marie Huang, and Diana Dobson.
 2024.
 “DFO Pacific Salmon Science Workshop 2022: Addressing Conservation and Management Challenges Now and into the Future.” 3267.
@@ -250,16 +255,21 @@ Man.
 Rep. Fish.
 Aquat.
 Sci.
-Nanaimo, BC. Macdonald, B., and S.C.H Grant.
+Nanaimo, BC.
+
+Macdonald, B., and S.C.H Grant.
 2023.
 “State of Canadian Pacific Salmon: Considerations for Pacific Salmon Management in a Changing Climate,” 27 p.
+
 Mantua, Nathan, Ingrid Tohver, and Alan Hamlet.
 2010.
 “Climate Change Impacts on Streamflow Extremes and Summertime Stream Temperature and Their Possible Consequences for Freshwater Salmon Habitat in Washington State.” Climatic Change 102 (1-2): 187–223.
 <https://doi.org/10.1007/s10584-010-9845-2>.
+
 McClure, Michelle M., Melissa A. Haltuch, Ellen Willis-Norton, David D. Huff, Elliott L. Hazen, Lisa G. Crozier, Michael G. Jacox, et al. 2023.
 “Vulnerability to Climate Change of Managed Stocks in the California Current Large Marine Ecosystem.” Frontiers in Marine Science 10 (February): 1–21.
 <https://doi.org/10.3389/fmars.2023.1103767>.
+
 Schoen, Erik R., Mark S. Wipfli, E. Jamie Trammell, Daniel J. Rinella, Angelica L. Floyd, Jess Grunblatt, Molly D. McCarthy, et al. 2017.
 “Future of Pacific Salmon in the Face of Environmental Change: Lessons from One of the World’s Remaining Productive Salmon Regions.” Fisheries 42 (10): 538–53.
 <https://doi.org/10.1080/03632415.2017.1374251>.

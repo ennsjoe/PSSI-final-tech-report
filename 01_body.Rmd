@@ -327,13 +327,7 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
 # Climate change vulnerability {#climate-change-vulnerability}
 
-```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
-
-make_section_table(projects_df,
-                   section_pick = 'Climate change vulnerability')
-```
-
-**Highlights**
+##Highlights
 
 -   Newly developed marine and freshwater climate models allow us to assess environmental changes that will be experience by Pacific salmon within British Columbia
 
@@ -347,13 +341,13 @@ make_section_table(projects_df,
 
 -   These new assessments can be applied in planning and decision-making to contextualize risks and benefits….
 
-**Research Goals**
+##Research Goals
 
 The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems sub-initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
 
 Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures [@schoen2017; @chittenden2009; @crozier2025]. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, modern genotyping, life-cycle modelling, and vulnerability risk assessments. Collectively, these studies reveal important details about the implications of climate change for Pacific salmon that can allow us to understand and anticipate current and future changes.
 
-**Downscaled climate modelling**
+##Downscaled climate modelling
 
 Global climate modelling – the simulation of earth systems into the future under different greenhouse gas emission scenarios – is the basis for much of our understanding about future climate change as reported on by the intergovernmental panel on climate change (IPCC). However, these global models lack the necessary detail to tease out fine-scale environmental changes to aquatic habitats that will be significant to understanding responses of Pacific salmon over the coming decades. Recent work, including many projects supported by PSSI, is addressing these gaps through downscaling of global climate models to marine and freshwater environments across the Pacific region.
 
@@ -361,7 +355,7 @@ Within freshwater habitats, the Pacific Climate Impacts Consortium (PCIC) has de
 
 Within marine areas, regional oceanographic models developed by the Ocean Science division project changes in salinity, temperature, and biogeochemistry for waters across the continental shelf of British Columbia. While these models have recently been applied to understand how climate change will affect habitat availability for groundfish and other marine species, applying them towards the assessment of climate change vulnerability for Pacific salmon is more challenging…  Given the importance of marine survival to the productivity of Pacific salmon, this is an important area for further research….
 
-**Vulnerability assessments**
+##Vulnerability assessments
 
 For the purposes of Pacific salmon management, projecting future environmental conditions is only helpful if we can predict how Pacific salmon will respond to those changes. Climate change vulnerability assessments apply a diverse range of methods to consider how the combined exposure and sensitivity of a species or population determines the risks they face from climate change. While such assessments have been applied to thousands of different species at regional and global scales, including to Pacific salmon in the continental US, it is only recently and with support from PSSI that these studies have been applied to Pacific salmon in Canada.
 
@@ -371,9 +365,9 @@ Together, these studies reveal …..
 
 Life stage modelling can also be used for evaluating and disentangling the influence of environmental conditions on salmon productivity retroactively and into the future. Models of sockeye salmon, covering populations from the southern to northern ends of their range, reveal important similarities and differences in responses….
 
-**Genetic adaptation**
+##Genetic adaptation
 
-**Knowledge gaps and future priorities**
+##Knowledge gaps and future priorities
 
 Expanding vulnerability assessments to populations beyond the Fraser basin
 
@@ -382,6 +376,12 @@ Further understanding thresholds and tipping points, and how these differ among 
 Changes in the frequency of extreme events, such as flooding, marine heat-waves, and droughts, are difficult to accurately model and assess but are important determinants of salmon survival
 
 Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
+
+```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
+
+make_section_table(projects_df,
+                   section_pick = 'Climate change vulnerability')
+```
 
 # Stock assessment - Fisheries Science Advisory Reports {#stock-assessment}
 
@@ -393,13 +393,10 @@ The more than 450 conservation units identified for the Wild Salmon Policy are a
 
 Pacific Region Salmon contributed to the national template pilot by convening a CSAS Salmon Sprint Week peer‑review meeting in spring 2024 to assess multiple salmon stocks, followed by another sprint week in spring 2025. Additional reviews were conducted for individual SMUs. Table \@ref(tab:fsar-table) provides links to SMUs with currently available publications. SMUs that have been reviewed but do not yet have publications available as of 31 March 2026 include Fraser Chinook Spring 5‑2, Fraser Chinook Summer 5‑2, Early Stuart Sockeye, and Stikine Sockeye.
 
-```{r fsar-table, echo=FALSE}
+```{r fsar-table, echo=FALSE, tab.cap="Salmon stock management units (SMUs) with published or soon-to-be-published Fisheries Science Advisory Reports or Fisheries Science Research Reports", tab.id="fsar-table", tab.topcaption=TRUE}
 library(flextable)
-
 fsar_table <- read.csv("figures/FSAR-table-AMH.csv", check.names = FALSE)
-
 flextable(fsar_table) |>
-  set_caption("Salmon stock management units (SMUs) with published or soon-to-be-published Fisheries Science Advisory Reports or Fisheries Science Research Reports") |>
   set_table_properties(width = 1, layout = "autofit") |>
   theme_booktabs()
 ```
@@ -410,11 +407,9 @@ flextable(fsar_table) |>
 
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon
 
-```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.",tab.id="tbl-data-projects"}
-
+```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.", tab.id="tbl-data-projects"}
 data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
 
-# Load + clean + keep some fields
 data_projects_table <- read_csv(data_projects_loc) %>%
   mutate(
     Title  = str_squish(Title),
@@ -427,14 +422,20 @@ data_projects_table <- read_csv(data_projects_loc) %>%
 ft <- flextable(data_projects_table) %>%
   set_header_labels(Title="Title", Status="Status", Access="Access", URL="URL") %>%
   bold(part="header") %>%
-  compose(j="URL", value = as_paragraph(hyperlink_text(x = "Link", url = URL))) %>%
+  compose(
+    j     = "URL",
+    value = as_paragraph(
+      hyperlink_text(
+        x   = if_else(!is.na(URL) & URL != "", "Link", ""),
+        url = if_else(!is.na(URL) & URL != "", URL, "about:blank")
+      )
+    )
+  ) %>%
   width(j="Title",  width=3) %>%
   width(j="Status", width=1.1) %>%
   width(j="Access", width=1.4) %>%
   width(j="URL",    width=0.8)
-
 ft
-
 ```
 
 # Modelling to support decision making {#modelling}
