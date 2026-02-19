@@ -19,7 +19,7 @@ find_csv_file <- function(filename, possible_paths = NULL) {
   return(NULL)
 }
 
-# --- Find CSV files ---
+# --- Find CSV files --------------------------------
 RAW_CSV       <- find_csv_file("report_project_list.csv")
 PROCESSED_CSV <- find_csv_file("pssi_form_data.csv")
 OUTPUT_DB     <- here::here("data", "projects_database.sqlite")
@@ -50,7 +50,7 @@ init_database <- function(overwrite = FALSE) {
       by = "project_id"
     )
   
-  # --- PROCESS SET B: Fallback Projects (Science only) ---
+  # --- PROCESS SET B: Fallback Projects (Science only) ----
   # These projects ARE in the tracking list, are Science/Include, 
   # but are NOT in the form data.
   set_b <- tracking_df %>%
