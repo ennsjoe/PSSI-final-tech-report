@@ -1,4 +1,4 @@
-# APPENDIX A. Project Summary Table {#app:projects}
+# APPENDIX A. Project Summary Table {#app-projects}
 
 ```{r appendix-a-setup, include=FALSE}
 
