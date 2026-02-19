@@ -87,23 +87,14 @@ While DFO has traditionally managed fish stocks individually, the department has
 
 The Pacific Salmon Strategy Initiative (PSSI) and BC Salmon Restoration and Innovation Fund (BCSRIF) supported numerous studies and research programs advancing our knowledge of the freshwater and marine ecosystems salmon depend on. This synthesis consolidates findings from these investments to address the following questions:
 
-```         
-1. Ecosystem Relationships and Stressors
-
-    - How do environmental variables influence salmon ecosystems?
-
-    - What are the relative impacts of different freshwater and marine stressors on Pacific salmon?
-
-    - How do climate change and cumulative stressors affect both salmon and their ecosystems?
-
-2. Scientific Innovation
-
-    - What novel approaches, methods, and techniques have emerged from this research?
-
-3. Management Solutions
-
-    - What adaptation and mitigation strategies could support more effective ecosystem-based management of Pacific salmon?
-```
+-   Ecosystem Relationships and Stressors
+    -   How do environmental variables influence salmon ecosystems?
+    -   What are the relative impacts of different freshwater and marine stressors on Pacific salmon?
+    -   How do climate change and cumulative stressors affect both salmon and their ecosystems?
+-   Scientific Innovation
+    -   What novel approaches, methods, and techniques have emerged from this research?
+-   Management Solutions
+    -   What adaptation and mitigation strategies could support more effective ecosystem-based management of Pacific salmon?
 
 By synthesizing findings across multiple studies, this work aims to provide an integrated understanding of salmon-ecosystem dynamics and inform more holistic, ecosystem-based approaches to salmon conservation and management.
 
@@ -327,7 +318,7 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
 # Climate change vulnerability {#climate-change-vulnerability}
 
-##Highlights
+## Highlights
 
 -   Newly developed marine and freshwater climate models allow us to assess environmental changes that will be experience by Pacific salmon within British Columbia
 
@@ -341,13 +332,19 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
 -   These new assessments can be applied in planning and decision-making to contextualize risks and benefits….
 
-##Research Goals
+## Research Goals
 
 The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems sub-initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
 
 Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures [@schoen2017; @chittenden2009; @crozier2025]. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, modern genotyping, life-cycle modelling, and vulnerability risk assessments. Collectively, these studies reveal important details about the implications of climate change for Pacific salmon that can allow us to understand and anticipate current and future changes.
 
-##Downscaled climate modelling
+```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
+
+make_section_table(projects_df,
+                   section_pick = 'Climate change vulnerability')
+```
+
+## Downscaled climate modelling
 
 Global climate modelling – the simulation of earth systems into the future under different greenhouse gas emission scenarios – is the basis for much of our understanding about future climate change as reported on by the intergovernmental panel on climate change (IPCC). However, these global models lack the necessary detail to tease out fine-scale environmental changes to aquatic habitats that will be significant to understanding responses of Pacific salmon over the coming decades. Recent work, including many projects supported by PSSI, is addressing these gaps through downscaling of global climate models to marine and freshwater environments across the Pacific region.
 
@@ -355,7 +352,7 @@ Within freshwater habitats, the Pacific Climate Impacts Consortium (PCIC) has de
 
 Within marine areas, regional oceanographic models developed by the Ocean Science division project changes in salinity, temperature, and biogeochemistry for waters across the continental shelf of British Columbia. While these models have recently been applied to understand how climate change will affect habitat availability for groundfish and other marine species, applying them towards the assessment of climate change vulnerability for Pacific salmon is more challenging…  Given the importance of marine survival to the productivity of Pacific salmon, this is an important area for further research….
 
-##Vulnerability assessments
+## Vulnerability assessments
 
 For the purposes of Pacific salmon management, projecting future environmental conditions is only helpful if we can predict how Pacific salmon will respond to those changes. Climate change vulnerability assessments apply a diverse range of methods to consider how the combined exposure and sensitivity of a species or population determines the risks they face from climate change. While such assessments have been applied to thousands of different species at regional and global scales, including to Pacific salmon in the continental US, it is only recently and with support from PSSI that these studies have been applied to Pacific salmon in Canada.
 
@@ -365,9 +362,9 @@ Together, these studies reveal …..
 
 Life stage modelling can also be used for evaluating and disentangling the influence of environmental conditions on salmon productivity retroactively and into the future. Models of sockeye salmon, covering populations from the southern to northern ends of their range, reveal important similarities and differences in responses….
 
-##Genetic adaptation
+## Genetic adaptation
 
-##Knowledge gaps and future priorities
+## Knowledge gaps and future priorities
 
 Expanding vulnerability assessments to populations beyond the Fraser basin
 
@@ -376,12 +373,6 @@ Further understanding thresholds and tipping points, and how these differ among 
 Changes in the frequency of extreme events, such as flooding, marine heat-waves, and droughts, are difficult to accurately model and assess but are important determinants of salmon survival
 
 Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
-
-```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
-
-make_section_table(projects_df,
-                   section_pick = 'Climate change vulnerability')
-```
 
 # Stock assessment - Fisheries Science Advisory Reports {#stock-assessment}
 
@@ -415,21 +406,18 @@ data_projects_table <- read_csv(data_projects_loc) %>%
     Title  = str_squish(Title),
     Status = str_squish(Status),
     Access = str_squish(Accessibility),
-    URL    = URL_link
+    URL    = na_if(str_squish(URL_link), "")
   ) %>%
   select(Title, Status, Access, URL)
 
 ft <- flextable(data_projects_table) %>%
   set_header_labels(Title="Title", Status="Status", Access="Access", URL="URL") %>%
   bold(part="header") %>%
+  compose(j = "URL", value = as_paragraph("")) %>%
   compose(
-    j     = "URL",
-    value = as_paragraph(
-      hyperlink_text(
-        x   = if_else(!is.na(URL) & URL != "", "Link", ""),
-        url = if_else(!is.na(URL) & URL != "", URL, "about:blank")
-      )
-    )
+    j = "URL",
+    i = ~ !is.na(URL),
+    value = as_paragraph(hyperlink_text(x = "Link", url = URL))
   ) %>%
   width(j="Title",  width=3) %>%
   width(j="Status", width=1.1) %>%
@@ -534,11 +522,6 @@ Projects and themes include:
 
 # Fishery monitoring and harvest techniques (NB/CL/FM) {#harvest}
 
-```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
-make_section_table(projects_df,
-                   section_pick = 'Fishery monitoring and harvest techniques')
-```
-
 #### Highlights
 
 -   New technologies and collaborative partnerships are improving efficiency and accuracy of salmon fishery monitoring programs
@@ -548,6 +531,11 @@ make_section_table(projects_df,
 #### Background and objectives
 
 PSSI-supported work in fishery monitoring and harvest techniques advanced tools and approaches needed for more selective, precautionary salmon fisheries in British Columbia and Yukon. Research focused on developing, testing, and applying improved catch monitoring and reporting frameworks to address longstanding information gaps, particularly with respect to mixed‑stock fisheries. Pilot projects were also conducted to evaluate selective and mark‑selective fishing methods to better understand their effectiveness in reducing impacts on stocks of concern while maintaining harvest opportunities. Collectively, these projects lay the foundation for a refined approach to managing and regulating Pacific salmon fisheries. Preliminary results and management implications from a selection of PSSI harvest transformation research projects are summarized thematically below.
+
+```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
+make_section_table(projects_df,
+                   section_pick = 'Fishery monitoring and harvest techniques')
+```
 
 #### Enhancements to recreational monitoring
 
