@@ -266,8 +266,12 @@ inject_project_bookmarks <- function(docx_path, projects_df) {
   added    <- 0L
   not_found <- character(0)
   
-  for (i in seq_len(nrow(projects_df))) {
-    pid      <- as.character(projects_df$project_id[i])
+  # Only DFO Science projects have dedicated pages with headings;
+  # BCSRIF projects are bookmarked at Appendix B table rows instead.
+  dfo_projects <- projects_df[projects_df$source == "DFO Science", ]
+  
+  for (i in seq_len(nrow(dfo_projects))) {
+    pid      <- as.character(dfo_projects$project_id[i])
     disp_txt <- display_id(pid)
     
     # Find the paragraph whose full text exactly matches the display heading
@@ -518,8 +522,11 @@ add_table_row_bookmarks <- function(docx_path, project_ids) {
     ]
     if (length(matched_id) == 0) next
     
-    # Sanitise to valid XML attribute name (letters, digits, _ . - only)
-    bookmark_name <- paste0("proj_", gsub("[^A-Za-z0-9_.-]", "_", matched_id[1]))
+    # Use raw project_id as bookmark name (must start with letter/underscore,
+    # contain only letters, digits, underscores -- matches make_section_table URLs)
+    bookmark_name <- gsub("[^A-Za-z0-9_]", "_", matched_id[1])
+    if (!grepl("^[A-Za-z_]", bookmark_name))
+      bookmark_name <- paste0("bk_", bookmark_name)
     bk_id         <- as.character(added + 1000L)
     
     bk_start <- xml2::read_xml(sprintf(

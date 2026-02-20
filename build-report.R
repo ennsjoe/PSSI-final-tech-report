@@ -135,6 +135,33 @@ tryCatch({
   cat("  \u26a0 inject_project_bookmarks failed:", conditionMessage(e), "\n\n")
 })
 
+# --- STEP 3.4: Inject BCSRIF table row bookmarks -----------------------
+# BCSRIF projects appear as rows in the Appendix B table, not as pages.
+# add_table_row_bookmarks() searches every table row's first cell for a
+# project_id match and injects a bookmark using the raw project_id as name,
+# which matches the #BCSRIF_2022_XXX anchors built by make_section_table().
+
+cat("STEP 3.4: Injecting BCSRIF table row bookmarks ...\n")
+
+tryCatch({
+  if (file.exists(rendered_docx) && exists("projects_df")) {
+    bcsrif_ids <- projects_df$project_id[
+      projects_df$source == "BCSRIF" &
+        projects_df$include %in% c("y", "Y")
+    ]
+    if (length(bcsrif_ids) > 0) {
+      add_table_row_bookmarks(rendered_docx, bcsrif_ids)
+      cat("  \u2713 BCSRIF table row bookmarks injected\n\n")
+    } else {
+      cat("  \u26a0 No BCSRIF projects found in projects_df\n\n")
+    }
+  } else {
+    cat("  \u26a0 Skipping: rendered docx or projects_df not found\n\n")
+  }
+}, error = function(e) {
+  cat("  \u26a0 add_table_row_bookmarks failed:", conditionMessage(e), "\n\n")
+})
+
 # --- STEP 3.5: Convert #fragment hyperlinks to Word-native w:anchor links ----
 # Runs on the pre-frontmatter docx.  Step 4.5 repeats this on the final
 # _wFrontMatter.docx in case officer's merge step regenerates hyperlinks.
