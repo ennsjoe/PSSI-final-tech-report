@@ -234,20 +234,6 @@ make_section_table(projects_df,
                    section_pick = 'Climate change vulnerability')
 ```
 
-## Highlights
-
--   Newly developed marine and freshwater climate models allow us to assess environmental changes that will be experience by Pacific salmon within British Columbia
-
--   Vulnerability assessments reveal differences in risk for the 50 conservation units of Pacific salmon within the Fraser basin, with Pink and Chum salmon the least vulnerable to climate changes while ….
-
--   Life stage models….
-
--   Genetic adaptation….
-
--   Greenhouse gas emissions matter. Vulnerability, as represented by conditions beyond optimal thresholds, was more severe in high emissions scenarios compared to scenarios with mitigation.
-
--   These new assessments can be applied in planning and decision-making to contextualize risks and benefits….
-
 ## Research Goals
 
 The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems sub-initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
@@ -481,12 +467,6 @@ Projects and themes include:
 make_section_table(projects_df,
                    section_pick = 'Fishery monitoring and harvest techniques')
 ```
-
-## Highlights
-
--   New technologies and collaborative partnerships are improving efficiency and accuracy of salmon fishery monitoring programs
-
--   Research has identified new methods, opportunities, and best practices for selective fishing that can mitigate impacts on non-target stocks and species
 
 ## Background and objectives
 

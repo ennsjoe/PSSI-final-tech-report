@@ -18,4 +18,26 @@ Science to Support Hatchery Modernization delivered research on genetics, fish h
 
 Across all research themes, PSSI investments generated substantial new scientific capacity, long-term monitoring programs, and analytical tools that will extend well beyond the initiative's funding period. Key priorities for future work include completing rebuilding plans for priority stocks, resolving remaining knowledge gaps around early marine survival, advancing ecosystem-based management frameworks, and sustaining the Indigenous partnerships and monitoring programs established under PSSI.
 
+## Highlight sections
+
+### CVIS
+
+-   Newly developed marine and freshwater climate models allow us to assess environmental changes that will be experience by Pacific salmon within British Columbia
+
+-   Vulnerability assessments reveal differences in risk for the 50 conservation units of Pacific salmon within the Fraser basin, with Pink and Chum salmon the least vulnerable to climate changes while ….
+
+-   Life stage models….
+
+-   Genetic adaptation….
+
+-   Greenhouse gas emissions matter. Vulnerability, as represented by conditions beyond optimal thresholds, was more severe in high emissions scenarios compared to scenarios with mitigation.
+
+-   These new assessments can be applied in planning and decision-making to contextualize risks and benefits….
+
+## Harvest
+
+-   New technologies and collaborative partnerships are improving efficiency and accuracy of salmon fishery monitoring programs
+
+-   Research has identified new methods, opportunities, and best practices for selective fishing that can mitigate impacts on non-target stocks and species
+
 `r officer::run_pagebreak()`
