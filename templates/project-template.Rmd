@@ -1,6 +1,4 @@
 
-`r officer::run_bookmark(project$project_id, officer::ftext(""))`
-
 ### `r display_id(project$project_id)`
 
 ```{r proj-banner, echo=FALSE, message=FALSE, warning=FALSE}
@@ -56,18 +54,19 @@ safe_text <- function(value) {
 }
 
 render_section <- function(heading, text) {
-  if (is.null(text)) return()
+  if (is.null(text)) return(invisible(NULL))
   cat("####", heading, "\n\n")
   lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
   for (line in lines) {
     line <- trimws(line)
     if (nchar(line) > 0) cat(line, "\n\n") else cat("\n")
   }
+  return(invisible(NULL))
 }
 
-# Table rendering function with proper Word table formatting
+# Table rendering using kable — safe for nested knit_child Word output
 render_word_table <- function(data, caption, table_number = NULL) {
-  
+
   if (is.null(data) || nrow(data) == 0 || ncol(data) == 0) {
     if (!is.null(table_number)) {
       cat("Table ", table_number, ". ", caption, "\n\n")
@@ -75,143 +74,56 @@ render_word_table <- function(data, caption, table_number = NULL) {
       cat(caption, "\n\n")
     }
     cat("*[No data available]*\n\n")
-    return()
+    return(invisible(NULL))
   }
-  
+
   # Clean data
   clean_data <- as.data.frame(data, stringsAsFactors = FALSE)
-  
-  # Fix column names
+
+  # Fix missing column names
   if (any(is.na(names(clean_data))) || any(names(clean_data) == "")) {
     names(clean_data) <- paste0("Column", seq_along(clean_data))
   }
-  
-  # Clean column names for display (remove underscores, etc.)
-  display_names <- names(clean_data)
-  display_names <- gsub("_", " ", display_names)
-  display_names <- gsub("\\.", " ", display_names)
-  
+
+  # Clean column names for display
+  names(clean_data) <- gsub("[_\\.]", " ", names(clean_data))
+
   # Clean cell data
-  for (i in 1:ncol(clean_data)) {
+  for (i in seq_along(clean_data)) {
     clean_data[[i]] <- as.character(clean_data[[i]])
     clean_data[[i]][is.na(clean_data[[i]])] <- ""
     clean_data[[i]] <- gsub("[\r\n\t]", " ", clean_data[[i]])
     clean_data[[i]] <- trimws(clean_data[[i]])
   }
-  
-  # Limit rows for readability
+
+  # Limit rows
   max_rows <- 40
-  if (nrow(clean_data) > max_rows) {
-    clean_data <- clean_data[1:max_rows, ]
-    truncated <- TRUE
-  } else {
-    truncated <- FALSE
-  }
-  
-  # Display caption with table number (NOT BOLD)
+  truncated <- nrow(clean_data) > max_rows
+  if (truncated) clean_data <- clean_data[1:max_rows, ]
+
+  # Caption
   if (!is.null(table_number)) {
     cat("Table ", table_number, ". ", caption, "\n\n")
   } else {
     cat(caption, "\n\n")
   }
-  
-  # Set display names for the table
-  names(clean_data) <- display_names
-  
-  # Try pandoc format first (best for Word tables with borders)
-  tryCatch({
-    
-    table_output <- knitr::kable(
-      clean_data,
-      row.names = FALSE,
-      format = "pandoc",
-      align = rep("l", ncol(clean_data)),
-      table.attr = "style='border-collapse: collapse; border: 1px solid black;'"
-    )
-    
-    cat(table_output, sep = "\n")
-    cat("\n")
-    
-    if (truncated) {
-      cat("*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n")
-    }
-    cat("\n")
-    
-  }, error = function(e) {
-    message("Pandoc table failed, trying pipe format: ", e$message)
-    
-    # Fallback: try pipe format
-    tryCatch({
-      
-      table_output <- knitr::kable(
-        clean_data,
-        row.names = FALSE,
-        format = "pipe",
-        align = rep("l", ncol(clean_data))
-      )
-      
-      cat(table_output, sep = "\n")
-      cat("\n")
-      
-      if (truncated) {
-        cat("*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n")
-      }
-      cat("\n")
-      
-    }, error = function(e2) {
-      message("All table formats failed, using text fallback: ", e2$message)
-      
-      # Final fallback: simple text table
-      cat("```\n")
-      
-      # Calculate column widths
-      col_widths <- integer(ncol(clean_data))
-      for (i in 1:ncol(clean_data)) {
-        col_widths[i] <- max(
-          nchar(display_names[i]),
-          if (nrow(clean_data) > 0) max(nchar(clean_data[[i]]), na.rm = TRUE) else 0,
-          na.rm = TRUE
-        )
-        col_widths[i] <- min(col_widths[i], 25)  # Cap width
-      }
-      
-      # Header
-      header_parts <- character(ncol(clean_data))
-      for (i in 1:ncol(clean_data)) {
-        header_parts[i] <- sprintf(paste0("%-", col_widths[i], "s"), 
-                                  substr(display_names[i], 1, col_widths[i]))
-      }
-      cat(paste(header_parts, collapse = " | "), "\n")
-      
-      # Separator line
-      sep_parts <- character(ncol(clean_data))
-      for (i in 1:ncol(clean_data)) {
-        sep_parts[i] <- paste(rep("-", col_widths[i]), collapse = "")
-      }
-      cat(paste(sep_parts, collapse = "-|-"), "\n")
-      
-      # Data rows
-      display_rows <- min(nrow(clean_data), 20)
-      for (i in 1:display_rows) {
-        row_parts <- character(ncol(clean_data))
-        for (j in 1:ncol(clean_data)) {
-          cell_value <- substr(clean_data[i, j], 1, col_widths[j])
-          row_parts[j] <- sprintf(paste0("%-", col_widths[j], "s"), cell_value)
-        }
-        cat(paste(row_parts, collapse = " | "), "\n")
-      }
-      
-      if (nrow(clean_data) > display_rows) {
-        cat("... (", nrow(clean_data) - display_rows, " more rows)\n")
-      }
-      cat("```\n")
-      
-      if (truncated) {
-        cat("*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n")
-      }
-      cat("\n")
-    })
-  })
+
+  # Render via kable — pipe format is the most reliable for Word via pandoc
+  # Table style is controlled by the Table style in custom-reference.docx
+  table_output <- knitr::kable(
+    clean_data,
+    row.names = FALSE,
+    format    = "pipe",
+    align     = rep("l", ncol(clean_data))
+  )
+  cat(table_output, sep = "\n")
+  cat("\n")
+
+  if (truncated) {
+    cat("*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n\n")
+  }
+
+  return(invisible(NULL))
 }
 
 # ── Metadata block ────────────────────────────────────────────────────────────
@@ -263,9 +175,9 @@ if (length(metadata_items) > 0)
 
 # ── Content sections ──────────────────────────────────────────────────────────
 
-render_section("Highlights",           safe_text(project$highlights))
-render_section("Background",           safe_text(project$background))
-render_section("Methods and Findings", safe_text(project$methods_findings))
+invisible(render_section("Highlights",           safe_text(project$highlights)))
+invisible(render_section("Background",           safe_text(project$background)))
+invisible(render_section("Methods and Findings", safe_text(project$methods_findings)))
 ```
 
 ```{r proj-figures, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
@@ -403,8 +315,8 @@ if (has_files || !is.null(tables_figures_text)) {
 
 # ── Closing sections ──────────────────────────────────────────────────────────
 
-render_section("Insights",   safe_text(project$insights))
-render_section("Next Steps", safe_text(project$next_steps))
+invisible(render_section("Insights",   safe_text(project$insights)))
+invisible(render_section("Next Steps", safe_text(project$next_steps)))
 
 # References
 references_text <- safe_text(project$references)

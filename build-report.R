@@ -116,15 +116,71 @@ tryCatch({
 ")
 })
 
-# --- STEP 3.5 temporarily disabled ----
-# Hyperlink conversion has a bug being investigated separately.
-# Internal links will require Ctrl+Click for now.
+# --- STEP 3.3: Inject project heading bookmarks -------------------------
+# Searches the rendered docx for each project's heading paragraph and
+# injects a Word bookmark using the raw project_id as the name.
+# Must run BEFORE fix_internal_hyperlinks (step 3.5) so the bookmark
+# targets exist when the anchor links are written.
 
-# tryCatch({
-#   ...entire step 3.5 block...
-# })
+cat("STEP 3.3: Injecting project heading bookmarks ...\n")
 
-cat("STEP 3.5: Skipped (temporarily disabled)\n\n")
+tryCatch({
+  if (file.exists(rendered_docx) && exists("projects_df")) {
+    inject_project_bookmarks(rendered_docx, projects_df)
+    cat("  \u2713 Project bookmarks injected\n\n")
+  } else {
+    cat("  \u26a0 Skipping: rendered docx or projects_df not found\n\n")
+  }
+}, error = function(e) {
+  cat("  \u26a0 inject_project_bookmarks failed:", conditionMessage(e), "\n\n")
+})
+
+# --- STEP 3.4: Inject BCSRIF table row bookmarks -----------------------
+# BCSRIF projects appear as rows in the Appendix B table, not as pages.
+# add_table_row_bookmarks() searches every table row's first cell for a
+# project_id match and injects a bookmark using the raw project_id as name,
+# which matches the #BCSRIF_2022_XXX anchors built by make_section_table().
+
+cat("STEP 3.4: Injecting BCSRIF table row bookmarks ...\n")
+
+tryCatch({
+  if (file.exists(rendered_docx) && exists("projects_df")) {
+    bcsrif_ids <- projects_df$project_id[
+      projects_df$source == "BCSRIF" &
+        projects_df$include %in% c("y", "Y")
+    ]
+    if (length(bcsrif_ids) > 0) {
+      add_table_row_bookmarks(rendered_docx, bcsrif_ids)
+      cat("  \u2713 BCSRIF table row bookmarks injected\n\n")
+    } else {
+      cat("  \u26a0 No BCSRIF projects found in projects_df\n\n")
+    }
+  } else {
+    cat("  \u26a0 Skipping: rendered docx or projects_df not found\n\n")
+  }
+}, error = function(e) {
+  cat("  \u26a0 add_table_row_bookmarks failed:", conditionMessage(e), "\n\n")
+})
+
+# --- STEP 3.5: Convert #fragment hyperlinks to Word-native w:anchor links ----
+# Runs on the pre-frontmatter docx.  Step 4.5 repeats this on the final
+# _wFrontMatter.docx in case officer's merge step regenerates hyperlinks.
+
+cat("STEP 3.5: Converting internal hyperlinks to w:anchor format ...\n")
+
+rendered_docx <- here("PSSI-Technical-Report-2026.docx")
+
+tryCatch({
+  if (file.exists(rendered_docx)) {
+    fix_internal_hyperlinks(rendered_docx)
+    cat("  \u2713 Internal hyperlinks converted\n\n")
+  } else {
+    cat("  \u26a0 Rendered docx not found - skipping\n\n")
+  }
+}, error = function(e) {
+  cat("  \u26a0 fix_internal_hyperlinks failed:", conditionMessage(e), "\n\n")
+})
+
 
 # --- STEP 4: Post-process — prepend CSAS front matter ----
 
@@ -184,6 +240,34 @@ tryCatch({
   cat("  ✗ Front matter error:", conditionMessage(e), "\n")
   cat("  The rendered report (without front matter) is at:\n")
   cat("   ", here("PSSI-Technical-Report-2026.docx"), "\n\n")
+})
+
+
+# --- STEP 4.5: Re-run hyperlink fix on the final merged document -----------
+# officer's add_frontmatter assembles a brand-new docx by copying body
+# elements from the rendered report.  It preserves w:anchor attributes, but
+# running the fix again is cheap insurance and ensures the audit output
+# reflects the actual file the user will open.
+
+cat("STEP 4.5: Fixing hyperlinks in final document and auditing ...\n")
+
+tryCatch({
+  final_docx_path <- here("PSSI-Technical-Report-2026_wFrontMatter.docx")
+  if (file.exists(final_docx_path)) {
+    fix_internal_hyperlinks(final_docx_path)
+    cat("  \u2713 Hyperlinks fixed in final document\n")
+    audit_hyperlinks(final_docx_path)
+  } else {
+    # Fall back to auditing the pre-frontmatter docx
+    pre_docx_path <- here("PSSI-Technical-Report-2026.docx")
+    if (file.exists(pre_docx_path)) {
+      audit_hyperlinks(pre_docx_path)
+    } else {
+      cat("  \u26a0 No output docx found to audit\n\n")
+    }
+  }
+}, error = function(e) {
+  cat("  \u26a0 Step 4.5 failed:", conditionMessage(e), "\n\n")
 })
 
 

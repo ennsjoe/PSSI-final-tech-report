@@ -220,14 +220,119 @@ ensure_root_rels <- function(docx_path) {
   invisible(docx_path)
 }
 
+# --- Project Heading Bookmark Injector --------------------------------------
+# Searches the rendered docx for every project heading paragraph (identified
+# by its display_id text) and injects a w:bookmarkStart / w:bookmarkEnd pair
+# using the raw project_id as the bookmark name.
+#
+# This is the authoritative source of project bookmarks.  It runs on the
+# rendered docx BEFORE fix_internal_hyperlinks so that when the hyperlink
+# fix converts r:id -> w:anchor, the target bookmarks already exist.
+#
+# The bookmark name used here MUST match the URL fragment used in
+# make_section_table(): paste0("#", project_id).
+
+inject_project_bookmarks <- function(docx_path, projects_df) {
+  stopifnot(requireNamespace("xml2", quietly = TRUE))
+  stopifnot(requireNamespace("zip",  quietly = TRUE))
+  
+  tmp <- tempfile()
+  dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE))
+  utils::unzip(docx_path, exdir = tmp)
+  
+  doc_xml_path <- file.path(tmp, "word", "document.xml")
+  doc_xml      <- xml2::read_xml(doc_xml_path)
+  
+  wns <- "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  ns  <- c(w = wns)
+  
+  # Collect all paragraph nodes once (cheaper than repeated XPath calls)
+  paras <- xml2::xml_find_all(doc_xml, "//w:p", ns)
+  
+  # Pre-compute paragraph text (concatenate all w:t runs)
+  para_texts <- vapply(paras, function(p) {
+    paste(xml2::xml_text(xml2::xml_find_all(p, ".//w:t", ns)), collapse = "")
+  }, character(1))
+  
+  # Determine highest existing bookmark id to avoid collisions
+  existing_bk <- xml2::xml_find_all(doc_xml, "//*[local-name()='bookmarkStart']")
+  existing_ids <- suppressWarnings(as.integer(
+    xml2::xml_attr(existing_bk, paste0("{", wns, "}id"))
+  ))
+  existing_ids <- existing_ids[!is.na(existing_ids)]
+  next_bk_id   <- if (length(existing_ids) > 0) max(existing_ids) + 1L else 2000L
+  
+  added    <- 0L
+  not_found <- character(0)
+  
+  # Only DFO Science projects have dedicated pages with headings;
+  # BCSRIF projects are bookmarked at Appendix B table rows instead.
+  dfo_projects <- projects_df[projects_df$source == "DFO Science", ]
+  
+  for (i in seq_len(nrow(dfo_projects))) {
+    pid      <- as.character(dfo_projects$project_id[i])
+    disp_txt <- display_id(pid)
+    
+    # Find the paragraph whose full text exactly matches the display heading
+    hit <- which(trimws(para_texts) == disp_txt)
+    if (length(hit) == 0) {
+      not_found <- c(not_found, pid)
+      next
+    }
+    matched_para <- paras[[hit[1]]]
+    
+    # Word bookmark names: letters, digits, underscores only; start with letter/underscore
+    bk_name <- gsub("[^A-Za-z0-9_]", "_", pid)
+    if (!grepl("^[A-Za-z_]", bk_name)) bk_name <- paste0("bk_", bk_name)
+    
+    bk_id_str <- as.character(next_bk_id)
+    next_bk_id <- next_bk_id + 1L
+    
+    bk_start <- xml2::read_xml(sprintf(
+      '<w:bookmarkStart xmlns:w="%s" w:id="%s" w:name="%s"/>',
+      wns, bk_id_str, bk_name
+    ))
+    bk_end <- xml2::read_xml(sprintf(
+      '<w:bookmarkEnd xmlns:w="%s" w:id="%s"/>',
+      wns, bk_id_str
+    ))
+    
+    first_child <- xml2::xml_child(matched_para, 1)
+    xml2::xml_add_sibling(first_child, bk_start, .where = "before")
+    xml2::xml_add_sibling(first_child, bk_end,   .where = "before")
+    added <- added + 1L
+  }
+  
+  xml2::write_xml(doc_xml, doc_xml_path)
+  
+  orig_wd   <- getwd()
+  on.exit(setwd(orig_wd), add = TRUE)
+  all_files <- list.files(tmp, recursive = TRUE, full.names = FALSE, all.files = TRUE)
+  setwd(tmp)
+  zip::zip(docx_path, files = all_files, mode = "mirror")
+  setwd(orig_wd)
+  
+  message("  inject_project_bookmarks: added ", added, " bookmarks")
+  if (length(not_found) > 0) {
+    message("  inject_project_bookmarks: ", length(not_found),
+            " project headings not found in docx:")
+    for (x in not_found) message("    ", x, " (display: ", display_id(x), ")")
+  }
+  invisible(docx_path)
+}
+
 # --- Internal Hyperlink Fixer ------------------------------------------------
 # Converts flextable hyperlink_text(url = "#bookmark") external relationships
 # into Word-native w:anchor links so Ctrl+Click navigates within the document.
 #
-# Fixes applied:
-#   1. mode = "mirror" (not "cherry-pick") preserves word/ folder structure
-#   2. all.files = TRUE ensures _rels/.rels dotfile dir is included in rezip
-#   3. local-name() XPath + namespace fallback fixes "converted 0" bug
+# Strategy: try a fast fixed-string text replacement first.  If that finds 0
+# matches (flextable may serialise r:id with single quotes or a different prefix
+# depending on its version), fall back to xml2 to locate and convert the nodes,
+# then do a post-process text pass to rename any synthetic namespace prefix
+# (ns0:anchor, ns1:anchor, ...) that xml2/libxml2 mints for w:anchor back to
+# the correct w:anchor and strip the orphaned xmlns:nsN declaration.  This avoids
+# the "error parsing attribute name" corruption seen when relying solely on xml2.
 
 fix_internal_hyperlinks <- function(docx_path) {
   stopifnot(requireNamespace("xml2", quietly = TRUE))
@@ -242,14 +347,14 @@ fix_internal_hyperlinks <- function(docx_path) {
   doc_xml_path  <- file.path(tmp, "word", "document.xml")
   rels_xml_path <- file.path(tmp, "word", "_rels", "document.xml.rels")
   
-  doc_xml  <- xml2::read_xml(doc_xml_path)
-  rels_xml <- xml2::read_xml(rels_xml_path)
-  
   wns  <- "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
   rns  <- "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
   pkns <- "http://schemas.openxmlformats.org/package/2006/relationships"
   
-  rels             <- xml2::xml_find_all(rels_xml, "//pkns:Relationship", c(pkns = pkns))
+  # --- 1. Build rId -> anchor map from rels ----------------------------------
+  rels_xml <- xml2::read_xml(rels_xml_path)
+  rels     <- xml2::xml_find_all(rels_xml, "//pkns:Relationship", c(pkns = pkns))
+  
   anchor_ids       <- character(0)
   anchor_map_local <- list()
   
@@ -264,47 +369,119 @@ fix_internal_hyperlinks <- function(docx_path) {
   }
   
   if (length(anchor_ids) == 0) {
-    message("  fix_internal_hyperlinks: no #fragment hyperlinks found — nothing to convert")
+    message("  fix_internal_hyperlinks: no #fragment hyperlinks found -- nothing to convert")
     return(invisible(docx_path))
   }
   
   message("  fix_internal_hyperlinks: converting ", length(anchor_ids),
           " internal hyperlinks to w:anchor format")
   
-  # local-name() XPath avoids namespace-prefix resolution issues in xml2
-  hyperlinks <- xml2::xml_find_all(
-    doc_xml,
-    "//*[local-name()='hyperlink' and @*[local-name()='id']]"
+  # --- 2. Read document.xml as text ------------------------------------------
+  doc_text <- paste(
+    readLines(doc_xml_path, encoding = "UTF-8", warn = FALSE),
+    collapse = "\n"
   )
   
-  converted <- 0
-  for (hl in hyperlinks) {
-    rid <- xml2::xml_attr(hl, paste0("{", rns, "}id"))
-    if (is.na(rid)) rid <- xml2::xml_attr(hl, "id")
-    if (is.na(rid) || !(rid %in% anchor_ids)) next
-    
+  # --- 3a. Fast path: fixed-string text replacement -------------------------
+  # Handles both double-quoted (r:id="rIdN") and single-quoted (r:id='rIdN')
+  # forms.  Each rId is unique in the document so fixed=TRUE is safe.
+  converted <- 0L
+  for (rid in anchor_ids) {
     anchor_val <- anchor_map_local[[rid]]
-    xml2::xml_set_attr(hl, paste0("{", wns, "}anchor"), anchor_val)
-    xml2::xml_set_attr(hl, paste0("{", rns, "}id"),     NULL)
-    converted <- converted + 1
+    replaced   <- FALSE
+    for (q in c('"', "'")) {
+      old_attr <- paste0("r:id=", q, rid, q)
+      new_attr <- paste0('w:anchor="', anchor_val, '"')
+      new_text <- gsub(old_attr, new_attr, doc_text, fixed = TRUE)
+      if (!identical(new_text, doc_text)) {
+        doc_text  <- new_text
+        converted <- converted + 1L
+        replaced  <- TRUE
+        break
+      }
+    }
+    # If neither quote style matched, the attribute may use a different prefix.
+    # We will catch these in the xml2 fallback below.
+    if (!replaced) {
+      # Diagnostic: check whether the rId string is present at all
+      if (!grepl(rid, doc_text, fixed = TRUE)) {
+        message("    Note: ", rid, " not found anywhere in document.xml text")
+      }
+    }
   }
   
+  # --- 3b. xml2 fallback (if text replacement missed any) --------------------
+  if (converted < length(anchor_ids)) {
+    remaining <- anchor_ids[!vapply(anchor_ids, function(rid) {
+      any(grepl(paste0('w:anchor="', anchor_map_local[[rid]], '"'),
+                doc_text, fixed = TRUE))
+    }, logical(1))]
+    
+    if (length(remaining) > 0) {
+      message("  Falling back to xml2 for ", length(remaining), " unconverted links")
+      
+      doc_xml <- xml2::read_xml(doc_xml_path)
+      
+      hlinks <- xml2::xml_find_all(
+        doc_xml,
+        "//*[local-name()='hyperlink' and @*[local-name()='id']]"
+      )
+      
+      xml2_converted <- 0L
+      for (hl in hlinks) {
+        rid <- xml2::xml_attr(hl, paste0("{", rns, "}id"))
+        if (is.na(rid)) rid <- xml2::xml_attr(hl, "id")
+        if (is.na(rid) || !(rid %in% remaining)) next
+        
+        anchor_val <- anchor_map_local[[rid]]
+        # xml_set_attr with Clark notation may create ns0:anchor -- fixed below
+        xml2::xml_set_attr(hl, paste0("{", wns, "}anchor"), anchor_val)
+        xml2::xml_set_attr(hl, paste0("{", rns, "}id"), NULL)
+        xml2_converted <- converted + 1L
+      }
+      
+      xml2::write_xml(doc_xml, doc_xml_path)
+      
+      # Re-read and fix any synthetic namespace prefix libxml2 introduced
+      doc_text <- paste(
+        readLines(doc_xml_path, encoding = "UTF-8", warn = FALSE),
+        collapse = "\n"
+      )
+      # Rename ns0:anchor (or ns1:anchor, etc.) -> w:anchor
+      doc_text <- gsub("\\bns[0-9]+:anchor=", "w:anchor=", doc_text, perl = TRUE)
+      # Remove the orphaned synthetic namespace declaration on the same element
+      wns_escaped <- gsub("\\.", "\\\\.", wns)
+      doc_text <- gsub(
+        paste0(' xmlns:ns[0-9]+="', wns_escaped, '"'),
+        "", doc_text, perl = TRUE
+      )
+      
+      converted <- converted + xml2_converted
+    }
+  }
+  
+  # --- 4. Write document.xml back --------------------------------------------
+  con <- file(doc_xml_path, open = "w", encoding = "UTF-8")
+  writeLines(doc_text, con = con, useBytes = FALSE)
+  close(con)
+  
+  # --- 5. Remove #fragment entries from rels ---------------------------------
   for (rel in rels) {
     rid <- xml2::xml_attr(rel, "Id")
     if (!is.na(rid) && rid %in% anchor_ids) xml2::xml_remove(rel)
   }
-  
-  xml2::write_xml(doc_xml,  doc_xml_path)
   xml2::write_xml(rels_xml, rels_xml_path)
   
+  # --- 6. Repack the docx ----------------------------------------------------
   orig_wd   <- getwd()
+  on.exit(setwd(orig_wd), add = TRUE)
   all_files <- list.files(tmp, recursive = TRUE, full.names = FALSE, all.files = TRUE)
   setwd(tmp)
   zip::zip(docx_path, files = all_files, mode = "mirror")
   setwd(orig_wd)
   
   message("  fix_internal_hyperlinks: converted ", converted,
-          " hyperlinks — saved to ", docx_path)
+          " hyperlinks -- saved to ", docx_path)
   invisible(docx_path)
 }
 
@@ -345,8 +522,11 @@ add_table_row_bookmarks <- function(docx_path, project_ids) {
     ]
     if (length(matched_id) == 0) next
     
-    # Sanitise to valid XML attribute name (letters, digits, _ . - only)
-    bookmark_name <- paste0("proj_", gsub("[^A-Za-z0-9_.-]", "_", matched_id[1]))
+    # Use raw project_id as bookmark name (must start with letter/underscore,
+    # contain only letters, digits, underscores -- matches make_section_table URLs)
+    bookmark_name <- gsub("[^A-Za-z0-9_]", "_", matched_id[1])
+    if (!grepl("^[A-Za-z_]", bookmark_name))
+      bookmark_name <- paste0("bk_", bookmark_name)
     bk_id         <- as.character(added + 1000L)
     
     bk_start <- xml2::read_xml(sprintf(
@@ -375,4 +555,107 @@ add_table_row_bookmarks <- function(docx_path, project_ids) {
   message("  add_table_row_bookmarks: added ", added,
           " bookmarks — saved to ", docx_path)
   invisible(docx_path)
+}
+
+# --- Hyperlink / Bookmark Audit ----------------------------------------------
+# Compares every w:anchor link (written by fix_internal_hyperlinks) against
+# every w:bookmarkStart name in document.xml.  Any "unmatched link" means the
+# URL used in make_section_table() does not equal the bookmark name set by
+# officer::run_bookmark() in project-template.Rmd.
+#
+# The link URL must be paste0("#", project_id) using the raw project_id —
+# not display_id(), not a sanitised form — to match officer::run_bookmark().
+#
+# Usage: audit_hyperlinks(here::here("PSSI-Technical-Report-2026.docx"))
+# Returns invisibly: list(bookmarks, anchors, unmatched_links)
+
+audit_hyperlinks <- function(docx_path) {
+  stopifnot(requireNamespace("xml2", quietly = TRUE))
+  
+  tmp <- tempfile()
+  dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE))
+  utils::unzip(docx_path, exdir = tmp)
+  
+  doc_xml_path  <- file.path(tmp, "word", "document.xml")
+  rels_xml_path <- file.path(tmp, "word", "_rels", "document.xml.rels")
+  
+  doc_xml  <- xml2::read_xml(doc_xml_path)
+  rels_xml <- xml2::read_xml(rels_xml_path)
+  
+  wns  <- "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  pkns <- "http://schemas.openxmlformats.org/package/2006/relationships"
+  
+  # 1. All bookmarks in the document
+  # Use local-name() to avoid namespace prefix resolution issues
+  bk_nodes  <- xml2::xml_find_all(doc_xml,
+                                  "//*[local-name()='bookmarkStart']")
+  # Try Clark notation first, fall back to bare attribute name
+  bookmarks <- xml2::xml_attr(bk_nodes, paste0("{", wns, "}name"))
+  if (all(is.na(bookmarks)))
+    bookmarks <- xml2::xml_attr(bk_nodes, "name")
+  bookmarks <- bookmarks[!is.na(bookmarks) & nchar(bookmarks) > 0]
+  
+  # 2. w:anchor links already converted by fix_internal_hyperlinks
+  hl_nodes <- xml2::xml_find_all(
+    doc_xml,
+    "//*[local-name()='hyperlink' and @*[local-name()='anchor']]"
+  )
+  # Try Clark notation first, fall back to bare attribute name
+  anchors <- xml2::xml_attr(hl_nodes, paste0("{", wns, "}anchor"))
+  if (all(is.na(anchors)))
+    anchors <- xml2::xml_attr(hl_nodes, "anchor")
+  anchors  <- anchors[!is.na(anchors) & nchar(anchors) > 0]
+  
+  # 3. Any remaining unconverted #fragment external links
+  rels         <- xml2::xml_find_all(rels_xml, "//pkns:Relationship", c(pkns = pkns))
+  frag_targets <- character(0)
+  for (rel in rels) {
+    tgt <- xml2::xml_attr(rel, "Target")
+    if (!is.na(tgt) && startsWith(tgt, "#"))
+      frag_targets <- c(frag_targets, sub("^#", "", tgt))
+  }
+  
+  # Report
+  message("\n--- audit_hyperlinks: ", basename(docx_path), " ---")
+  message("  Bookmarks found       : ", length(bookmarks))
+  message("  w:anchor links found  : ", length(anchors))
+  if (length(frag_targets) > 0)
+    message("  !! Unconverted #fragment links still in rels: ",
+            length(frag_targets),
+            "\n     fix_internal_hyperlinks() may not have run, or found 0 links.")
+  
+  unmatched_links <- setdiff(anchors, bookmarks)
+  unmatched_bks   <- setdiff(bookmarks, anchors)
+  
+  if (length(anchors) == 0 && length(frag_targets) == 0) {
+    message("  No internal links found — has make_section_table() added any?")
+  } else if (length(unmatched_links) == 0 && length(anchors) > 0) {
+    message("  \u2705 All ", length(anchors),
+            " anchor links have a matching bookmark.")
+  } else if (length(unmatched_links) > 0) {
+    message("  \u274c Links with NO matching bookmark (", length(unmatched_links), "):")
+    for (x in unmatched_links) message("       ", x)
+    message("")
+    message("  Fix: in make_section_table(), the link URL must be")
+    message("       paste0('#', project_id)")
+    message("       using the same raw project_id value that officer::run_bookmark()")
+    message("       receives in project-template.Rmd — not display_id() output,")
+    message("       not a sanitised/prefixed form.")
+  }
+  
+  if (length(unmatched_bks) > 0) {
+    n_show <- min(10L, length(unmatched_bks))
+    message("  Bookmarks with no link (", length(unmatched_bks),
+            ") — informational only:")
+    for (x in head(unmatched_bks, n_show)) message("       ", x)
+    if (length(unmatched_bks) > 10)
+      message("       ... and ", length(unmatched_bks) - 10, " more")
+  }
+  
+  message("--- end audit ---\n")
+  
+  invisible(list(bookmarks      = bookmarks,
+                 anchors         = anchors,
+                 unmatched_links = unmatched_links))
 }
