@@ -98,95 +98,43 @@ The Pacific Salmon Strategy Initiative (PSSI) and BC Salmon Restoration and Inno
 
 By synthesizing findings across multiple studies, this work aims to provide an integrated understanding of salmon-ecosystem dynamics and inform more holistic, ecosystem-based approaches to salmon conservation and management.
 
-# Life cycle approaches for salmon assessments and conservation {#life-cycle}
+# Freshwater ecosystems {#freshwater-ecosystems}
 
-Many Pacific salmon populations continue declining despite significant restoration investments. The challenge lies in ecosystem complexity, management uncertainty, and multiple interacting stressors affecting productivity and habitat capacity in ways that are difficult to predict.
-
-Traditional management focuses on freshwater bottlenecks, yet evidence suggests marine constraints drive recent declines. Life cycle approaches address this mismatch by tracking salmon from egg to spawning adult, integrating environmental factors (temperature, flows, habitat quality), biological parameters (mortality, growth, maturation, fecundity), and stressor impacts (habitat loss, predation, competition, fishing, disease, climate change, water quality) across all life stages. This holistic perspective identifies critical mortality bottlenecks, recognizes how conditions at one stage affect subsequent performance, and determines which habitats most limit recovery and how much survival improvement is needed.
-
-Comprehensive population monitoring underpins these approaches. PSSI and BCSRIF funded development of novel monitoring programs (described below) and two major life cycle initiatives. DFO's Risk Assessment Method for Salmon (RAMS) provides a life-cycle risk assessment tool for data-limited stocks of conservation concern (Irvine et al. 2024), supporting Rebuilding Plans under the Fish Stocks Provisions of the Fisheries Act by ranking limiting factors and identifying research gaps. The Follow the Fish program applied RAMS to WCVI Chinook, prioritizing highest-risk factors driving declines. The Bottlenecks to Survival program examined Strait of Georgia Chinook and coho, determining stage-specific survivals and limiting factors. Identifying survival bottlenecks and their causes is necessary to evaluate the relative costs and benefits of strategies aimed at improving survival at specific life stages, including decisions around hatchery rearing and release strategies.
-
-This represents a paradigm shift from single-stage to ecosystem-based fisheries management, recognizing that salmon traverse multiple jurisdictions, habitats, and food webs while facing stage-specific stressors. Below we describe these programs and key findings.
-
-## Salmon population monitoring {#salmon-population-monitoring}
-
-```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
+```{r freshwater-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with freshwater ecosystems theme.",tab.id="tbl-fweco"}
 
 make_section_table(projects_df,
-                   section_pick = "Salmon population monitoring")
-
-
+                   section_pick = 'Freshwater ecosystems')
 ```
 
-PSSI and BCSRIF projects developed numerous salmon monitoring programs, many employing novel methods to assess populations and understand factors affecting freshwater, estuarine, and marine survival. In nearly all cases, these programs were led by or developed in partnership with local First Nations.
+Summarize research undertaken and key findings focused on freshwater ecosystems. Projects and themes include:
 
-Davidson (DFO) and Pacheedaht First Nation created an integrated San Juan Chinook life history monitoring program within the Follow the Fish initiative. Methods include rotary screw trapping to enumerate and sample outmigrating juveniles (collecting otoliths and stomach contents for size-specific survival and diet analysis); estuary beach seining to compare diet and residency between hatchery and natural-origin fish; Port San Juan purse seining through late spring-fall for mixed-stock data; and deadpitch biosampling to assess adult age-at-return, PNI, and spawner stock composition. Results will guide improvements to natural-origin juvenile survival while ensuring hatchery fish complement rather than compete with wild populations.
+-   Risk assessment and mitigation of aquatic invasive species
 
-Pontbriand and Weir (DFO), partnering with Thompson Rivers University and Okanagan Nation Alliance, monitored juvenile Chinook habitat use and predation in the Okanagan River and Lake system. Canadian Okanagan Chinook—the only Columbia River basin Chinook population in Canada—face extremely low escapements (under 100 spawners annually), multiple habitat challenges, and COSEWIC Endangered designation (2017), with Species at Risk Act listing under review. Using acoustic telemetry and DNA metabarcoding to assess smallmouth bass predation, researchers found low survival during spring-summer downstream migration, identifying disturbed rearing habitat, high temperatures, predation pressure, and critical mortality hotspots as main threats. These findings will guide targeted recovery efforts.
+    -   Understanding threats of freshwater AIS (Thomas Therriault)
 
-Sakinaw sockeye, COSEWIC-listed as Endangered since 2003, face perpetually low marine survival that prevents recovery despite a captive brood program. The 2017 Recovery Potential Assessment identified marine survival as the greatest limiting factor, with seal predation on smolts and adults ranked as high-risk (Ramshaw et al. 2019). Pellet's DFO team, collaborating with shíshálh Nation, used Passive Integrated Transponder (PIT) tagging to study marine survival and test whether barging smolts past pinniped haul-outs would improve survival. Results led to recommendations against operationalizing smolt transport for Sakinaw recovery.
+    -   Survival and predation on Okanagan Chinook (Tommy Pontbriand)
 
-Doutaz and colleagues from DFO, partnering with Aquacoustics Inc. and Tŝilhqot'in National Government, assessed upward- and side-looking SONAR methods to estimate Chilko River sockeye smolt abundance. Chilko represents the only wild Fraser sockeye indicator stock, with the annual smolt assessment (1951-present) comprising the sole long-term time series for juvenile recruitment and freshwater/marine productivity. Traditional fish counting weirs and photographic methods became impractical due to unusually early freshets. The SONAR methods now enable monitoring of egg-to-smolt survival, stock recruitment, and freshwater habitat conditions during early rearing.
+    -   Monitoring of Smallmouth bass in Cultus Lake (Daniel Doutaz)
 
-Similarly, Gitanyow Fisheries Authority, partnering with Skeena Fisheries Commission through BCSRIF funding, employed upward-looking hydroacoustics to collect Meziadin Lake sockeye data including outmigrating smolt abundance, size, age composition, and origin. This method supports understanding of productivity, identification of survival bottlenecks, and development of restoration priorities and management approaches.
+-   Research on freshwater toxins and their effects on salmon, particulalrly 6PPD-Q
 
-Common methodologies across BCSRIF and PSSI monitoring programs included SONAR, hydroacoustics, PIT tagging, genetic methods (Genetic Stock Identification and Parental-Based Tagging), and eDNA. PIT tagging applications included Lower Fraser Fisheries Alliance Society's mark-recapture program for Chilliwack River Hatchery coho, and Pacific Salmon Foundation projects assessing stage-specific survival and bottlenecks along WCVI and in the Strait of Georgia. eDNA was employed by A Rocha Canada with Semiahmoo First Nation to study Boundary Bay Chinook in the Tatalu watershed, and by Deeg's DFO lab to characterize WCVI salmon ecosystems. GSI and PBT were used throughout the PSSI-funded Follow the Fish program to identify Pacific salmon stocks rearing in WCVI sounds, while UBC, collaborating with Okanagan First Nation, applied genetic, morphological, and microchemistry analyses to investigate behavior, fitness, and hybridization between anadromous sockeye and resident kokanee in Skaha Lake.
+    -   Identifying tire-related toxic hotspots (Lisa Loseto)
 
-Innovative solutions emerged for challenging monitoring conditions. Lil'wat Nation's digital imaging of wild coho returns to the remote Lillooet River Conservation Unit required Adaptive Resolution Imaging Sonar (ARIS) but lacked grid power access. The solution—a battery system using six golf cart batteries—powers the underwater sonar camera for coho enumeration, demonstrating an effective approach for the Lower Fraser, particularly the Lillooet River and tributaries.
+-   Physiological and mechanistic studies to link environmental conditions with survival and productivity
 
-## Follow the Fish Program {#follow-the-fish}
+    -   Mechanistic modelling linking hydrology to habitat quality (Sean Naman)
 
-```{r ftf-projects, tab.cap="DFO and BCSRIF projects associated with Follow the Fish.",tab.id="tbl-ftf"}
+    -   Physiological studies to understand cumulative impacts on salmon survival (David Patterson)
 
-make_section_table(projects_df,
-                   section_pick = 'Life cycle assessment - Follow The Fish')
+    -   Effects of redd scour on WCVI Chinook (Diana McHugh)
 
-```
+-   Broad-scale spatial and statistical modelling to characterize cumulative threats to freshwater habitat
 
-West Coast Vancouver Island Chinook are a DFO Fish Stock Provisions rebuilding priority. Status is poor—especially in Clayoquot Sound—due to low naturally-produced spawner abundance, high hatchery introgression, and demographic shifts toward fewer, smaller females depositing eggs shallower in streambeds.
+    -   Geospatial indicators of cumulative threats to stream habitat (Josie Iacarella)
 
-Effective rebuilding requires understanding decline causes to target mitigation effectively. The Risk Assessment Methodology for Salmon (RAMS) identified and prioritized factors limiting WCVI Chinook production currently and under anticipated 2050 climate conditions. RAMS assesses biological risks from natural and anthropogenic stressors across freshwater, estuarine, and marine life stages using life history models to determine when, where, and how stressors influence population productivity and capacity.
+    -   Effects of forest harvest of salmon productivity (BCSRIF, Maria Kuruvilla)
 
-Freshwater RAMS processes were applied to 18 watersheds in San Juan, Barkley Sound, Clayoquot Sound, Nootka Sound, and Kyuquot, with results synthesized by Bolt et al. (2023). A subsequent Marine Risk Assessment examined factors affecting WCVI Chinook smolts, sub-adults, and adults in nearshore, coastal, and North Pacific waters (Irvine et al. 2024).
-
-Results show declining natural-origin WCVI Chinook survival and productivity result from cumulative effects. Freshwater assessments indicated habitat degradation likely reduced productivity in many systems through decreased egg-to-smolt survival, earlier outmigration, and smaller smolts. A critical "carry-over effect" emerged as high risk: smaller, less robust pre-smolts and smolts face elevated vulnerability during estuary and early marine rearing.
-
-Marine assessments found early marine life stages experienced highest mortality, with almost all limiting factors rated high risk (Irvine et al. 2024). Cumulative risks span multiple ecosystem factors: large-scale ocean processes affecting nearshore ecosystems; local water quality (high temperature, low oxygen, summer harmful algal blooms); pathogens, parasites, and disease; prey quality, quantity, and timing during first spring through winter; predation; and competition with hatchery fish.
-
-To address knowledge gaps and clarify WCVI Chinook limiting factors, DFO Science developed the PSSI-funded Follow the Fish (FtF) suite of projects. The program uses a life cycle approach, tracking fish through freshwater and early marine stages to understand juvenile Chinook distribution in WCVI sounds and coastal waters, environmental stressors during this critical growth phase, habitat utilization, and diet, growth, distribution, behavior, and health.
-
-Projects examined freshwater redd scour and habitat quality; developed ocean models for WCVI fjord conditions; assessed zooplankton, juvenile salmon, and forage species abundance and seasonal patterns through sampling and hydroacoustics; characterized environmental community composition via eDNA analysis; investigated juvenile Chinook distribution, growth, and diet across space and time; assessed health through stress and infectious agent profiling using salmon Fit-Chip technology in freshwater, estuary, and marine environments; and evaluated harmful algal biotoxins and contaminant prevalence and impacts.
-
-Follow the Fish was built on extensive collaboration among DFO, West Coast Vancouver Island First Nations, academic institutions, and NGOs. One particularly significant partnership — bringing together Huu-ay-aht First Nation, the DFO Salmon Enhancement Program, and DFO Science (Holt team)— resulted in the development of salmonMSE, an open-source, life-cycle based decision-support tool for Pacific salmon. The tool models population processes operating across both freshwater and marine environments, accounts for the influence of harvest and environmental conditions on juvenile and adult life stages, and explicitly incorporates hatchery dynamics — enabling the evaluation of conservation, production, and "wildness" objectives across different populations.
-
-As a case study, the team applied salmonMSE to Sarita River Chinook to assess how mark-selective fisheries and various hatchery scenarios affect the capacity to meet a range of conservation, harvest, and hatchery objectives, and to help inform rebuilding plans. The results reveal important potential trade-offs: in some cases, achieving both high abundances and wildness objectives simultaneously may not be possible, and where freshwater survival is the limiting factor, habitat restoration may be necessary to meet production goals. salmonMSE addresses a critical gap in DFO's analytical toolkit, providing a structured means of evaluating decisions across all three core management levers — hatchery, harvest, and habitat restoration — in an integrated and transparent framework.
-
-Additionally, a number of partner-led BCSRIF programs substantially advanced Follow the Fish objectives. For example:
-
--   Huu-ay-aht First Nations examined whether the Sarita Chinook population could serve as an ecological indicator for the COSEWIC-listed West Vancouver Island, Ocean, Fall (South) population and WCVI Management Unit. The project provided reliable juvenile production estimates and enhanced understanding of natural-origin Chinook ecology including dietary behavior across freshwater, estuarine, and nearshore marine habitats, and spatial-temporal distribution from egg to marine entry. Results will inform recommendations on Sarita Chinook as an ecological indicator and optimize management and rebuilding.
-
--   Ka:'yu:'k't'h'/Che:k:tles7et'h' First Nations conducted a three-year study in the Kaouk and Artlish Rivers addressing life history information gaps for two of three Chinook indicators for the West Vancouver Island, Ocean, Fall (North) population Conservation Unit. Data improved understanding of limiting factors in freshwater and marine environments within KCFN traditional territory, supporting WCVI Chinook rebuilding.
-
--   The Pacific Salmon Foundation addressed early marine residence mortality information gaps using microtrolling and gene-expression Fit-Chip technology, focusing on habitat utilization, ecological stressors, and salmon health across multiple WCVI sounds. Established tools now produce ecological data informing management decisions and improving understanding of WCVI Chinook survival bottlenecks.
-
-The Follow the Fish program will clarify relationships between environmental conditions and WCVI Chinook distribution, health, and mortality, particularly during critical early marine stages. It addresses major knowledge gaps identified in Freshwater and Marine Risk Assessments, improving confidence in risk ratings for key limiting factors and identifying causal mechanisms behind high-risk stressors. Ultimately, the program will generate data and knowledge that will directly contribute to WCVI Chinook rebuilding plans, and will identify management measures to improve productivity across freshwater and marine ecosystems, supporting wild WCVI Chinook rebuilding through ecosystem-based approaches.
-
-## Bottlenecks to survival {#bottlenecks}
-
-```{r bottleneck-projects, tab.cap="DFO and BCSRIF projects associated with bottlenecks to survival.",tab.id="tbl-bottlenecks"}
-
-make_section_table(projects_df,
-                   section_pick = 'Life cycle assessment - Bottlenecks to survival')
-
-```
-
-The Pacific Salmon Foundation and British Columbia Conservation Foundation have led a major BCSRIF-funded initiative using passive integrated transponder (PIT) tags and a comprehensive array network around Vancouver Island to track stage-specific survival of Chinook and coho salmon and steelhead along BC's South Coast. Known as the "Bottlenecks Program," this effort has brought together a network of partners to deploy PIT tag application and detection systems across 13 east coast Vancouver Island watersheds and two on the west coast — the Stamp and Toquaht rivers.
-
-Groundbreaking in its approach, the program was the first of its kind to open the "black box" of salmon survival by comparing outcomes for wild and hatchery-enhanced Chinook and coho across multiple systems, life history stages, and enhancement strategies — pinpointing the periods and places where mortality is highest.
-
-The results have been substantial. The project has delivered new and improved escapement estimates for five east coast Vancouver Island populations, doubling the number of systems represented in DFO's 2025 Coho Marine Forecast Bulletin. It has also contributed critical contemporary data — including baseline marine survival rates — to inform the Nanaimo summer Chinook Recovery Potential Assessment. A dedicated winter ecology study of Strait of Georgia Chinook has shed new light on first-year habitat use and feeding behavior, offering fresh evidence of long-term salmonid residency in the Strait.
-
-Complementing the PIT tagging work, the program has integrated genomic and genetic analysis to enable non-lethal stock identification of captured fish. Together, these tools allow researchers to examine how environmental and physiological stressors shape individual fish outcomes — identifying the biological markers associated with mortality and the traits that drive survival.
+    -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
 
 # Marine ecosystems {#marine-ecosystems}
 
@@ -278,44 +226,6 @@ Several BCSRIF-funded studies have focussed on estuary monitoring, restoration a
 
 SeaChange Marine Conservation Society assessed critical salmonid habitats in resilient estuaries, with the aim of identifying and restoring estuaries that will provide crucial ecological hotspots as oceans are altered as a result of climate change; while Nature Trust of BC applied the MARS tool to evaluate estuary resilience to sea-level rise and climate impacts coastwide. This collaborative program united 16 First Nation communities, eNGOs, academics, and government to collect monitoring data, establishing partnerships ensuring adaptive management of restoration sites for ecosystem function goals. These studies provide vital information on current and predicted future health and status of BC estuaries, can guide prioritization of conservation and protection actions, and inform ecosystem-based fisheries planning.
 
-# Freshwater ecosystems {#freshwater-ecosystems}
-
-```{r freshwater-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with freshwater ecosystems theme.",tab.id="tbl-fweco"}
-
-make_section_table(projects_df,
-                   section_pick = 'Freshwater ecosystems')
-```
-
-Summarize research undertaken and key findings focused on freshwater ecosystems. Projects and themes include:
-
--   Risk assessment and mitigation of aquatic invasive species
-
-    -   Understanding threats of freshwater AIS (Thomas Therriault)
-
-    -   Survival and predation on Okanagan Chinook (Tommy Pontbriand)
-
-    -   Monitoring of Smallmouth bass in Cultus Lake (Daniel Doutaz)
-
--   Research on freshwater toxins and their effects on salmon, particulalrly 6PPD-Q
-
-    -   Identifying tire-related toxic hotspots (Lisa Loseto)
-
--   Physiological and mechanistic studies to link environmental conditions with survival and productivity
-
-    -   Mechanistic modelling linking hydrology to habitat quality (Sean Naman)
-
-    -   Physiological studies to understand cumulative impacts on salmon survival (David Patterson)
-
-    -   Effects of redd scour on WCVI Chinook (Diana McHugh)
-
--   Broad-scale spatial and statistical modelling to characterize cumulative threats to freshwater habitat
-
-    -   Geospatial indicators of cumulative threats to stream habitat (Josie Iacarella)
-
-    -   Effects of forest harvest of salmon productivity (BCSRIF, Maria Kuruvilla)
-
-    -   The CEMPRA cumulative effects modelling framework (BCSRIF, Jordan Rosenfeld)
-
 # Climate change vulnerability {#climate-change-vulnerability}
 
 ```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
@@ -374,6 +284,96 @@ Changes in the frequency of extreme events, such as flooding, marine heat-waves,
 
 Incorporating climate vulnerability information into decision-making and planning frameworks, prioritizing actions that can mitigate vulnerability
 
+# Life cycle approaches for salmon assessments and conservation {#life-cycle}
+
+Many Pacific salmon populations continue declining despite significant restoration investments. The challenge lies in ecosystem complexity, management uncertainty, and multiple interacting stressors affecting productivity and habitat capacity in ways that are difficult to predict.
+
+Traditional management focuses on freshwater bottlenecks, yet evidence suggests marine constraints drive recent declines. Life cycle approaches address this mismatch by tracking salmon from egg to spawning adult, integrating environmental factors (temperature, flows, habitat quality), biological parameters (mortality, growth, maturation, fecundity), and stressor impacts (habitat loss, predation, competition, fishing, disease, climate change, water quality) across all life stages. This holistic perspective identifies critical mortality bottlenecks, recognizes how conditions at one stage affect subsequent performance, and determines which habitats most limit recovery and how much survival improvement is needed.
+
+Comprehensive population monitoring underpins these approaches. PSSI and BCSRIF funded development of novel monitoring programs (described below) and two major life cycle initiatives. DFO's Risk Assessment Method for Salmon (RAMS) provides a life-cycle risk assessment tool for data-limited stocks of conservation concern (Irvine et al. 2024), supporting Rebuilding Plans under the Fish Stocks Provisions of the Fisheries Act by ranking limiting factors and identifying research gaps. The Follow the Fish program applied RAMS to WCVI Chinook, prioritizing highest-risk factors driving declines. The Bottlenecks to Survival program examined Strait of Georgia Chinook and coho, determining stage-specific survivals and limiting factors. Identifying survival bottlenecks and their causes is necessary to evaluate the relative costs and benefits of strategies aimed at improving survival at specific life stages, including decisions around hatchery rearing and release strategies.
+
+This represents a paradigm shift from single-stage to ecosystem-based fisheries management, recognizing that salmon traverse multiple jurisdictions, habitats, and food webs while facing stage-specific stressors. Below we describe these programs and key findings.
+
+## Salmon population monitoring {#salmon-population-monitoring}
+
+```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
+
+make_section_table(projects_df,
+                   section_pick = "Salmon population monitoring")
+
+
+```
+
+PSSI and BCSRIF projects developed numerous salmon monitoring programs, many employing novel methods to assess populations and understand factors affecting freshwater, estuarine, and marine survival. In nearly all cases, these programs were led by or developed in partnership with local First Nations.
+
+Davidson (DFO) and Pacheedaht First Nation created an integrated San Juan Chinook life history monitoring program within the Follow the Fish initiative. Methods include rotary screw trapping to enumerate and sample outmigrating juveniles (collecting otoliths and stomach contents for size-specific survival and diet analysis); estuary beach seining to compare diet and residency between hatchery and natural-origin fish; Port San Juan purse seining through late spring-fall for mixed-stock data; and deadpitch biosampling to assess adult age-at-return, PNI, and spawner stock composition. Results will guide improvements to natural-origin juvenile survival while ensuring hatchery fish complement rather than compete with wild populations.
+
+Pontbriand and Weir (DFO), partnering with Thompson Rivers University and Okanagan Nation Alliance, monitored juvenile Chinook habitat use and predation in the Okanagan River and Lake system. Canadian Okanagan Chinook—the only Columbia River basin Chinook population in Canada—face extremely low escapements (under 100 spawners annually), multiple habitat challenges, and COSEWIC Endangered designation (2017), with Species at Risk Act listing under review. Using acoustic telemetry and DNA metabarcoding to assess smallmouth bass predation, researchers found low survival during spring-summer downstream migration, identifying disturbed rearing habitat, high temperatures, predation pressure, and critical mortality hotspots as main threats. These findings will guide targeted recovery efforts.
+
+Sakinaw sockeye, COSEWIC-listed as Endangered since 2003, face perpetually low marine survival that prevents recovery despite a captive brood program. The 2017 Recovery Potential Assessment identified marine survival as the greatest limiting factor, with seal predation on smolts and adults ranked as high-risk (Ramshaw et al. 2019). Pellet's DFO team, collaborating with shíshálh Nation, used Passive Integrated Transponder (PIT) tagging to study marine survival and test whether barging smolts past pinniped haul-outs would improve survival. Results led to recommendations against operationalizing smolt transport for Sakinaw recovery.
+
+Doutaz and colleagues from DFO, partnering with Aquacoustics Inc. and Tŝilhqot'in National Government, assessed upward- and side-looking SONAR methods to estimate Chilko River sockeye smolt abundance. Chilko represents the only wild Fraser sockeye indicator stock, with the annual smolt assessment (1951-present) comprising the sole long-term time series for juvenile recruitment and freshwater/marine productivity. Traditional fish counting weirs and photographic methods became impractical due to unusually early freshets. The SONAR methods now enable monitoring of egg-to-smolt survival, stock recruitment, and freshwater habitat conditions during early rearing.
+
+Similarly, Gitanyow Fisheries Authority, partnering with Skeena Fisheries Commission through BCSRIF funding, employed upward-looking hydroacoustics to collect Meziadin Lake sockeye data including outmigrating smolt abundance, size, age composition, and origin. This method supports understanding of productivity, identification of survival bottlenecks, and development of restoration priorities and management approaches.
+
+Common methodologies across BCSRIF and PSSI monitoring programs included SONAR, hydroacoustics, PIT tagging, genetic methods (Genetic Stock Identification and Parental-Based Tagging), and eDNA. PIT tagging applications included Lower Fraser Fisheries Alliance Society's mark-recapture program for Chilliwack River Hatchery coho, and Pacific Salmon Foundation projects assessing stage-specific survival and bottlenecks along WCVI and in the Strait of Georgia. eDNA was employed by A Rocha Canada with Semiahmoo First Nation to study Boundary Bay Chinook in the Tatalu watershed, and by Deeg's DFO lab to characterize WCVI salmon ecosystems. GSI and PBT were used throughout the PSSI-funded Follow the Fish program to identify Pacific salmon stocks rearing in WCVI sounds, while UBC, collaborating with Okanagan First Nation, applied genetic, morphological, and microchemistry analyses to investigate behavior, fitness, and hybridization between anadromous sockeye and resident kokanee in Skaha Lake.
+
+Innovative solutions emerged for challenging monitoring conditions. Lil'wat Nation's digital imaging of wild coho returns to the remote Lillooet River Conservation Unit required Adaptive Resolution Imaging Sonar (ARIS) but lacked grid power access. The solution—a battery system using six golf cart batteries—powers the underwater sonar camera for coho enumeration, demonstrating an effective approach for the Lower Fraser, particularly the Lillooet River and tributaries.
+
+## Follow the Fish Program {#follow-the-fish}
+
+```{r ftf-projects, tab.cap="DFO and BCSRIF projects associated with Follow the Fish.",tab.id="tbl-ftf"}
+
+make_section_table(projects_df,
+                   section_pick = 'Life cycle assessment - Follow The Fish')
+
+```
+
+West Coast Vancouver Island Chinook are a DFO Fish Stock Provisions rebuilding priority. Status is poor—especially in Clayoquot Sound—due to low naturally-produced spawner abundance, high hatchery introgression, and demographic shifts toward fewer, smaller females depositing eggs shallower in streambeds.
+
+Effective rebuilding requires understanding decline causes to target mitigation effectively. The Risk Assessment Methodology for Salmon (RAMS) identified and prioritized factors limiting WCVI Chinook production currently and under anticipated 2050 climate conditions. RAMS assesses biological risks from natural and anthropogenic stressors across freshwater, estuarine, and marine life stages using life history models to determine when, where, and how stressors influence population productivity and capacity.
+
+Freshwater RAMS processes were applied to 18 watersheds in San Juan, Barkley Sound, Clayoquot Sound, Nootka Sound, and Kyuquot, with results synthesized by Bolt et al. (2023). A subsequent Marine Risk Assessment examined factors affecting WCVI Chinook smolts, sub-adults, and adults in nearshore, coastal, and North Pacific waters (Irvine et al. 2024).
+
+Results show declining natural-origin WCVI Chinook survival and productivity result from cumulative effects. Freshwater assessments indicated habitat degradation likely reduced productivity in many systems through decreased egg-to-smolt survival, earlier outmigration, and smaller smolts. A critical "carry-over effect" emerged as high risk: smaller, less robust pre-smolts and smolts face elevated vulnerability during estuary and early marine rearing.
+
+Marine assessments found early marine life stages experienced highest mortality, with almost all limiting factors rated high risk (Irvine et al. 2024). Cumulative risks span multiple ecosystem factors: large-scale ocean processes affecting nearshore ecosystems; local water quality (high temperature, low oxygen, summer harmful algal blooms); pathogens, parasites, and disease; prey quality, quantity, and timing during first spring through winter; predation; and competition with hatchery fish.
+
+To address knowledge gaps and clarify WCVI Chinook limiting factors, DFO Science developed the PSSI-funded Follow the Fish (FtF) suite of projects. The program uses a life cycle approach, tracking fish through freshwater and early marine stages to understand juvenile Chinook distribution in WCVI sounds and coastal waters, environmental stressors during this critical growth phase, habitat utilization, and diet, growth, distribution, behavior, and health.
+
+Projects examined freshwater redd scour and habitat quality; developed ocean models for WCVI fjord conditions; assessed zooplankton, juvenile salmon, and forage species abundance and seasonal patterns through sampling and hydroacoustics; characterized environmental community composition via eDNA analysis; investigated juvenile Chinook distribution, growth, and diet across space and time; assessed health through stress and infectious agent profiling using salmon Fit-Chip technology in freshwater, estuary, and marine environments; and evaluated harmful algal biotoxins and contaminant prevalence and impacts.
+
+Follow the Fish was built on extensive collaboration among DFO, West Coast Vancouver Island First Nations, academic institutions, and NGOs. One particularly significant partnership — bringing together Huu-ay-aht First Nation, the DFO Salmon Enhancement Program, and DFO Science (Holt team)— resulted in the development of salmonMSE, an open-source, life-cycle based decision-support tool for Pacific salmon. The tool models population processes operating across both freshwater and marine environments, accounts for the influence of harvest and environmental conditions on juvenile and adult life stages, and explicitly incorporates hatchery dynamics — enabling the evaluation of conservation, production, and "wildness" objectives across different populations.
+
+As a case study, the team applied salmonMSE to Sarita River Chinook to assess how mark-selective fisheries and various hatchery scenarios affect the capacity to meet a range of conservation, harvest, and hatchery objectives, and to help inform rebuilding plans. The results reveal important potential trade-offs: in some cases, achieving both high abundances and wildness objectives simultaneously may not be possible, and where freshwater survival is the limiting factor, habitat restoration may be necessary to meet production goals. salmonMSE addresses a critical gap in DFO's analytical toolkit, providing a structured means of evaluating decisions across all three core management levers — hatchery, harvest, and habitat restoration — in an integrated and transparent framework.
+
+Additionally, a number of partner-led BCSRIF programs substantially advanced Follow the Fish objectives. For example:
+
+-   Huu-ay-aht First Nations examined whether the Sarita Chinook population could serve as an ecological indicator for the COSEWIC-listed West Vancouver Island, Ocean, Fall (South) population and WCVI Management Unit. The project provided reliable juvenile production estimates and enhanced understanding of natural-origin Chinook ecology including dietary behavior across freshwater, estuarine, and nearshore marine habitats, and spatial-temporal distribution from egg to marine entry. Results will inform recommendations on Sarita Chinook as an ecological indicator and optimize management and rebuilding.
+
+-   Ka:'yu:'k't'h'/Che:k:tles7et'h' First Nations conducted a three-year study in the Kaouk and Artlish Rivers addressing life history information gaps for two of three Chinook indicators for the West Vancouver Island, Ocean, Fall (North) population Conservation Unit. Data improved understanding of limiting factors in freshwater and marine environments within KCFN traditional territory, supporting WCVI Chinook rebuilding.
+
+-   The Pacific Salmon Foundation addressed early marine residence mortality information gaps using microtrolling and gene-expression Fit-Chip technology, focusing on habitat utilization, ecological stressors, and salmon health across multiple WCVI sounds. Established tools now produce ecological data informing management decisions and improving understanding of WCVI Chinook survival bottlenecks.
+
+The Follow the Fish program will clarify relationships between environmental conditions and WCVI Chinook distribution, health, and mortality, particularly during critical early marine stages. It addresses major knowledge gaps identified in Freshwater and Marine Risk Assessments, improving confidence in risk ratings for key limiting factors and identifying causal mechanisms behind high-risk stressors. Ultimately, the program will generate data and knowledge that will directly contribute to WCVI Chinook rebuilding plans, and will identify management measures to improve productivity across freshwater and marine ecosystems, supporting wild WCVI Chinook rebuilding through ecosystem-based approaches.
+
+## Bottlenecks to survival {#bottlenecks}
+
+```{r bottleneck-projects, tab.cap="DFO and BCSRIF projects associated with bottlenecks to survival.",tab.id="tbl-bottlenecks"}
+
+make_section_table(projects_df,
+                   section_pick = 'Life cycle assessment - Bottlenecks to survival')
+
+```
+
+The Pacific Salmon Foundation and British Columbia Conservation Foundation have led a major BCSRIF-funded initiative using passive integrated transponder (PIT) tags and a comprehensive array network around Vancouver Island to track stage-specific survival of Chinook and coho salmon and steelhead along BC's South Coast. Known as the "Bottlenecks Program," this effort has brought together a network of partners to deploy PIT tag application and detection systems across 13 east coast Vancouver Island watersheds and two on the west coast — the Stamp and Toquaht rivers.
+
+Groundbreaking in its approach, the program was the first of its kind to open the "black box" of salmon survival by comparing outcomes for wild and hatchery-enhanced Chinook and coho across multiple systems, life history stages, and enhancement strategies — pinpointing the periods and places where mortality is highest.
+
+The results have been substantial. The project has delivered new and improved escapement estimates for five east coast Vancouver Island populations, doubling the number of systems represented in DFO's 2025 Coho Marine Forecast Bulletin. It has also contributed critical contemporary data — including baseline marine survival rates — to inform the Nanaimo summer Chinook Recovery Potential Assessment. A dedicated winter ecology study of Strait of Georgia Chinook has shed new light on first-year habitat use and feeding behavior, offering fresh evidence of long-term salmonid residency in the Strait.
+
+Complementing the PIT tagging work, the program has integrated genomic and genetic analysis to enable non-lethal stock identification of captured fish. Together, these tools allow researchers to examine how environmental and physiological stressors shape individual fish outcomes — identifying the biological markers associated with mortality and the traits that drive survival.
+
 # Stock assessment - Fisheries Science Advisory Reports {#stock-assessment}
 
 Canada amended the Fisheries Act in 2024 to include Fish Stocks provisions (FSP) for major fish stocks. Once a stock is prescribed in regulations, DFO is obligated to manage stocks at levels necessary to promote sustainability and to develop and implement rebuilding plans for stocks that fall below their Limit Reference Point. The first batch of major fish stocks was prescribed in 2022 and included three Pacific Salmon stocks: Interior Fraser Coho, Okanagan Chinook, and West Coast Vancouver Island Chinook. The second batch of major fish stocks is working its way through the legislative process and includes an additional six Pacific Salmon stocks: Fraser Pink, Yukon Chinook, Stikine Sockeye, Barkley Sound Sockeye, Fraser Sockeye-Early Stuart, and Okanagan Sockeye.
@@ -391,51 +391,6 @@ flextable(fsar_table) |>
   set_table_properties(width = 1, layout = "autofit") |>
   theme_booktabs()
 ```
-
-\newpage
-
-# Data management: improvement and availability {#data-management}
-
-Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon
-
-```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.", tab.id="tbl-data-projects"}
-data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
-
-data_projects_table <- read_csv(data_projects_loc) %>%
-  mutate(
-    Title  = str_squish(Title),
-    Status = str_squish(Status),
-    Access = str_squish(Accessibility),
-    URL    = na_if(str_squish(URL_link), "")
-  ) %>%
-  select(Title, Status, Access, URL)
-
-ft <- flextable(data_projects_table) %>%
-  set_header_labels(Title="Title", Status="Status", Access="Access", URL="URL") %>%
-  bold(part="header") %>%
-  compose(j = "URL", value = as_paragraph("")) %>%
-  compose(
-    j = "URL",
-    i = ~ !is.na(URL),
-    value = as_paragraph(hyperlink_text(x = "Link", url = URL))
-  ) %>%
-  width(j="Title",  width=3) %>%
-  width(j="Status", width=1.1) %>%
-  width(j="Access", width=1.4) %>%
-  width(j="URL",    width=0.8)
-ft
-```
-
-# Modelling to support decision making {#modelling}
-
-```{r data-projects, tab.cap="DFO and BCSRIF projects associated with data and modelling in support of decision making",tab.id="tbl-decisions"}
-
-make_section_table(projects_df,
-                   section_pick = 'Data and modelling to support decision making')
-
-```
-
-\newpage
 
 # Science to support hatchery modernization (CL/SEP) {#hatcheries}
 
@@ -567,6 +522,47 @@ DFO fishery management indicated that expanded fishery observer coverage is requ
 
 Complementary efforts are exploring selective harvest and monitoring tools in First Nation terminal fisheries. A pilot study led by the A‑Tlegay Fisheries Society is revitalizing traditional salmon trap technologies in the Campbell–Quinsam estuary to enable selective harvest of hatchery salmon while safely releasing wild salmon and steelhead. To support improved First Nation terminal fishery management and monitoring, the Pacific Salmon Foundation is developing deep‑learning approaches to automate salmon counting and species identification from video and sonar data, with the goal of linking these tools to escapement monitoring programs on the North and Central Coast. By enabling near‑real‑time data integration, this work supports more responsive management of terminal fisheries. Together, these projects illustrate how selective fishing methods, combined with modern monitoring technologies and Indigenous leadership, can yield more flexible and precautionary fisheries.
 
+# Data management: improvement and availability {#data-management}
+
+Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon
+
+```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.", tab.id="tbl-data-projects"}
+data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
+
+data_projects_table <- read_csv(data_projects_loc) %>%
+  mutate(
+    Title  = str_squish(Title),
+    Status = str_squish(Status),
+    Access = str_squish(Accessibility),
+    URL    = na_if(str_squish(URL_link), "")
+  ) %>%
+  select(Title, Status, Access, URL)
+
+ft <- flextable(data_projects_table) %>%
+  set_header_labels(Title="Title", Status="Status", Access="Access", URL="URL") %>%
+  bold(part="header") %>%
+  compose(j = "URL", value = as_paragraph("")) %>%
+  compose(
+    j = "URL",
+    i = ~ !is.na(URL),
+    value = as_paragraph(hyperlink_text(x = "Link", url = URL))
+  ) %>%
+  width(j="Title",  width=3) %>%
+  width(j="Status", width=1.1) %>%
+  width(j="Access", width=1.4) %>%
+  width(j="URL",    width=0.8)
+ft
+```
+
+# Modelling to support decision making {#modelling}
+
+```{r data-projects, tab.cap="DFO and BCSRIF projects associated with data and modelling in support of decision making",tab.id="tbl-decisions"}
+
+make_section_table(projects_df,
+                   section_pick = 'Data and modelling to support decision making')
+
+```
+
 \newpage
 
 # Conclusions and recommendations
@@ -574,7 +570,5 @@ Complementary efforts are exploring selective harvest and monitoring tools in Fi
 How have PSSI Research elements met its objectives? How has work completed moved the dial for salmon conservation and understanding factors driving salmon declines?
 
 # Acknowledgements
-
-\newpage
 
 <!-- Add acknowledgments here -->
