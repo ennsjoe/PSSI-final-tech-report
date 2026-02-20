@@ -110,6 +110,14 @@ This represents a paradigm shift from single-stage to ecosystem-based fisheries 
 
 ## Salmon population monitoring {#salmon-population-monitoring}
 
+```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
+
+make_section_table(projects_df,
+                   section_pick = "Salmon population monitoring")
+
+
+```
+
 PSSI and BCSRIF projects developed numerous salmon monitoring programs, many employing novel methods to assess populations and understand factors affecting freshwater, estuarine, and marine survival. In nearly all cases, these programs were led by or developed in partnership with local First Nations.
 
 Davidson (DFO) and Pacheedaht First Nation created an integrated San Juan Chinook life history monitoring program within the Follow the Fish initiative. Methods include rotary screw trapping to enumerate and sample outmigrating juveniles (collecting otoliths and stomach contents for size-specific survival and diet analysis); estuary beach seining to compare diet and residency between hatchery and natural-origin fish; Port San Juan purse seining through late spring-fall for mixed-stock data; and deadpitch biosampling to assess adult age-at-return, PNI, and spawner stock composition. Results will guide improvements to natural-origin juvenile survival while ensuring hatchery fish complement rather than compete with wild populations.
@@ -126,15 +134,14 @@ Common methodologies across BCSRIF and PSSI monitoring programs included SONAR, 
 
 Innovative solutions emerged for challenging monitoring conditions. Lil'wat Nation's digital imaging of wild coho returns to the remote Lillooet River Conservation Unit required Adaptive Resolution Imaging Sonar (ARIS) but lacked grid power access. The solution—a battery system using six golf cart batteries—powers the underwater sonar camera for coho enumeration, demonstrating an effective approach for the Lower Fraser, particularly the Lillooet River and tributaries.
 
-```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
+## Follow the Fish Program {#follow-the-fish}
+
+```{r ftf-projects, tab.cap="DFO and BCSRIF projects associated with Follow the Fish.",tab.id="tbl-ftf"}
 
 make_section_table(projects_df,
-                   section_pick = "Salmon population monitoring")
-
+                   section_pick = 'Life cycle assessment - Follow The Fish')
 
 ```
-
-## Follow the Fish Program {#follow-the-fish}
 
 West Coast Vancouver Island Chinook are a DFO Fish Stock Provisions rebuilding priority. Status is poor—especially in Clayoquot Sound—due to low naturally-produced spawner abundance, high hatchery introgression, and demographic shifts toward fewer, smaller females depositing eggs shallower in streambeds.
 
@@ -164,14 +171,14 @@ Additionally, a number of partner-led BCSRIF programs substantially advanced Fol
 
 The Follow the Fish program will clarify relationships between environmental conditions and WCVI Chinook distribution, health, and mortality, particularly during critical early marine stages. It addresses major knowledge gaps identified in Freshwater and Marine Risk Assessments, improving confidence in risk ratings for key limiting factors and identifying causal mechanisms behind high-risk stressors. Ultimately, the program will generate data and knowledge that will directly contribute to WCVI Chinook rebuilding plans, and will identify management measures to improve productivity across freshwater and marine ecosystems, supporting wild WCVI Chinook rebuilding through ecosystem-based approaches.
 
-```{r ftf-projects, tab.cap="DFO and BCSRIF projects associated with Follow the Fish.",tab.id="tbl-ftf"}
+## Bottlenecks to survival {#bottlenecks}
+
+```{r bottleneck-projects, tab.cap="DFO and BCSRIF projects associated with bottlenecks to survival.",tab.id="tbl-bottlenecks"}
 
 make_section_table(projects_df,
-                   section_pick = 'Life cycle assessment - Follow The Fish')
+                   section_pick = 'Life cycle assessment - Bottlenecks to survival')
 
 ```
-
-## Bottlenecks to survival {#bottlenecks}
 
 The Pacific Salmon Foundation and British Columbia Conservation Foundation have led a major BCSRIF-funded initiative using passive integrated transponder (PIT) tags and a comprehensive array network around Vancouver Island to track stage-specific survival of Chinook and coho salmon and steelhead along BC's South Coast. Known as the "Bottlenecks Program," this effort has brought together a network of partners to deploy PIT tag application and detection systems across 13 east coast Vancouver Island watersheds and two on the west coast — the Stamp and Toquaht rivers.
 
@@ -181,14 +188,13 @@ The results have been substantial. The project has delivered new and improved es
 
 Complementing the PIT tagging work, the program has integrated genomic and genetic analysis to enable non-lethal stock identification of captured fish. Together, these tools allow researchers to examine how environmental and physiological stressors shape individual fish outcomes — identifying the biological markers associated with mortality and the traits that drive survival.
 
-```{r bottleneck-projects, tab.cap="DFO and BCSRIF projects associated with bottlenecks to survival.",tab.id="tbl-bottlenecks"}
+# Marine ecosystems {#marine-ecosystems}
+
+```{r marine-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with marine ecosystems and stressors theme.",tab.id="tbl-marine-eco"}
 
 make_section_table(projects_df,
-                   section_pick = 'Life cycle assessment - Bottlenecks to survival')
-
+                   section_pick = 'Marine ecosystems')
 ```
-
-# Marine ecosystems {#marine-ecosystems}
 
 Pacific salmon productivity and survival depend on complex interactions between bottom-up forces (food availability, ocean climate) and top-down forces (predation, competition, disease) that vary across regions and life stages. These impacts are compounded by toxins, habitat quality, salmon life history patterns, and the synergistic effects of simultaneous bottom-up and top-down shifts.
 
@@ -272,12 +278,6 @@ Several BCSRIF-funded studies have focussed on estuary monitoring, restoration a
 
 SeaChange Marine Conservation Society assessed critical salmonid habitats in resilient estuaries, with the aim of identifying and restoring estuaries that will provide crucial ecological hotspots as oceans are altered as a result of climate change; while Nature Trust of BC applied the MARS tool to evaluate estuary resilience to sea-level rise and climate impacts coastwide. This collaborative program united 16 First Nation communities, eNGOs, academics, and government to collect monitoring data, establishing partnerships ensuring adaptive management of restoration sites for ecosystem function goals. These studies provide vital information on current and predicted future health and status of BC estuaries, can guide prioritization of conservation and protection actions, and inform ecosystem-based fisheries planning.
 
-```{r marine-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with marine ecosystems and stressors theme.",tab.id="tbl-marine-eco"}
-
-make_section_table(projects_df,
-                   section_pick = 'Marine ecosystems')
-```
-
 # Freshwater ecosystems {#freshwater-ecosystems}
 
 ```{r freshwater-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with freshwater ecosystems theme.",tab.id="tbl-fweco"}
@@ -318,6 +318,12 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 
 # Climate change vulnerability {#climate-change-vulnerability}
 
+```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
+
+make_section_table(projects_df,
+                   section_pick = 'Climate change vulnerability')
+```
+
 ## Highlights
 
 -   Newly developed marine and freshwater climate models allow us to assess environmental changes that will be experience by Pacific salmon within British Columbia
@@ -337,12 +343,6 @@ Summarize research undertaken and key findings focused on freshwater ecosystems.
 The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems sub-initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
 
 Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures [@schoen2017; @chittenden2009; @crozier2025]. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, modern genotyping, life-cycle modelling, and vulnerability risk assessments. Collectively, these studies reveal important details about the implications of climate change for Pacific salmon that can allow us to understand and anticipate current and future changes.
-
-```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
-
-make_section_table(projects_df,
-                   section_pick = 'Climate change vulnerability')
-```
 
 ## Downscaled climate modelling
 
@@ -522,6 +522,11 @@ Projects and themes include:
 
 # Fishery monitoring and harvest techniques (NB/CL/FM) {#harvest}
 
+```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
+make_section_table(projects_df,
+                   section_pick = 'Fishery monitoring and harvest techniques')
+```
+
 ## Highlights
 
 -   New technologies and collaborative partnerships are improving efficiency and accuracy of salmon fishery monitoring programs
@@ -531,11 +536,6 @@ Projects and themes include:
 ## Background and objectives
 
 PSSI-supported work in fishery monitoring and harvest techniques advanced tools and approaches needed for more selective, precautionary salmon fisheries in British Columbia and Yukon. Research focused on developing, testing, and applying improved catch monitoring and reporting frameworks to address longstanding information gaps, particularly with respect to mixed‑stock fisheries. Pilot projects were also conducted to evaluate selective and mark‑selective fishing methods to better understand their effectiveness in reducing impacts on stocks of concern while maintaining harvest opportunities. Collectively, these projects lay the foundation for a refined approach to managing and regulating Pacific salmon fisheries. Preliminary results and management implications from a selection of PSSI harvest transformation research projects are summarized thematically below.
-
-```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
-make_section_table(projects_df,
-                   section_pick = 'Fishery monitoring and harvest techniques')
-```
 
 ## Enhancements to recreational monitoring
 
