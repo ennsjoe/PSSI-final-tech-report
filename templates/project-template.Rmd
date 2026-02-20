@@ -1,6 +1,4 @@
 
-`r officer::run_bookmark(project$project_id, officer::ftext(""))`
-
 ### `r display_id(project$project_id)`
 
 ```{r proj-banner, echo=FALSE, message=FALSE, warning=FALSE}

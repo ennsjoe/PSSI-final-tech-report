@@ -80,39 +80,6 @@ if (!exists('projects_df')) {
   })
 }
 
-# ===================================================================
-# Transform Project IDs
-# ===================================================================
-
-# Add DFO_ prefix to DFO Science projects for consistent bookmark IDs
-tryCatch({
-  
-  if (!"source" %in% names(projects_df)) {
-    warning("'source' column not found in database. Skipping project_id transformation.")
-  } else if (!"project_id" %in% names(projects_df)) {
-    warning("'project_id' column not found in database.")
-  } else {
-    
-    projects_df$source     <- as.character(projects_df$source)
-    projects_df$project_id <- as.character(projects_df$project_id)
-    
-    projects_df <- projects_df %>%
-      mutate(
-        project_id = if_else(
-          source == "DFO Science" & !str_starts(project_id, "DFO_"),
-          paste0("DFO_", project_id),
-          project_id
-        )
-      )
-    
-    n_transformed <- sum(grepl("^DFO_", projects_df$project_id), na.rm = TRUE)
-    message('  Transformed ', n_transformed, ' DFO Science project IDs')
-  }
-  
-}, error = function(e) {
-  warning('Error transforming project_id: ', e$message)
-  warning('Continuing without transformation...')
-})
 
 # ===================================================================
 # Load Icon Map and Banner Paths
