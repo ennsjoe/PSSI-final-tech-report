@@ -118,6 +118,9 @@ flextable::set_flextable_defaults(
 )
 ```
 
+```{r executive-summary, child="00_executive-summary.Rmd"}
+```
+
 ```{r body, child="01_body.Rmd"}
 ```
 
