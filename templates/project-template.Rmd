@@ -290,9 +290,10 @@ if (has_files || !is.null(tables_figures_text)) {
             figure_number <- figure_counter
             figure_counter <- figure_counter + 1
           }
-          
-          cat("Figure ", figure_number, ". ", caption, "\n\n")
           cat("![](", rel_path, ")\n\n", sep = "")
+          cat("::: {custom-style=\"Caption\"}\n")
+          cat("Figure ", figure_number, ". ", caption, "\n")
+          cat(":::\n\n")
         }
 
       }, error = function(e) {

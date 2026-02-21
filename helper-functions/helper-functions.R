@@ -92,8 +92,8 @@ make_project_banner <- function(
     project,
     icon_map,
     banner_dir      = NULL,
-    font_size_ratio = 0.11,
-    meta_size_ratio = 0.032,
+    font_size_ratio = 0.09,
+    meta_size_ratio = 0.055,
     wrap_width      = 35,
     right_pad       = 60,
     shadow_offset   = 2
@@ -117,8 +117,7 @@ make_project_banner <- function(
   wrapped <- paste(strwrap(title, width = wrap_width), collapse = "\n")
   
   # Define the meta fields to display on the banner
-  meta_cols <- c("project_leads", "location", "species", "waterbodies", 
-                 "life_history", "stock", "population", "cu")
+  meta_cols <- c("project_leads")
   
   meta_values <- sapply(meta_cols, function(col) {
     val <- as.character(project[[col]] %||% "")

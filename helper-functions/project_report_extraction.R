@@ -147,20 +147,60 @@ extract_text_from_node <- function(node, ns) {
   for (i in seq_along(p_nodes)) {
     p_node <- p_nodes[[i]]
     
-    # Find all text runs within this paragraph
-    t_nodes <- xml_find_all(p_node, ".//w:t", ns)
+    # Process runs (w:r) rather than raw text nodes so we can detect italic.
+    # Each run may have w:rPr/w:i set; we wrap those runs in Markdown asterisks
+    # so the italic survives all the way through to the knitted Word output.
+    r_nodes <- xml_find_all(p_node, ".//w:r", ns)
     
-    if (length(t_nodes) > 0) {
-      # Extract and combine text from all runs in this paragraph
-      para_texts <- xml_text(t_nodes)
-      para_texts <- sapply(para_texts, enc2utf8, USE.NAMES = FALSE)
-      para_text <- paste(para_texts, collapse = "")
+    if (length(r_nodes) > 0) {
       
-      # Trim spaces from this paragraph
+      # Build a list of (text, is_italic) segments from every run
+      segments <- list()
+      for (r in r_nodes) {
+        t_nodes  <- xml_find_all(r, "w:t", ns)
+        run_text <- paste(sapply(xml_text(t_nodes), enc2utf8, USE.NAMES = FALSE),
+                          collapse = "")
+        if (nchar(run_text) == 0) next
+        
+        # w:i present and not explicitly turned off (w:val="0") -> italic
+        i_node   <- xml_find_first(r, "w:rPr/w:i", ns)
+        is_italic <- !inherits(i_node, "xml_missing") &&
+          !identical(xml_attr(i_node, "val"), "0")
+        
+        segments[[length(segments) + 1]] <- list(text = run_text, italic = is_italic)
+      }
+      
+      if (length(segments) == 0) {
+        paragraphs <- c(paragraphs, "")
+        next
+      }
+      
+      # Merge consecutive runs with the same italic state, then apply Markdown.
+      # Spaces at the boundary of an italic span are moved outside the asterisks
+      # so pandoc renders them correctly (e.g. "see *RSC Sustainability* for").
+      para_text <- ""
+      idx <- 1
+      while (idx <= length(segments)) {
+        cur_italic <- segments[[idx]]$italic
+        cur_text   <- segments[[idx]]$text
+        idx <- idx + 1
+        while (idx <= length(segments) && segments[[idx]]$italic == cur_italic) {
+          cur_text <- paste0(cur_text, segments[[idx]]$text)
+          idx <- idx + 1
+        }
+        if (cur_italic && nchar(trimws(cur_text)) > 0) {
+          # Pull leading/trailing spaces outside the asterisks
+          leading  <- regmatches(cur_text, regexpr("^\\s*", cur_text))
+          trailing <- regmatches(cur_text, regexpr("\\s*$", cur_text))
+          inner    <- trimws(cur_text)
+          cur_text <- paste0(leading, "*", inner, "*", trailing)
+        }
+        para_text <- paste0(para_text, cur_text)
+      }
+      
       para_text <- trimws(para_text)
       
       if (nchar(para_text) > 0) {
-        # Non-empty paragraph
         paragraphs <- c(paragraphs, para_text)
         if (VERBOSE_MODE) {
           preview <- substr(para_text, 1, 60)
@@ -168,14 +208,14 @@ extract_text_from_node <- function(node, ns) {
           message("      Para ", i, ": ", preview)
         }
       } else {
-        # Empty paragraph = blank line (preserve structure)
         paragraphs <- c(paragraphs, "")
         if (VERBOSE_MODE) {
           message("      Para ", i, ": [blank line]")
         }
       }
+      
     } else {
-      # Paragraph with no text nodes = blank line
+      # Paragraph with no runs = blank line
       paragraphs <- c(paragraphs, "")
       if (VERBOSE_MODE) {
         message("      Para ", i, ": [blank line - no text nodes]")
