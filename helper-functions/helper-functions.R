@@ -25,6 +25,36 @@ PROCESSED_CSV <- find_csv_file("pssi_form_data.csv")
 OUTPUT_DB     <- here::here("data", "projects_database.sqlite")
 TABLE_NAME    <- "projects"
 
+# --- Database Checker -------------------------------------------------------
+# Returns a list with $exists (logical) and $message / $columns.
+# Called by _common.R to decide whether to rebuild the database.
+
+check_database <- function(db_path) {
+  if (!file.exists(db_path)) {
+    return(list(exists  = FALSE,
+                message = paste("Database not found at", db_path),
+                columns = character(0)))
+  }
+  tryCatch({
+    con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
+    on.exit(DBI::dbDisconnect(con))
+    if (!DBI::dbExistsTable(con, "projects")) {
+      return(list(exists  = FALSE,
+                  message = "Database exists but 'projects' table is missing",
+                  columns = character(0)))
+    }
+    n_rows  <- DBI::dbGetQuery(con, "SELECT COUNT(*) FROM projects")[[1]]
+    columns <- names(DBI::dbGetQuery(con, "SELECT * FROM projects LIMIT 1"))
+    list(exists  = TRUE,
+         message = paste("Database contains", n_rows, "projects"),
+         columns = columns)
+  }, error = function(e) {
+    list(exists  = FALSE,
+         message = paste("Database error:", e$message),
+         columns = character(0))
+  })
+}
+
 # --- Database Initialization -------------------------------------------------
 
 init_database <- function(overwrite = FALSE) {
