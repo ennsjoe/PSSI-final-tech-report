@@ -17,7 +17,6 @@
 *.upa
 *.utf8.md
 
-data/projects_database.sqlite
 data/word_docs/*
 archive/* 
 
