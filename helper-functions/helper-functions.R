@@ -116,6 +116,124 @@ init_database <- function(overwrite = FALSE) {
   message("   - From Tracking Fallback: ", nrow(set_b))
 }
 
+# --- Section Table Builder ---------------------------------------------------
+# Builds a formatted flextable for a given section, with project IDs as
+# hyperlinks targeting the project page bookmarks in the rendered docx.
+# Link URLs are paste0("#", project_id) using the raw project_id value --
+# this must match the bookmark name injected by inject_project_bookmarks().
+
+make_section_table <- function(
+    df,
+    section_pick,
+    source_col   = "source",
+    num_col      = "project_id",
+    title_col    = "project_title",
+    num_label    = "ID",
+    title_label  = "Project title",
+    w_num        = 1.5,
+    w_title      = 5.0,
+    font_size_body   = 9,
+    font_size_header = 9,
+    font_size_group  = 9,
+    pad          = 3,
+    header_bg    = "#1F497D",
+    header_fg    = "white",
+    group_bg     = "#D9D9D9",
+    group_fg     = "black"
+) {
+  stopifnot(requireNamespace("dplyr",      quietly = TRUE))
+  stopifnot(requireNamespace("stringr",    quietly = TRUE))
+  stopifnot(requireNamespace("tibble",     quietly = TRUE))
+  stopifnot(requireNamespace("flextable",  quietly = TRUE))
+  stopifnot(requireNamespace("officer",    quietly = TRUE))
+  
+  df_sub <- df %>%
+    dplyr::filter(section == section_pick, include %in% c("y", "Y")) %>%
+    dplyr::select(dplyr::all_of(c(source_col, num_col, title_col)))
+  
+  df_clean <- df_sub %>%
+    dplyr::mutate(
+      dplyr::across(dplyr::all_of(source_col), ~stringr::str_squish(as.character(.x))),
+      dplyr::across(dplyr::all_of(num_col),    ~as.character(.x)),
+      dplyr::across(dplyr::all_of(title_col),  ~stringr::str_squish(as.character(.x))),
+      # Explicit factor so DFO Science always appears before BCSRIF
+      .source_order = factor(
+        .data[[source_col]],
+        levels = c("DFO Science", "BCSRIF")
+      )
+    ) %>%
+    dplyr::arrange(.source_order, .data[[num_col]])
+  
+  df_div <- df_clean %>%
+    dplyr::group_by(.data[[source_col]]) %>%
+    dplyr::group_modify(function(.x, .y) {
+      grp <- as.character(.y[[source_col]][1])
+      tibble::tibble(
+        .is_group            = c(TRUE,  rep(FALSE, nrow(.x))),
+        !!num_col           := c("",    .x[[num_col]]),
+        !!title_col         := c(grp,   .x[[title_col]])
+      )
+    }) %>%
+    dplyr::ungroup()
+  
+  group_rows <- which(df_div$.is_group)
+  display_df <- df_div[, c(num_col, title_col), drop = FALSE]
+  
+  ft <- flextable::flextable(display_df)
+  
+  data_rows <- which(display_df[[num_col]] != "")
+  bkms      <- display_df[[num_col]][data_rows]
+  
+  ft <- flextable::compose(
+    x = ft, i = data_rows, j = num_col,
+    value = flextable::as_paragraph(
+      flextable::hyperlink_text(x = bkms, url = paste0("#", bkms))
+    )
+  )
+  
+  ft <- flextable::style(
+    x = ft, i = data_rows, j = num_col,
+    pr_t = flextable::fp_text_default(color = "#0563C1", underlined = TRUE),
+    part = "body"
+  )
+  
+  label_map <- stats::setNames(
+    object = c(num_label, title_label),
+    nm     = c(num_col,   title_col)
+  )
+  ft <- do.call(flextable::set_header_labels, c(list(x = ft), as.list(label_map)))
+  
+  ft <- flextable::fontsize(ft, size = font_size_body,   part = "body")
+  ft <- flextable::fontsize(ft, size = font_size_header, part = "header")
+  ft <- flextable::bold(ft,     part = "header")
+  ft <- flextable::align(ft,    align = "left", part = "all")
+  ft <- flextable::valign(ft,   valign = "top", part = "body")
+  ft <- flextable::padding(ft,  padding = pad,  part = "all")
+  ft <- flextable::width(ft, j = num_col,   width = w_num)
+  ft <- flextable::width(ft, j = title_col, width = w_title)
+  ft <- flextable::set_table_properties(ft, layout = "fixed")
+  ft <- flextable::bg(ft,    part = "header", bg = header_bg)
+  ft <- flextable::color(ft, part = "header", color = header_fg)
+  
+  for (r in group_rows) {
+    ft <- flextable::merge_at(ft,   i = r, j = c(num_col, title_col), part = "body")
+    ft <- flextable::bg(ft,         i = r, bg    = group_bg,          part = "body")
+    ft <- flextable::color(ft,      i = r, color = group_fg,          part = "body")
+    ft <- flextable::bold(ft,       i = r,                            part = "body")
+    ft <- flextable::fontsize(ft,   i = r, size  = font_size_group,   part = "body")
+    ft <- flextable::padding(ft,    i = r, padding = pad,             part = "body")
+  }
+  
+  ft <- flextable::border_outer(ft,
+                                part = "all", border = officer::fp_border(color = "#BFBFBF", width = 1))
+  ft <- flextable::border_inner_h(ft,
+                                  part = "all", border = officer::fp_border(color = "#E0E0E0", width = 0.75))
+  ft <- flextable::border_inner_v(ft,
+                                  part = "all", border = officer::fp_border(color = "#E0E0E0", width = 0.75))
+  
+  ft
+}
+
 # --- Project Banner Generator ------------------------------------------------
 
 make_project_banner <- function(
