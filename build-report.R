@@ -17,6 +17,9 @@ library(officer)
 library(yaml)
 library(magick)
 
+#clear workspace to create new objects
+rm(list = ls())
+
 cat("\n================================================================\n")
 cat(" PSSI Technical Report - Build Script\n")
 cat("================================================================\n")

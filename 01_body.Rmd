@@ -18,9 +18,9 @@ options(knitr.duplicate.label = "allow")
 
 # Introduction {#introduction}
 
-## Pacific Salmon Strategy Initiative Overview
+### Pacific Salmon Strategy Initiative Overview
 
-The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of over \$500 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. PSSI was initiated in 2021 in response to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery. Over its five year span, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon.
+The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of \$647 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. PSSI was initiated in 2021 in response to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery. Over its five year span, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon.
 
 PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars intended to provide a framework for aligning and coordinating actions across habitat, hatcheries, fisheries, and governance. The four pillars —Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration— each involved multiple sectors within DFO and were composed of several "initiatives", which were distinct elements for funding and reporting (Table \@ref(tab:pssi-initiatives)).
 
@@ -32,7 +32,7 @@ The harvest transformation pillar was intended to change how Pacific salmon fish
 
 The integration and collaboration pillar focused on strengthening collective capacity to address Pacific salmon declines by improving how DFO worked both internally and with external partners. Key objectives under this pillar were to provide capacity support to various internal and external groups involved in salmon conservation and management, to improve collaboration among federal, provincial, territorial, Indigenous, and other governments, and to prioritize salmon stocks for recovery through coordinated, cross-jurisdictional planning and decision-making processes.
 
-```{r pssi-table, tab.cap="The 24 PSSI Initiatives by pillar.",tab.id="pssi-initiatives",tab.topcaption=TRUE}
+```{r pssi-table, tab.cap="The 24 major components of the PSSI (known as initiatives) and their associated pillar.  Initiatives that were led by or included DFO Science branch are shown in bold text.",tab.id="pssi-initiatives",tab.topcaption=TRUE}
 
 pillars_df <- read_csv(here(rawdata_path, "Table1_PSSI_initiatives.csv")) %>%
   mutate(across(where(is.character), ~ str_replace_all(.x, "[^[:alnum:][:punct:][:space:]]", " ")))
@@ -55,7 +55,7 @@ ft
 
 ```
 
-## Scientific Research Components of PSSI
+### Scientific Research Components of PSSI
 
 The PSSI pillars were underpinned by a dual-track investment in scientific research, combining internal DFO expertise with external grants and partnerships. This new scientific capacity supported a diverse range of projects intended to inform rebuilding plans, identify factors driving population declines, better understand the impacts of climate change, and pilot new approaches for monitoring, enhancement, fisheries harvest, and restoration. By supporting research within DFO and externally, the initiative aimed to leverage and build on existing capacity within the federal government and across academic institutions, Indigenous organizations, non-governmental organizations, and industry.
 
@@ -67,7 +67,7 @@ The largest PSSI initiative led by DFO Science was Improved Understanding of Sal
 
 The second major DFO Science initiative, Science to Support Hatchery Modernization, was a part of the PSSI Salmon Enhancement pillar. This initiative was designed to provide scientific advice and information to inform planning and program implementation, advance the use of molecular genetics and other tools for assessment, and expand fishery and escapement sampling programs. These research activities were intended to support the expansion of hatchery programs under PSSI, informing effective enhancement for population rebuilding and providing harvest opportunities while reducing risks for wild salmon populations. Research priorities were co-developed by a steering committee representing the Salmonid Enhancement Program and DFO Science.
 
-In this report, we summarize the outcomes and findings of research projects funded through the PSSI, with a focus on work led by DFO Science in the Pacific Region. We synthesize results across several research themes aligned with the major PSSI initiatives(Figure \@ref(fig:pssi-themes)), providing an overview of findings from a diverse set of multi-disciplinary projects. For the Improved Understanding of Salmon Ecosystems initiative, we review research within five thematic areas: salmon population monitoring, life-cycle approaches, freshwater ecosystems, marine ecosystems, and climate change vulnerability. For the Science to Support Hatchery Modernization sub-initiative, we outline research conducted under the Genetics, Fish Health, and Hatchery Practices themes. In addition, we describe broader research and monitoring activities supported by PSSI, including work related to fisheries monitoring and new harvest techniques, stock assessment advice, and new tools for data mobilization and management. We provide project summaries for `n_projects` DFO-led research projects, offering a snapshot of the current state of Pacific salmon science under PSSI. Although the synthesis is not comprehensive of all research conducted under PSSI, it highlights the insights, knowledge gaps and future priorities identified during the five years of the initiative as they relate to thematic areas.
+In this report, we summarize the outcomes and findings of research projects funded through the PSSI, with a focus on work led by DFO Science in the Pacific Region. We synthesize results across several research themes aligned with the major PSSI initiatives(Figure \@ref(fig:pssi-themes)), providing an overview of findings from a diverse set of multi-disciplinary projects. For the Improved Understanding of Salmon Ecosystems initiative, we review research within five thematic areas: salmon population monitoring, life-cycle approaches, freshwater ecosystems, marine ecosystems, and climate change vulnerability. For the Science to Support Hatchery Modernization sub-initiative, we outline research conducted under the Genetics, Fish Health, and Hatchery Practices themes. In addition, we describe broader research and monitoring activities supported by PSSI, including work related to fisheries monitoring and new harvest techniques, stock assessment advice, and new tools for data mobilization and management. We provide project summaries for `r n_dfo_projects` DFO-led research projects, offering a snapshot of the current state of Pacific salmon science under PSSI. Although the synthesis is not comprehensive of all research conducted under PSSI, it highlights the insights, knowledge gaps and future priorities identified during the five years of the initiative as they relate to thematic areas.
 
 ```{r pssi-themes, echo=FALSE, fig.cap="Conceptual diagram of research themes aligned with the major PSSI initiatives.", fig.cap.style="Table Caption", out.width="100%"}
 knitr::include_graphics(here::here("figures/PSSI-theme-diagram.png"))
@@ -77,7 +77,7 @@ knitr::include_graphics(here::here("figures/PSSI-theme-diagram.png"))
 
 # Understanding salmon ecosystems
 
-## Background and objectives
+### Background and objectives
 
 Salmon ecosystems have deteriorated markedly over recent decades due to accelerating climate change and intensifying human pressures. Freshwater and marine habitats have become warmer, more fragmented, and increasingly variable, degrading habitat quality and reducing survival rates for many wild salmon populations.
 
@@ -235,36 +235,35 @@ SeaChange Marine Conservation Society assessed critical salmonid habitats in res
 ```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.",tab.id="tbl-climate"}
 
 make_section_table(projects_df,
-                   section_pick = 'Climate change vulnerability')
+                   section_pick = 'Climate change vulnerability',
+                   title_icon = file.path("assets", "icons", "climate-change-vulnerability.png" ))
 ```
 
-## Research Goals
+The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems PSSI initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
 
-The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems sub-initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
+Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures [@schoen2017; @chittenden2009; @crozier2025]. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, whole genome sequencing, life-cycle modelling, and vulnerability risk assessments. Collectively, these studies reveal important details about the implications of climate change for Pacific salmon that can allow us to understand and anticipate current and future changes.
 
-Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures [@schoen2017; @chittenden2009; @crozier2025]. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, modern genotyping, life-cycle modelling, and vulnerability risk assessments. Collectively, these studies reveal important details about the implications of climate change for Pacific salmon that can allow us to understand and anticipate current and future changes.
+### Downscaled climate modelling
 
-## Downscaled climate modelling
+Global climate modelling – the simulation of earth systems into the future under different greenhouse gas emission scenarios – is the basis for much of our understanding about future climate change as reported on by the intergovernmental panel on climate change (IPCC). However, these global models lack the necessary detail to tease out fine-scale environmental changes to aquatic habitats that will strongly influence the responses of Pacific salmon over the coming decades. Recent work is addressing these gaps through downscaling of global climate models to marine and freshwater environments of British Columbia.
 
-Global climate modelling – the simulation of earth systems into the future under different greenhouse gas emission scenarios – is the basis for much of our understanding about future climate change as reported on by the intergovernmental panel on climate change (IPCC). However, these global models lack the necessary detail to tease out fine-scale environmental changes to aquatic habitats that will be significant to understanding responses of Pacific salmon over the coming decades. Recent work, including many projects supported by PSSI, is addressing these gaps through downscaling of global climate models to marine and freshwater environments across the Pacific region.
+Within freshwater habitats, the Pacific Climate Impacts Consortium (PCIC) has developed a gridded hydrologic model for gauged watersheds in British Columbia, with projections at a daily resolution spanning from 1950 to 2100. This model allows for detailed investigations into changes in stream temperatures and flow over time, and is accompanied by an online [Salmon Climate Impacts Portal](https://services.pacificclimate.org/scip/app/) providing visualizations of changes in freshwater conditions over time. This model is being improved upon under phase two of BCSRIF to provide higher resolution projections at the stream level with expanded coverage of watersheds throughout British Columbia [(BCSRIF_2022_384)](#BCSRIF_2022_384). Statistically downscaled models of August stream temperature have also recently been developed for streams throughout British Columbia, providing an alternative method for evaluating how temperatures will change during one of the hottest months of the year [@weller2024]. Both models reveal gradients of temperature changes throughout British Columbia influenced not only by global climate patterns and latitude, but by topology, glacial influence, and stream order. However, the overall trend of warming stream temperatures is unequivocal, and by the year 2100 Pacific salmon in British Columbia are expected to experience temperatures that are on average around 3 degrees Celsius warmer than the previous century.
 
-Within freshwater habitats, the Pacific Climate Impacts Consortium (PCIC) has developed high resolution stream temperature and flow models that project future conditions throughout British Columbia. Statistically downscaled models of August stream temperature have also recently been developed providing an alternative method for projecting future temperatures.  These models reveal a gradient of temperature changes throughout British Columbia influenced not only by global climate patterns, but by elevation, glacial coverage, latitude…..
+Within marine areas, regional oceanographic models developed by DFO's Ocean Science division project changes in salinity, temperature, and biogeochemistry for waters across the continental shelf of British Columbia [@peña2024; @holdsworth2021]. While these models have recently been applied to understand how climate change will affect habitat availability for groundfish [@thompson2023], applying them towards the assessment of climate change vulnerability for Pacific salmon is more challenging because of their anadromous life cycle and our limited information on their marine distributions. The Basin-Scale Events and Coastal Impacts initiative, a part of BCSRIF phase two, aimed to bring together research and advance modelling efforts across the Northeast Pacific, including the development of a knowledge network to connect and synthesize information about changing ocean conditions [(BCSRIF_2022_360)](#BCSRIF_2022_360). Further developing and applying oceanographic models to understand how climate change will influence marine stressors and Pacific salmon survival is an important area for future research given the complex oceanographic dynamics along the BC continental shelf and the potential for novel ecosystem interactions.
 
-Within marine areas, regional oceanographic models developed by the Ocean Science division project changes in salinity, temperature, and biogeochemistry for waters across the continental shelf of British Columbia. While these models have recently been applied to understand how climate change will affect habitat availability for groundfish and other marine species, applying them towards the assessment of climate change vulnerability for Pacific salmon is more challenging…  Given the importance of marine survival to the productivity of Pacific salmon, this is an important area for further research….
+### Vulnerability assessments
 
-## Vulnerability assessments
+For the purposes of Pacific salmon management, projecting future environmental conditions is only helpful if we can predict how Pacific salmon will respond to those changes. Climate change vulnerability assessments apply a diverse range of methods to consider how the combined exposure and sensitivity of a species or population determines the risks they face from climate change [@foden2019]. While such assessments have been applied to thousands of different species at regional and global scales, including to Pacific salmon in the continental US [@crozier2019], it is only in recent years that studies have examined broad-scale patterns in climate vulnerability across conservation units of Pacific Salmon in Canada.
 
-For the purposes of Pacific salmon management, projecting future environmental conditions is only helpful if we can predict how Pacific salmon will respond to those changes. Climate change vulnerability assessments apply a diverse range of methods to consider how the combined exposure and sensitivity of a species or population determines the risks they face from climate change. While such assessments have been applied to thousands of different species at regional and global scales, including to Pacific salmon in the continental US, it is only recently and with support from PSSI that these studies have been applied to Pacific salmon in Canada.
+Two of these studies have been focused on the Fraser Basin, the largest and most diverse river basin for Pacific salmon in Canada with over 50 conservation units. The Pacific Salmon Foundation developed a model to quantify life-stage specific exposure of Pacific salmon conservation units to environmental conditions above optimal thresholds, including high temperature and low flow thresholds [(BCSRIF_2022_401)](#BCSRIF_2022_401). DFO Science has developed a climate vulnerability indicators framework that incorporates various downscaled climate models, demographic information such as conservation status, and genetic diversity information to characterize key mechanisms of vulnerability.
 
-Two of these studies have been focused on the Fraser Basin, the largest and most diverse river basin for Pacific salmon in Canada with over 50 conservation units. The Pacific Salmon Foundation developed a model to quantify life-stage specific exposure of Pacific salmon conservation units to environmental conditions above optimal thresholds, including high temperature and low flow thresholds. DFO Science has developed a climate vulnerability indicators framework that incorporates several downscaled climate models, demographic information such as conservation status, and genetic diversity information to characterize key mechanisms of vulnerability.
-
-Together, these studies reveal …..
+Together, these studies reveal 
 
 Life stage modelling can also be used for evaluating and disentangling the influence of environmental conditions on salmon productivity retroactively and into the future. Models of sockeye salmon, covering populations from the southern to northern ends of their range, reveal important similarities and differences in responses….
 
-## Genetic adaptation
+### Genetic adaptation
 
-## Knowledge gaps and future priorities
+### Knowledge gaps and future priorities
 
 Expanding vulnerability assessments to populations beyond the Fraser basin
 
@@ -289,7 +288,7 @@ This represents a paradigm shift from single-stage to ecosystem-based fisheries 
 ```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
 
 make_section_table(projects_df,
-                   section_pick = "Salmon population monitoring")
+                   section_pick = "Stock assessment")
 
 
 ```
@@ -317,7 +316,7 @@ Innovative solutions emerged for challenging monitoring conditions. Lil'wat Nati
 ```{r ftf-projects, tab.cap="DFO and BCSRIF projects associated with Follow the Fish.",tab.id="tbl-ftf"}
 
 make_section_table(projects_df,
-                   section_pick = 'Life cycle assessment - Follow The Fish')
+                   section_pick = 'Life cycle approaches')
 
 ```
 
@@ -353,8 +352,8 @@ The Follow the Fish program will clarify relationships between environmental con
 
 ```{r bottleneck-projects, tab.cap="DFO and BCSRIF projects associated with bottlenecks to survival.",tab.id="tbl-bottlenecks"}
 
-make_section_table(projects_df,
-                   section_pick = 'Life cycle assessment - Bottlenecks to survival')
+# make_section_table(projects_df,
+#                    section_pick = 'Life cycle assessment - Bottlenecks to survival')
 
 ```
 
@@ -388,15 +387,15 @@ flextable(fsar_table) |>
 
 <br>
 
-# Science to support hatchery modernization (CL/SEP) {#hatcheries}
+# Science to support hatchery modernization {#hatcheries}
 
 Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
 
-# Hatchery fitness and genetics {#hatchery-fitness-and-genetics}
+## Hatchery fitness and genetics {#hatchery-fitness-and-genetics}
 
 ```{r genetics-projects, tab.cap="DFO and BCSRIF projects associated with genetics.",tab.id="tbl-genetics"}
 make_section_table(projects_df,
-                   section_pick = 'Genetics')
+                   section_pick = 'Hatchery Fitness and Genetics')
 ```
 
 Summarize research and key findings from genetics projects. Research questions (from SEP):
@@ -425,7 +424,7 @@ Projects and themes include:
 
     -   Genetic variation linked to early maturation in male Chinook salmon
 
-# Fish health and hatchery practices {#fish-health}
+## Fish health and hatchery practices {#fish-health}
 
 ```{r health-projects, tab.cap="DFO and BCSRIF projects associated with the fish health theme.",tab.id="tbl-health"}
 
@@ -471,18 +470,18 @@ Projects and themes include:
 
 \newpage
 
-# Fishery monitoring and harvest techniques (NB/CL/FM) {#harvest}
+# Fishery monitoring and harvest techniques {#harvest}
 
 ```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
 make_section_table(projects_df,
                    section_pick = 'Fishery monitoring and harvest techniques')
 ```
 
-## Background and objectives
+### Background and objectives
 
 PSSI-supported work in fishery monitoring and harvest techniques advanced tools and approaches needed for more selective, precautionary salmon fisheries in British Columbia and Yukon. Research focused on developing, testing, and applying improved catch monitoring and reporting frameworks to address longstanding information gaps, particularly with respect to mixed‑stock fisheries. Pilot projects were also conducted to evaluate selective and mark‑selective fishing methods to better understand their effectiveness in reducing impacts on stocks of concern while maintaining harvest opportunities. Collectively, these projects lay the foundation for a refined approach to managing and regulating Pacific salmon fisheries. Preliminary results and management implications from a selection of PSSI harvest transformation research projects are summarized thematically below.
 
-## Enhancements to recreational monitoring
+### Enhancements to recreational monitoring
 
 British Columbia is a renowned destination for salmon angling. Active recreational fisheries span the entire coastline, bolstered by an extensive network of lodges and guiding operations. Likewise, recreational fishing is prevalent and popular in many of BC’s salmon-bearing watersheds. It is a considerable challenge to monitor and assess the impacts to salmon of such widespread, diffuse fisheries, and critical information gaps exist. As a result, several new recreational fishery restrictions have been introduced in recent years to protect declining stocks. PSSI sub-initiative 18.2 focuses on developing or improving recreational fishery monitoring to better inform management actions.
 
@@ -492,7 +491,7 @@ Aside from spatiotemporal coverage, another key information gap in recreational 
 
 In January 2024, a PSSI workshop on innovations within recreational catch monitoring brought together internal and external participants with subject matter expertise. The workshop highlighted several projects focusing on catch estimation, verification, sampling, data management and digital innovation, including the reference fishery and the Central Coast Indigenous creel survey. Another PSSI project presented on was an “Overflight Digitizer,” which is a digital software used to automate some aspects of aerial survey data collection. During flights, the software automatically tracks the flight location and data points for boat sightings directly on the map. Other projects that help improve monitoring capacity have utilized cameras and other new technology, leveraged citizen science, and improved efficiency of data systems. A key take-away theme from the workshop is the importance of integrating all recreational monitoring programs across BC to optimize accuracy and efficiency.
 
-## Research on release mortality and best practices for recreational fisheries
+### Research on release mortality and best practices for recreational fisheries
 
 The Pacific Salmon Ecology and Conservation Laboratory at the University of British Columbia undertook a 5-year research program to study the mechanisms and impacts of injuries sustained by chinook and coho salmon when released by recreational anglers. The BC Sport Fishing Institute, Pacific Salmon Foundation, Canada’s Ocean Tracking Network, DFO, and Kintama Marine Research were key collaborators on this work.
 
@@ -500,11 +499,11 @@ Results arising from acoustic telemetry tracking, extended holding studies, and 
 
 Based on these findings, the Pacific Salmon Ecology and Conservation Laboratory is developing practical, evidence‑based recommendations to minimize injury, physiological stress, and subsequent mortality when releasing salmon. Key recommendations emphasize reducing physical contact and air exposure, avoiding the use of landing nets and on‑board handling, releasing fish at the waterline, and minimizing fight times. Gear recommendations include eschewing in-line flashers as well as large or multiple hooks, especially treble hooks,  all of which increase injury risk and severity. Recommendations for fishery management include minimizing fishing in areas dominated by immature fish or salmon predators, winding down fisheries when surface water temperatures are exceptionally warm, and stopping fishing trips once daily retention limits have been achieved. These best practices provide new options to reduce recreational fishing impacts while maintaining opportunity. Researchers are also developing resources to help integrate release mortality considerations into monitoring and public education programs.
 
-## Bycatch monitoring in commercial fisheries
+### Bycatch monitoring in commercial fisheries
 
 -   Salmon bycatch monitoring in the trawl fishery (Cory Lagasse)
 
-## Selective harvest methods and monitoring to support adaptive management
+### Selective harvest methods and monitoring to support adaptive management
 
 Several research initiatives focused on improving the timeliness, accuracy, and operational relevance of fishery data to support measures aiming to reduce impacts on stocks of concern. A central theme across projects is the integration of emerging technologies with established fishing practices and community‑based monitoring programs. All projects recognized the need for innovation in both fishing practices and monitoring to better support precautionary management.
 

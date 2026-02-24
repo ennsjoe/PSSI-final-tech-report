@@ -1,5 +1,5 @@
 
-# APPENDIX C. Summary of DFO Science PSSI Data Projects {#app-data}
+# APPENDIX B. Summary of DFO Science PSSI Data Projects {#app-data}
 
 ```{r appendix-c-setup, include=FALSE}
 source(here::here("_common.R"))
@@ -7,15 +7,15 @@ source(here::here("_common.R"))
 
 knitr::opts_chunk$set(
   # Tables in appendix
-  tab.cap.pre = "Table C-",
+  tab.cap.pre = "Table B-",
   tab.cap.sep = ": ",
-  tab.lp      = "tabC:",
+  tab.lp      = "tabB:",
   tab.topcaption = TRUE,
 
   # Figures in appendix
-  fig.cap.pre = "Figure C-",
+  fig.cap.pre = "Figure B-",
   fig.cap.sep = ": ",
-  fig.lp      = "figC:",     # optional but recommended for a clean namespace
+  fig.lp      = "figB:",     # optional but recommended for a clean namespace
   fig.topcaption = TRUE
 )
 

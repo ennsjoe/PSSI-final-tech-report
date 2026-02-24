@@ -87,6 +87,8 @@ if (!dir.exists(BANNER_DIR)) {
 # ===================================================================
 
 n_projects <<- nrow(projects_df)
+n_dfo_projects <<- nrow(filter(projects_df, 
+                               source == "DFO Science"))
 
 # ===================================================================
 # Knitr Options

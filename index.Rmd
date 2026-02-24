@@ -106,7 +106,7 @@ source(here::here("_common.R"))
 ```
 
 ```{r flextable-defaults, include=FALSE}
-# Global flextable defaults to match CSAS style and accessibility standards
+# Global flextable defaults 
 flextable::set_flextable_defaults(
   font.size      = 8,
   padding.left   = 3,
