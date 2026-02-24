@@ -16,8 +16,6 @@ ensure_package <- function(pkg) {
 ensure_package('here')
 ensure_package('tidyverse')
 ensure_package('knitr')
-ensure_package('DBI')
-ensure_package('RSQLite')
 ensure_package('readr')
 ensure_package('flextable')
 ensure_package('openxlsx')
@@ -31,10 +29,8 @@ ensure_package('magick')     # for project page banner image compositing
 # Define Common Paths
 # ===================================================================
 
-OUTPUT_DB     <<- here('data', 'projects.db')
 template_path <<- here('templates', 'project-template.Rmd')
 rawdata_path  <<- here('data', 'raw')
-TABLE_NAME    <- "projects"
 
 # ===================================================================
 # Source Helper Functions
@@ -43,41 +39,11 @@ TABLE_NAME    <- "projects"
 source(here("helper-functions", "helper-functions.R"))
 
 # ===================================================================
-# Database Initialization/Validation
-# ===================================================================
-
-db_status <- check_database(OUTPUT_DB)
-if (db_status$exists) {
-  message('\u2714 Database found: ', db_status$message)
-  
-  required_cols <- c('project_id', 'source', 'broad_header', 'section', 'include')
-  missing <- setdiff(required_cols, db_status$columns)
-  if (length(missing) > 0) {
-    warning('Database missing required columns: ', paste(missing, collapse=', '))
-    message('Rebuilding database...')
-    init_database(overwrite = TRUE)
-  }
-} else {
-  message('Database exists but appears corrupted. Rebuilding...')
-  init_database(overwrite = TRUE)
-}
-
-# ===================================================================
-# Load Project Data into Global Environment
+# Load Project Data from CSV
 # ===================================================================
 
 if (!exists('projects_df')) {
-  tryCatch({
-    con <- dbConnect(RSQLite::SQLite(), OUTPUT_DB)
-    projects_df <<- dbReadTable(con, 'projects')
-    dbDisconnect(con)
-    
-    message('\u2714 Loaded ', nrow(projects_df), ' projects from database')
-    message('  Columns: ', paste(names(projects_df), collapse=', '))
-    
-  }, error = function(e) {
-    stop('Failed to load projects from database: ', e$message)
-  })
+  projects_df <<- load_projects()
 }
 
 

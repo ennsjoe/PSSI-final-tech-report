@@ -22,98 +22,59 @@ find_csv_file <- function(filename, possible_paths = NULL) {
 # --- Find CSV files --------------------------------
 RAW_CSV       <- find_csv_file("report_project_list.csv")
 PROCESSED_CSV <- find_csv_file("pssi_form_data.csv")
-OUTPUT_DB     <- here::here("data", "projects_database.sqlite")
-TABLE_NAME    <- "projects"
 
-# --- Database Checker -------------------------------------------------------
-# Returns a list with $exists (logical) and $message / $columns.
-# Called by _common.R to decide whether to rebuild the database.
+# --- Project Data Loader ----------------------------------------------------
+# Merges the two source CSVs directly into projects_df -- no database needed.
+#
+#   report_project_list.csv  -- tracking sheet (source, section, include, etc.)
+#   pssi_form_data.csv       -- full form content (background, methods, etc.)
+#
+# Set A: projects that have form data  (content joined with tracking metadata)
+# Set B: DFO Science projects on the tracking list but NOT in form data
+#        (fallback rows with description mapped to 'background')
 
-check_database <- function(db_path) {
-  if (!file.exists(db_path)) {
-    return(list(exists  = FALSE,
-                message = paste("Database not found at", db_path),
-                columns = character(0)))
+load_projects <- function() {
+  if (is.null(RAW_CSV) || !file.exists(RAW_CSV)) {
+    stop("report_project_list.csv not found. Check data/raw/ folder.")
   }
-  tryCatch({
-    con <- DBI::dbConnect(RSQLite::SQLite(), db_path)
-    on.exit(DBI::dbDisconnect(con))
-    if (!DBI::dbExistsTable(con, "projects")) {
-      return(list(exists  = FALSE,
-                  message = "Database exists but 'projects' table is missing",
-                  columns = character(0)))
-    }
-    n_rows  <- DBI::dbGetQuery(con, "SELECT COUNT(*) FROM projects")[[1]]
-    columns <- names(DBI::dbGetQuery(con, "SELECT * FROM projects LIMIT 1"))
-    list(exists  = TRUE,
-         message = paste("Database contains", n_rows, "projects"),
-         columns = columns)
-  }, error = function(e) {
-    list(exists  = FALSE,
-         message = paste("Database error:", e$message),
-         columns = character(0))
-  })
-}
-
-# --- Database Initialization -------------------------------------------------
-
-init_database <- function(overwrite = FALSE) {
-  message("\n=== Initializing Projects Database ===")
+  if (is.null(PROCESSED_CSV) || !file.exists(PROCESSED_CSV)) {
+    stop("pssi_form_data.csv not found. Check data/processed/ folder.")
+  }
   
-  # 1. Load Tracking Data (The 'Raw' list)
   tracking_df <- readr::read_csv(RAW_CSV, show_col_types = FALSE) %>%
     dplyr::mutate(project_id = as.character(project_id))
   
-  # 2. Load Content Data (The 'Form' data)
-  content_df <- readr::read_csv(PROCESSED_CSV, show_col_types = FALSE) %>%
+  content_df  <- readr::read_csv(PROCESSED_CSV, show_col_types = FALSE) %>%
     dplyr::mutate(project_id = as.character(project_id))
   
-  # 3. Identify IDs that have full form data
   ids_in_content <- unique(content_df$project_id)
   
-  # --- PROCESS SET A: Projects with Full Form Data ---
-  # We use the content_df as the base so we don't get the 'description' 
-  # or 'location' from the tracking sheet.
+  # Set A: form data projects enriched with tracking metadata
   set_a <- content_df %>%
     dplyr::left_join(
-      tracking_df %>% dplyr::select(project_id, source, section, broad_header, include), 
+      tracking_df %>%
+        dplyr::select(project_id, source, section, broad_header, include),
       by = "project_id"
     )
   
-  # --- PROCESS SET B: Fallback Projects (Science only) ----
-  # These projects ARE in the tracking list, are Science/Include, 
-  # but are NOT in the form data.
+  # Set B: DFO Science projects on tracking list but missing from form data
   set_b <- tracking_df %>%
-    dplyr::filter(!(project_id %in% ids_in_content)) %>%
-    dplyr::filter(source == "DFO Science" & include == "y") %>%
-    # MAP THE COLUMNS SO THE RMD TEMPLATE SEES THEM
-    # Your Rmd looks for 'background'. The tracking sheet has 'description'.
+    dplyr::filter(!(project_id %in% ids_in_content),
+                  source == "DFO Science",
+                  include == "y") %>%
     dplyr::mutate(
-      background = description,
-      project_title = project_title,
-      # Ensure other fields expected by the template exist as NAs if missing
+      background       = description,
       methods_findings = NA_character_,
-      insights = NA_character_,
-      next_steps = NA_character_
+      insights         = NA_character_,
+      next_steps       = NA_character_
     )
   
-  # 4. Combine them
   final_df <- dplyr::bind_rows(set_a, set_b)
-  
-  # 5. Final Housekeeping
   final_df$project_number <- final_df$project_id
   
-  # 6. Write to SQLite
-  db_dir <- dirname(OUTPUT_DB)
-  if (!dir.exists(db_dir)) dir.create(db_dir, recursive = TRUE)
-  
-  con <- DBI::dbConnect(RSQLite::SQLite(), OUTPUT_DB)
-  DBI::dbWriteTable(con, TABLE_NAME, final_df, overwrite = overwrite)
-  DBI::dbDisconnect(con)
-  
-  message("\u2705 Database created. Total projects: ", nrow(final_df))
-  message("   - From Form Data: ", nrow(set_a))
-  message("   - From Tracking Fallback: ", nrow(set_b))
+  message("\u2705 Projects loaded from CSV. Total: ", nrow(final_df),
+          " (", nrow(set_a), " from form data, ", nrow(set_b), " fallback)")
+  final_df
 }
 
 # --- Section Table Builder ---------------------------------------------------
