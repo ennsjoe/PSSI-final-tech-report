@@ -5,9 +5,9 @@
 #        Rscript build-report.R from the terminal
 #
 # Steps:
-#   1. Load _common.R  (packages, database helpers, icon maps, banner function)
-#   2. Initialise / update the SQLite project database
-#   3. Render the report via rmarkdown::render("index.Rmd")
+#   1. Load _common.R  (packages, helper functions, icon maps, banner function)
+#   2. Render the report via rmarkdown::render("index.Rmd")
+#   3. Post-process: inject bookmarks, fix hyperlinks
 #   4. Post-process: prepend CSAS front matter via add_frontmatter.R
 
 library(here)
@@ -33,43 +33,12 @@ source(here("_common.R"))
 cat("  ✓ _common.R loaded\n\n")
 
 
-# ── STEP 2: Initialise / update database ────────────────────────────────────
 
-cat("STEP 2: Checking project database ...\n")
-
-tryCatch({
-  
-  csv_forms <- here("data", "processed", "pssi_form_data.csv")
-  
-  if (!file.exists(csv_forms)) {
-    stop(
-      "Extraction file not found at: ", csv_forms,
-      "\nRun project_report_extraction.R before building the report."
-    )
-  }
-  
-  db_mtime   <- file.info(here("data", "projects.db"))$mtime
-  form_mtime <- file.info(csv_forms)$mtime
-  
-  if (is.na(db_mtime) || form_mtime > db_mtime) {
-    cat("  New data detected — rebuilding database ...\n")
-    init_database(overwrite = TRUE)
-    cat("  ✓ Database rebuilt\n\n")
-  } else {
-    cat("  ✓ Database is up to date\n\n")
-  }
-  
-}, error = function(e) {
-  cat("  ⚠ Database error:", conditionMessage(e), "\n")
-  cat("  Attempting to proceed with existing database ...\n\n")
-})
-
-
-# ── STEP 3: Render report ────────────────────────────────────────────────────
+# ── STEP 2: Render report ────────────────────────────────────────────────────
 # Output format and filename are declared in index.Rmd YAML.
 # Output: PSSI-Technical-Report-2026.docx in the project root.
 
-cat("STEP 3: Rendering report ...\n")
+cat("STEP 2: Rendering report ...\n")
 
 tryCatch({
   
