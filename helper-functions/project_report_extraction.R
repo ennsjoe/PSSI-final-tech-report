@@ -9,6 +9,7 @@ library(tibble)
 library(stringr)
 library(readr)
 library(here)
+library(tidyr)
 
 # ----------------------------------------------------------
 # Define standard paths
