@@ -31,6 +31,7 @@ ensure_package('magick')     # for project page banner image compositing
 
 template_path <<- here('templates', 'project-template.Rmd')
 rawdata_path  <<- here('data', 'raw')
+assets_path    <- here('assets')
 
 # ===================================================================
 # Source Helper Functions

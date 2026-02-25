@@ -61,14 +61,14 @@ output:
       width: 1.0
       topcaption: true
       caption:
-        style: Table Caption
+        style: TableCaption
         pre: "Table "
         sep: ". "
     plots:
       style: Normal
       align: center
       caption:
-        style: Image Caption
+        style: FigureCaptionCustom
         pre: "Figure "
         sep: ". "
     page_size:
@@ -114,7 +114,8 @@ flextable::set_flextable_defaults(
   padding.top    = 1,
   padding.bottom = 1,
   na_str         = "-",
-  theme_fun      = "theme_booktabs"
+  theme_fun      = "theme_booktabs",
+  ft.keepnext = TRUE  #prevent from splitting across pages
 )
 ```
 
@@ -130,13 +131,11 @@ flextable::set_flextable_defaults(
 ```{r project-reports, child="10_project-reports.Rmd"}
 ```
 
-```{r appendix-a, child="11_appendix-a.Rmd"}
+```{r appendix-a, child="12_appendix-a.Rmd"}
 ```
 
-```{r appendix-b, child="12_appendix-b.Rmd"}
+```{r appendix-b, child="13_appendix-b.Rmd"}
 ```
 
-```{r appendix-c, child="13_appendix-c.Rmd"}
-```
 
 
