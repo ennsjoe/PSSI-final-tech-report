@@ -187,13 +187,13 @@ fix_bullet_formatting <- function(docx_path) {
   }
   
   # ── 3. Repack docx ─────────────────────────────────────────────────────────
+  orig_wd   <- getwd()
+  on.exit(setwd(orig_wd), add = TRUE)
   all_files <- list.files(tmp, recursive = TRUE, full.names = FALSE,
-                          include.dirs = FALSE)
-  zip::zip(
-    zipfile = docx_path,
-    files   = all_files,
-    root    = tmp
-  )
+                          all.files = TRUE)
+  setwd(tmp)
+  zip::zip(docx_path, files = all_files, mode = "mirror")
+  setwd(orig_wd)
   
   invisible(NULL)
 }
