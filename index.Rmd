@@ -39,11 +39,7 @@ title: ""
 # Do NOT add 'abstract:' here - officedown renders it as a heading even when empty.
 # add_frontmatter.R reads report_abstract separately from this YAML.
 report_abstract: >
-  The Pacific Salmon Strategy Initiative (PSSI) was a five-year, $647 million
-  investment by the Government of Canada to help restore and sustain Pacific
-  salmon populations and their habitats. This report summarizes scientific
-  research and preliminary findings from PSSI-funded projects led by Fisheries
-  and Oceans Canada (DFO) Science in the Pacific Region. [Replace with final abstract text.]
+  The Pacific Salmon Strategy Initiative (PSSI) was a five-year, $647 million investment by the Government of Canada to restore and sustain Pacific salmon and their habitats. This report summarizes scientific research and preliminary findings from PSSI-funded projects led by Fisheries and Oceans Canada’s (DFO) Science branch in the Pacific Region. Research was delivered through two major science initiatives, Improved Understanding of Salmon Ecosystems and Science to Support Hatchery Modernization, and was complemented by 72 external agreements funded through phase two of the BC Salmon Restoration and Innovation Fund (BCSRIF). Key findings are summarized across thematic areas including freshwater and marine ecosystems, climate change vulnerability, life cycle approaches for assessment, hatchery genetics and fish health, fisheries monitoring, and data stewardship. Summary reports for 51 research projects are also provided, offering an overview of the scientific outcomes of the PSSI.
 
 # --- Bibliography ------------------------------------------------------------
 bibliography: bib/references.bib
