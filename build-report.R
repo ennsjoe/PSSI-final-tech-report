@@ -62,6 +62,157 @@ tryCatch({
 
 
 
+# ── STEP 3.1: Fix bullet list formatting ────────────────────────────────────
+# Pandoc generates its own numbering.xml on every render, which overrides the
+# List Bullet indent and spacing set in custom-reference.docx.  This step
+# patches the rendered docx directly:
+#   • Rewrites indent/hanging values for each bullet level in numbering.xml
+#   • Removes w:contextualSpacing from all list paragraphs in document.xml
+#     (contextualSpacing suppresses inter-item spacing regardless of style)
+#   • Applies spaceAfter to list paragraphs so spacing is consistent
+
+fix_bullet_formatting <- function(docx_path) {
+  
+  # ── Adjustable parameters ──────────────────────────────────────────────────
+  indent_per_level_in <- 0.5    # inches of indent added per bullet level
+  space_after_pt      <- 0      # pt space after each bullet paragraph (0 = tight)
+  hanging_in          <- 0.25   # hanging indent (bullet character overhang)
+  # ──────────────────────────────────────────────────────────────────────────
+  
+  # Convert inches/pt to twips (1 inch = 1440 twips, 1 pt = 20 twips)
+  indent_twips   <- round(indent_per_level_in * 1440)
+  hanging_twips  <- round(hanging_in          * 1440)
+  space_after_tw <- round(space_after_pt      * 20)
+  
+  W_NS  <- "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  
+  tmp <- tempfile()
+  dir.create(tmp)
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+  
+  unzip(docx_path, exdir = tmp, overwrite = TRUE)
+  
+  # ── 1. Patch numbering.xml ─────────────────────────────────────────────────
+  num_path <- file.path(tmp, "word", "numbering.xml")
+  if (file.exists(num_path)) {
+    
+    num_xml <- xml2::read_xml(num_path)
+    ns      <- c(w = W_NS)
+    
+    # Find every abstractNum that contains bullet levels
+    for (abstract in xml2::xml_find_all(num_xml, "//w:abstractNum", ns)) {
+      for (lvl in xml2::xml_find_all(abstract, "w:lvl", ns)) {
+        
+        num_fmt_node <- xml2::xml_find_first(lvl, "w:numFmt", ns)
+        if (inherits(num_fmt_node, "xml_missing")) next
+        num_fmt <- xml2::xml_attr(num_fmt_node, "w:val")
+        if (is.na(num_fmt) || num_fmt != "bullet") next
+        
+        ilvl       <- as.integer(xml2::xml_attr(lvl, "w:ilvl"))
+        left_tw    <- (ilvl + 1) * indent_twips + hanging_twips
+        # left is total left margin; hanging is how far bullet character sticks out
+        
+        # Find or create w:pPr inside this level
+        pPr <- xml2::xml_find_first(lvl, "w:pPr", ns)
+        if (inherits(pPr, "xml_missing")) {
+          xml2::xml_add_child(lvl, xml2::read_xml(
+            sprintf('<w:pPr xmlns:w="%s"/>', W_NS)
+          ))
+          pPr <- xml2::xml_find_first(lvl, "w:pPr", ns)
+        }
+        
+        # Remove any existing ind node and replace with our values
+        existing_ind <- xml2::xml_find_first(pPr, "w:ind", ns)
+        if (!inherits(existing_ind, "xml_missing")) xml2::xml_remove(existing_ind)
+        
+        xml2::xml_add_child(pPr, xml2::read_xml(sprintf(
+          '<w:ind xmlns:w="%s" w:left="%d" w:hanging="%d"/>',
+          W_NS, left_tw, hanging_twips
+        )))
+      }
+    }
+    
+    xml2::write_xml(num_xml, num_path)
+    cat("    Numbering indents patched (", indent_per_level_in, "\" per level)\n", sep = "")
+  }
+  
+  # ── 2. Patch document.xml — remove contextualSpacing, set spaceAfter ──────
+  doc_path <- file.path(tmp, "word", "document.xml")
+  if (file.exists(doc_path)) {
+    
+    doc_xml <- xml2::read_xml(doc_path)
+    ns      <- c(w = W_NS)
+    
+    # Target paragraphs that have a w:numPr (i.e. list items)
+    list_pPrs <- xml2::xml_find_all(
+      doc_xml, "//w:p[w:pPr/w:numPr]/w:pPr", ns
+    )
+    
+    for (pPr in list_pPrs) {
+      
+      # Remove contextualSpacing so our spaceAfter is respected
+      ctx <- xml2::xml_find_first(pPr, "w:contextualSpacing", ns)
+      if (!inherits(ctx, "xml_missing")) xml2::xml_remove(ctx)
+      
+      # Set spaceAfter — remove existing spacing node and rebuild
+      if (space_after_tw > 0) {
+        existing_spacing <- xml2::xml_find_first(pPr, "w:spacing", ns)
+        after_val <- space_after_tw
+        if (!inherits(existing_spacing, "xml_missing")) {
+          # Preserve any existing w:before value
+          before_val <- xml2::xml_attr(existing_spacing, "w:before")
+          xml2::xml_remove(existing_spacing)
+          if (!is.na(before_val)) {
+            xml2::xml_add_child(pPr, xml2::read_xml(sprintf(
+              '<w:spacing xmlns:w="%s" w:before="%s" w:after="%d"/>',
+              W_NS, before_val, after_val
+            )))
+          } else {
+            xml2::xml_add_child(pPr, xml2::read_xml(sprintf(
+              '<w:spacing xmlns:w="%s" w:after="%d"/>',
+              W_NS, after_val
+            )))
+          }
+        } else {
+          xml2::xml_add_child(pPr, xml2::read_xml(sprintf(
+            '<w:spacing xmlns:w="%s" w:after="%d"/>',
+            W_NS, after_val
+          )))
+        }
+      }
+    }
+    
+    xml2::write_xml(doc_xml, doc_path)
+    cat("    contextualSpacing removed,", space_after_pt, "pt space after applied\n")
+  }
+  
+  # ── 3. Repack docx ─────────────────────────────────────────────────────────
+  all_files <- list.files(tmp, recursive = TRUE, full.names = FALSE,
+                          include.dirs = FALSE)
+  zip::zip(
+    zipfile = docx_path,
+    files   = all_files,
+    root    = tmp
+  )
+  
+  invisible(NULL)
+}
+
+cat("STEP 3.1: Fixing bullet list formatting ...\n")
+
+tryCatch({
+  rendered_docx_31 <- here("PSSI-Technical-Report-2026.docx")
+  if (file.exists(rendered_docx_31)) {
+    fix_bullet_formatting(rendered_docx_31)
+    cat("  \u2713 Bullet formatting fixed\n\n")
+  } else {
+    cat("  \u26a0 Rendered docx not found - skipping\n\n")
+  }
+}, error = function(e) {
+  cat("  \u26a0 fix_bullet_formatting failed:", conditionMessage(e), "\n\n")
+})
+
+
 #--- STEP 3.2: Inject missing _rels/.rels ----
 # Pandoc does not always emit _rels/.rels in its docx output. Officer (used by
 # add_frontmatter in Step 4) requires this file to open the document.
@@ -226,6 +377,8 @@ cat("STEP 4.5: Fixing hyperlinks in final document and auditing ...\n")
 tryCatch({
   final_docx_path <- here("PSSI-Technical-Report-2026_wFrontMatter.docx")
   if (file.exists(final_docx_path)) {
+    fix_bullet_formatting(final_docx_path)
+    cat("  \u2713 Bullet formatting fixed in final document\n")
     fix_internal_hyperlinks(final_docx_path)
     cat("  \u2713 Hyperlinks fixed in final document\n")
     audit_hyperlinks(final_docx_path)
