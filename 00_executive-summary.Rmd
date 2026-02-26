@@ -1,43 +1,39 @@
 # Executive Summary {#executive-summary}
 
-**[This content is AI-generated. Revise with actual content]**
+The Pacific Salmon Strategy Initiative (PSSI) was a five-year, \$647 million investment by the Government of Canada to restore and sustain Pacific salmon populations and their habitats. This report summarizes scientific research and preliminary findings from PSSI-funded projects led by Fisheries and Oceans Canada's (DFO) Pacific Region Science branch, spanning work conducted from 2021 to 2026. Key outcomes are summarized across thematic areas including freshwater and marine ecosystems, climate change vulnerability, life cycle approaches for assessment, hatchery genetics and fish health, fisheries monitoring, and data stewardship.
 
-The Pacific Salmon Strategy Initiative (PSSI) was a five-year, \$647 million investment by the Government of Canada to restore and sustain Pacific salmon populations and their habitats. This report summarizes scientific research and preliminary findings from PSSI-funded projects led by Fisheries and Oceans Canada (DFO) Science in the Pacific Region, spanning work conducted from 2021 to 2026.
-
-Scientific research under PSSI was delivered through two primary DFO Science initiatives, Improved Understanding of Salmon Ecosystems and Science to Support Hatchery Modernization, and was complemented by a major expansion of the BC Salmon Restoration and Innovation Fund (BCSRIF), which supported 72 new collaborative agreements with First Nations, academic institutions, non-governmental organizations, and industry. Together, these investments enabled multidisciplinary research across DFO's four Pacific Science divisions and expanded the evidence base available for salmon management and conservation.
+Scientific research under PSSI was delivered through two primary DFO Science initiatives, Improved Understanding of Salmon Ecosystems and Science to Support Hatchery Modernization, that were collectively composed of `r n_DFO_projects` research projects detailed in this report. This research was complemented by a major expansion of the BC Salmon Restoration and Innovation Fund (BCSRIF), which supported 72 new collaborative agreements with First Nations, academic institutions, non-governmental organizations, and industry. Together, these investments enabled multidisciplinary research across DFO's four Pacific Science divisions and expanded the evidence base available for salmon management and conservation. 
 
 Research into salmon ecosystems advanced knowledge of the freshwater and marine conditions that drive salmon productivity and survival. Studies characterized the cumulative effects of habitat degradation, climate change, predation, disease, and oceanographic variability on salmon at multiple life stages. Ecosystem-based approaches to fisheries management were supported by new data on predator-prey dynamics, forage fish, and environmental indicators that influence stock assessments and management decisions.
 
-Life cycle assessments represented a significant methodological advance, tracking salmon from egg to adult to identify mortality bottlenecks and limiting factors. The Follow the Fish program investigated limiting factors for West Coast Vancouver Island Chinook with an emphasis on the early marine life stage to identify what threats are limiting survival and inform the development of rebuilding plans. The Bottlenecks to Survival program used passive integrated transponder (PIT) tagging networks across Vancouver Island to quantify stage-specific survival for Chinook, coho, and steelhead, delivering new escapement estimates and baseline marine survival data for use in rebuilding plans and recovery potential assessments. 
+**Freshwater Ecosystems**
 
-Salmon population monitoring programs were expanded and modernized through PSSI and BCSRIF, with many led by or developed in partnership with First Nations. Modern methods — including hydroacoustics, eDNA, acoustic telemetry, and parentage-based tagging — improved the feasibility and precision of monitoring in remote or logistically challenging systems. These programs are now generating long-term data on smolt abundance, marine survival, habitat use, and limiting factors that will underpin rebuilding plans and future scientific advice.
+**Marine Ecosystems**
+Within marine ecosystems, PSSI-funded research addressed both bottom-up processes — including food availability, ocean climate, coastal productivity, and the environmental drivers of prey quantity and quality — and top-down processes such as predation, competition, and disease. This work spanned a broad spatial range, from BC estuaries and the Strait of Georgia to the West Coast of Vancouver Island, into the open North Pacific. Complementing these studies, additional research investigated compounding anthropogenic stressors including habitat degradation in critical estuary and nearshore juvenile Chinook rearing areas, toxic contaminants, and biotoxins, as well as the behavioral and life history variation within and among salmon species that shapes their vulnerability to these pressures. Cutting across all of these stressors are the ongoing and far-reaching effects of climate change, which drive complex interactions affecting prey availability, water quality, and salmon susceptibility to disease and contaminants.
 
-Research in marine ecosystems documented the complex bottom-up and top-down processes that regulate Pacific salmon productivity in coastal and offshore environments, providing new insights into the role of oceanographic conditions, forage fish availability, and predation in driving survival variability across species and regions.
+Collectively, these studies are revealing new aspects of ecosystem structure and highlighting emerging threats to salmon survival. For example, research indicates that approximately 30% of the Strait of Georgia herring spawning stock may be non-migratory  — a significant departure from the current management assumption of an entirely migratory population, with implications for conservation priorities for both herring and salmon. Other studies are documenting concerning changes to the marine food web driven by climate change, including altered fatty acid composition in pteropods resulting from ocean acidification, declining ocean-derived thiamine levels leading to thiamine deficiency complex (TDC) with harmful effects across multiple salmon life stages, and thermal and hypoxic conditions in early marine rearing areas that are increasingly exceeding the tolerance thresholds of juvenile Pacific salmon. Looking across BC's coastal regions, studies reveal considerable variation in water quality, productivity, and prey availability during the critical early marine rearing period — differences with real consequences for salmon growth and survival. The degree of variation suggests that place-based management strategies tailored to local conditions will increasingly be needed. 
 
-Science to Support Hatchery Modernization delivered research on genetics, fish health, and hatchery practices to inform the expansion and modernization of hatchery programs under PSSI. This work is improving the use of conservation-based hatchery production to stabilize and rebuild vulnerable stocks while managing risks to wild populations.
+Throughout this work, researchers have deployed an array of advanced monitoring technologies. These include autonomous moored echosounders, upward- and side-looking SONAR, and eDNA analysis to characterize marine ecosystems, identify prey hotspots, track salmon returns, and detect temporal changes in productivity; scat analysis, DNA metabarcoding, biochemical diet tracers, and acoustic and satellite tagging to assess predator diets and spatial overlap with salmon; advanced molecular tools such as salmon Fit-Chips to evaluate cumulative environmental and physiological stressors on juvenile salmon; and Passive Integrated Transponder (PIT) tags combined with comprehensive detection array networks to identify stage-specific survival rates and pinpoint mortality bottlenecks. One notable outcome of this investment was the establishment of the first Laser Ablation-Inductively Coupled Plasma-Mass Spectrometry facility at DFO's Institute of Ocean Sciences, providing the department with in-house analytical capability for otolith microchemistry and salmon life history research. 
 
-Across all research themes, PSSI investments generated substantial new scientific capacity, supported long-term monitoring programs, and built new analytical tools that will extend well beyond the initiative's funding period. Key priorities for future work include completing rebuilding plans for priority stocks, resolving remaining knowledge gaps around early marine survival, advancing ecosystem-based management frameworks, and sustaining the Indigenous partnerships and monitoring programs established under PSSI.
-
-## Highlight sections
-
-### CVIS
-
+**Climate Change Vulnerability**
 -   Newly developed marine and freshwater climate models allow us to assess environmental changes that will be experience by Pacific salmon within British Columbia
 
 -   Vulnerability assessments reveal differences in risk for the 50 conservation units of Pacific salmon within the Fraser basin, with Pink and Chum salmon the least vulnerable to climate changes while ….
 
--   Life stage models….
 
--   Genetic adaptation….
+**Life Cycle Assessments**
+PSSI also enabled advances in life cycle assessments, tracking salmon from egg to adult to identify mortality bottlenecks and limiting factors. The Follow the Fish program was developed to identify and assess anthropogenic, biological, and environmental factors limiting the productivity of West Coast Vancouver Island natural-origin Chinook salmon, while the Bottlenecks to Survival Project aimed to identify survival bottlenecks and their causes for Chinook, coho, and steelhead in the Strait of Georgia. Synthesis of results from these programs is ongoing and will ultimately serve a wide range of management applications from informing recovery and rebuilding programs, to identifying measures to improve salmon productivity across freshwater and marine ecosystems, to guiding optimal hatchery release timing and enhancement strategies, and supporting recreational fishery management by reducing catch-and-release mortality during critical periods.
 
--   Greenhouse gas emissions matter. Vulnerability, as represented by conditions beyond optimal thresholds, was more severe in high emissions scenarios compared to scenarios with mitigation.
+**Science to Support Hatchery Modernization**
+Science to Support Hatchery Modernization delivered research on genetics, fish health, and hatchery practices to inform the expansion and modernization of hatchery programs under PSSI. This work is improving the use of conservation-based hatchery production to stabilize and rebuild vulnerable stocks while managing risks to wild populations.
 
--   These new assessments can be applied in planning and decision-making to contextualize risks and benefits….
+Across all research themes, PSSI investments generated substantial new scientific capacity, supported long-term monitoring programs, and built new analytical tools that will extend beyond the initiative's funding period. Key priorities for future work include completing rebuilding plans for priority stocks, resolving remaining knowledge gaps around early marine survival, advancing ecosystem-based management frameworks, and sustaining the Indigenous partnerships and monitoring programs established under PSSI.
 
-## Harvest
-
+**Fisheries Monitoring and Harvest Techniques**
 -   New technologies and collaborative partnerships are improving efficiency and accuracy of salmon fishery monitoring programs
-
 -   Research has identified new methods, opportunities, and best practices for selective fishing that can mitigate impacts on non-target stocks and species
+
+**Streamlining Stock Assessments**
+
 
 `r officer::run_pagebreak()`
