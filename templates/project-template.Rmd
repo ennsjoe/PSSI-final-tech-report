@@ -58,9 +58,16 @@ render_section <- function(heading, text) {
   cat("####", heading, "\n\n")
   lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
   for (line in lines) {
-    line <- trimws(line)
-    if (nchar(line) > 0) cat(line, "\n\n") else cat("\n")
+    line <- trimws(line, which = "right")  # preserve leading indent for nested bullets
+    if (nchar(trimws(line)) == 0) {
+      cat("\n")
+    } else if (grepl("^\\s*- ", line)) {
+      cat(line, "\n")                      # tight newline keeps bullet levels in one list
+    } else {
+      cat(line, "\n\n")                    # double newline for regular paragraphs
+    }
   }
+  cat("\n\n")                              # ensure blank line after section so next heading renders correctly
   return(invisible(NULL))
 }
 
@@ -158,15 +165,15 @@ render_word_table <- function(
 
 # ── Metadata block ────────────────────────────────────────────────────────────
 
-metadata_items <- c()
-
+# Project Leads — rendered first so Collaborations can follow immediately after
 if (!is.null(safe_text(project$project_leads)))
-  metadata_items <- c(metadata_items,
-                      paste0("**Project Leads:** ", safe_text(project$project_leads)))
+  cat("**Project Leads:**", safe_text(project$project_leads), "\n\n")
 
-if (!is.null(safe_text(project$collaborations)))
-  metadata_items <- c(metadata_items,
-                      paste0("**Collaborations:** ", safe_text(project$collaborations)))
+# Collaborations — rendered as a section to support bullet lists
+invisible(render_section("Collaborations and External Partners", safe_text(project$collaborations)))
+
+# Remaining metadata fields
+metadata_items <- c()
 
 if (!is.null(safe_text(project$location)))
   metadata_items <- c(metadata_items,
@@ -204,8 +211,7 @@ if (length(metadata_items) > 0)
   cat(paste(metadata_items, collapse = " \n\n "), "\n\n")
 
 # ── Content sections ──────────────────────────────────────────────────────────
-
-invisible(render_section("Highlights",           safe_text(project$highlights)))
+invisible(render_section("Highlights",                           safe_text(project$highlights)))
 invisible(render_section("Background",           safe_text(project$background)))
 invisible(render_section("Methods and Findings", safe_text(project$methods_findings)))
 ```
@@ -247,7 +253,7 @@ if (has_files || !is.null(tables_figures_text)) {
   if (has_files) {
 
     all_files   <- list.files(fig_dir, full.names = TRUE)
-    img_files   <- sort(all_files[grepl("\\.(png|jpg|jpeg|gif|svg)$", all_files, ignore.case = TRUE)])
+    img_files   <- sort(all_files[grepl("\\.(png|jpg|jpeg|gif|svg|tif|tiff)$", all_files, ignore.case = TRUE)])
     table_files <- sort(all_files[grepl("\\.(csv|xlsx|xls)$",         all_files, ignore.case = TRUE)])
 
     # Track table and figure numbers
@@ -309,7 +315,7 @@ if (has_files || !is.null(tables_figures_text)) {
           
           render_word_table(csv_data, caption, table_number)
 
-        } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
+        } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg", "tif", "tiff")) {
           
           rel_path <- gsub(paste0("^", here::here()), "", file_path)
           rel_path <- gsub("^[\\\\/]+", "", rel_path)
