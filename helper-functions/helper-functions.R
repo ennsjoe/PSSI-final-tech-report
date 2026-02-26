@@ -78,11 +78,6 @@ load_projects <- function() {
 }
 
 # --- Section Table Builder ---------------------------------------------------
-# Builds a formatted flextable for a given section, with project IDs as
-# hyperlinks targeting the project page bookmarks in the rendered docx.
-# Link URLs are paste0("#", project_id) using the raw project_id value --
-# this must match the bookmark name injected by inject_project_bookmarks().
-# --- Section Table Builder ---------------------------------------------------
 make_section_table <- function(
     df,
     section_pick,
@@ -90,143 +85,112 @@ make_section_table <- function(
     num_col          = "project_id",
     title_col        = "project_title",
     num_label        = "ID",
-    title_label      = "Project title",
-    w_num            = 1.5,
+    title_label      = "Project Title",
+    w_num            = 1.2,
     w_title          = 5.0,
     font_size_body   = 9,
     font_size_header = 9,
-    font_size_group  = 9,
     pad              = 3,
-    header_bg        = "#1F497D",
+    header_bg        = "darkslategray4",
     header_fg        = "white",
-    group_bg         = "#D9D9D9",
-    group_fg         = "black",
-    title_icon       = NULL,   # optional path to image; shown in a merged left sidebar column
-    icon_width       = 0.35,
-    icon_height      = 0.35,
-    w_icon           = 0.45    # width of the icon sidebar column
+    group_bg         = "bisque3",
+    title_icon       = "climate-change-vulnerability.png",
+    icon_width       = 0.6,  # Width of the image in the sidebar
+    icon_height      = 3.5,   # Height of the image portion in the body
+    w_sidebar        = 0.7,  # Width of the sidebar column
+    sidebar_label    = NULL,  # Vertical text label, e.g. "Climate Change Vulnerability"
+    sidebar_font_size = 9     # Font size for the vertical sidebar label
 ) {
-
-  # 1) Subset, clean, and order
+  
+  # 1) Filter and Prep
   df_clean <- df %>%
     filter(.data$section == section_pick, .data$include %in% c("y", "Y")) %>%
-    mutate(
-      across(all_of(source_col), ~ str_squish(as.character(.x))),
-      across(all_of(num_col),    ~ as.character(.x)),
-      across(all_of(title_col),  ~ str_squish(as.character(.x))),
-      .src_order = factor(.data[[source_col]], levels = c("DFO Science", "BCSRIF"))
-    ) %>%
-    arrange(.src_order, .data[[num_col]]) %>%
-    select(all_of(c(source_col, num_col, title_col)))
+    arrange(.data[[source_col]], .data[[num_col]])
   
-  # 2) Insert group header rows (label goes into num_col so merge_at shows it)
+  # 2) Create display dataframe
   df_display <- df_clean %>%
     group_by(.data[[source_col]]) %>%
-    group_modify(function(.x, .y) {
-      grp <- as.character(.y[[source_col]][1])
-      tibble(
-        .is_group  = c(TRUE,  rep(FALSE, nrow(.x))),
-        !!num_col  := c(grp,  .x[[num_col]]),      # <-- label in num_col
-        !!title_col := c("",  .x[[title_col]])
-      )
-    }) %>%
+    group_modify(~ tibble(
+      .is_group = c(TRUE, rep(FALSE, nrow(.x))),
+      !!num_col := c(as.character(.y[[source_col]]), as.character(.x[[num_col]])),
+      !!title_col := c("", as.character(.x[[title_col]]))
+    )) %>%
     ungroup()
   
-  group_rows <- which(df_display$.is_group)
-  data_rows  <- which(!df_display$.is_group)
-  n_body     <- nrow(df_display)
+  n_body <- nrow(df_display)
+  side_col <- ".sidebar_spine"
+  display_df <- df_display[, c(num_col, title_col)]
+  display_df[[side_col]] <- ""
   
-  # Optionally prepend an icon sidebar column
-  use_icon   <- !is.null(title_icon) && file.exists(title_icon)
-  icon_col   <- ".icon_sidebar"
+  # 3) Initialize Flextable
+  ft <- flextable(display_df, col_keys = c(side_col, num_col, title_col)) %>%
+    set_header_labels(values = setNames(c("", num_label, title_label), c(side_col, num_col, title_col)))
   
-  display_df <- df_display[, c(num_col, title_col), drop = FALSE]
-  if (use_icon) display_df[[icon_col]] <- ""   # empty placeholder column
-  
-  col_keys   <- if (use_icon) c(icon_col, num_col, title_col) else c(num_col, title_col)
-  hdr_keys   <- col_keys
-  hdr_labels <- if (use_icon) c("", num_label, title_label) else c(num_label, title_label)
-  
-  # 3) Build flextable
-  ft <- flextable(display_df, col_keys = col_keys) %>%
-    set_header_df(
-      mapping = data.frame(key = hdr_keys, label = hdr_labels, stringsAsFactors = FALSE),
-      key = "key"
-    )
-  
-  # 4) Hyperlink data rows (project IDs -> internal Word bookmarks)
-  if (length(data_rows) > 0) {
-    ids <- display_df[[num_col]][data_rows]
-    valid <- !is.na(ids) & ids != ""
-    vrows <- data_rows[valid]
-    vids  <- ids[valid]
+  # 4) The Sidebar Spine Logic
+  use_sidebar <- !is.null(title_icon) && file.exists(title_icon)
+  if (use_sidebar) {
+    # 4a) Body: merge all rows, image only, zero padding
+    ft <- ft %>%
+      merge_at(i = 1:n_body, j = side_col, part = "body") %>%
+      compose(i = 1, j = side_col, part = "body",
+              value = as_paragraph(
+                as_image(src = title_icon, width = icon_width, height = icon_height)
+              )
+      ) %>%
+      padding(j = side_col, padding = 0, part = "body") %>%
+      padding(j = side_col, padding = 0, part = "header") %>%
+      width(j = side_col, width = w_sidebar) %>%
+      align(j = side_col, align = "center", part = "all") %>%
+      valign(j = side_col, valign = "center", part = "body") %>%
+      bg(j = side_col, bg = header_bg, part = "body")
     
-    for (k in seq_along(vrows)) {
-      ft <- compose(
-        ft, i = vrows[k], j = num_col,
-        value = as_paragraph(
-          hyperlink_text(x = vids[k], url = paste0("#", vids[k]))
-        )
+    # 4b) Header: blank label — bg is re-applied after the global header bg in step 5
+    ft <- ft %>%
+      compose(i = 1, j = side_col, part = "header",
+              value = as_paragraph(as_chunk(""))
       )
+  }
+  
+  # 5) Hyperlinks and Styling
+  data_rows <- which(!df_display$.is_group)
+  for (i in data_rows) {
+    id_val <- display_df[[num_col]][i]
+    if (!is.na(id_val) && nzchar(id_val)) {
+      ft <- compose(ft, i = i, j = num_col,
+                    value = as_paragraph(hyperlink_text(x = id_val, url = paste0("#", id_val))))
     }
-    
-    ft <- color(ft, i = vrows, j = num_col, color = "#0563C1", part = "body")
-    ft <- style(ft, i = vrows, j = num_col, part = "body",
-                pr_t = fp_text(underlined = TRUE, color = "#0563C1"))
   }
   
-  # 4b) Icon sidebar column: merge all body rows, insert image, style header blank
-  if (use_icon) {
-    ft <- merge_at(ft, i = seq_len(n_body), j = icon_col, part = "body")
-    ft <- compose(
-      ft, i = 1, j = icon_col, part = "body",
-      value = as_paragraph(
-        as_image(src = title_icon, width = icon_width, height = icon_height)
-      )
-    )
-    ft <- align(ft,  j = icon_col, align  = "center", part = "all")
-    ft <- valign(ft, j = icon_col, valign = "center", part = "body")
-    ft <- width(ft,  j = icon_col, width  = w_icon)
-    ft <- bg(ft,     j = icon_col, bg     = header_bg, part = "header")
-    ft <- border_remove(ft)   # borders re-applied in step 8
-  }
-  
-  # 5) Header styling
   ft <- ft %>%
+    style(i = data_rows, j = num_col, pr_t = fp_text(underlined = TRUE, color = "#0563C1")) %>%
     fontsize(size = font_size_header, part = "header") %>%
-    bold(part = "header") %>%
     bg(bg = header_bg, part = "header") %>%
+    # Re-apply sidebar bg AFTER global header bg so it isn't overwritten
+    bg(i = 1, j = side_col, bg = header_bg, part = "header") %>%
+    padding(i = 1, j = side_col, padding = 0, part = "header") %>%
     color(color = header_fg, part = "header") %>%
-    align(align = "left", part = "header")
-  
-  # 6) Body styling
-  ft <- ft %>%
+    bold(part = "header") %>%
     fontsize(size = font_size_body, part = "body") %>%
-    align(align = "left", part = "body") %>%
-    valign(valign = "top", part = "body") %>%
-    padding(padding = pad, part = "all") %>%
-    width(j = num_col,   width = w_num) %>%
+    width(j = num_col, width = w_num) %>%
     width(j = title_col, width = w_title) %>%
-    { if (use_icon) width(., j = icon_col, width = w_icon) else . } %>%
-    set_table_properties(layout = "fixed")
+    padding(i = 1:n_body, j = c(num_col, title_col), padding = pad, part = "body")
   
-  # 7) Group row styling — merge AFTER label is already in num_col
+  # 6) Group Row Styling — loop individually so merge_at gets consecutive rows each time
+  group_rows <- which(df_display$.is_group)
   for (r in group_rows) {
     ft <- ft %>%
       merge_at(i = r, j = c(num_col, title_col), part = "body") %>%
-      bg(i = r,    bg    = group_bg,        part = "body") %>%
-      color(i = r, color = group_fg,        part = "body") %>%
-      bold(i = r,                           part = "body") %>%
-      fontsize(i = r, size = font_size_group, part = "body") %>%
-      padding(i = r, padding = pad,         part = "body")
+      bg(i = r, bg = group_bg, part = "body") %>%
+      bold(i = r, part = "body")
   }
   
-  # 8) Borders
+  # 7) Borders
   ft %>%
-    border_outer(part = "all",  border = fp_border(color = "#BFBFBF", width = 1)) %>%
-    border_inner_h(part = "all", border = fp_border(color = "#E0E0E0", width = 0.75)) %>%
-    border_inner_v(part = "all", border = fp_border(color = "#E0E0E0", width = 0.75))
+    border_remove() %>%
+    border_outer(border = fp_border(color = "#BFBFBF", width = 1)) 
 }
+
+
 # --- Project Banner Generator ------------------------------------------------
 
 make_project_banner <- function(

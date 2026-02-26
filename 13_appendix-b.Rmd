@@ -39,7 +39,7 @@ include_data_figure <- function(filename, caption = "") {
 
 The Salmon Tracking, Escapement, Assessment and Management ([STREAM](https://pac-salmon.dfo-mpo.gc.ca:8443/bcsn/#/)) Platform is a new online resource that helps improve how salmon escapement information is collected, shared, and understood. [STREAM](https://pac-salmon.dfo-mpo.gc.ca:8443/bcsn/#/) brings together data, tools, and easy‑to‑use applications to support the conservation and management of Pacific salmon.
 
-Fisheries and Oceans staff require timely, consistent access to salmon data across sectors. The STREAM platform enhances the timeliness of salmon count data, standardizes the spatial organization of salmon information, and improves reporting on salmon status. This foundational information supports stock assessment biologists, fisheries managers, species at risk biologists, and other decision-makers in delivering informed, data-driven management.
+Fisheries and Oceans staff require timely, consistent access to salmon data across sectors. The STREAM platform enhances the timeliness of salmon escapement data, standardizes the spatial organization of salmon information, and improves reporting on salmon status. This foundational information supports stock assessment biologists, fisheries managers, species at risk biologists, and other decision-makers in delivering informed, data-driven management.
 
 The platform has three main areas: entering and uploading data, learning about salmon populations, and exploring status reports (Figure 1). Through these features, users can view information about salmon populations across different regions and access data that support science, monitoring, and decision‑making.
 
@@ -52,7 +52,7 @@ include_data_figure("Figure1.png")
 
 #### 2. Salmon Space
 
-[Salmon Space](https://egispi.ent.dfo-mpo.ca/apps/SalmonSpace-Espacesaumon/) is an interactive map that lets you explore salmon information across British Columbia and Yukon. You can search by location or by salmon species to find data such as salmon counts and stock status (Figure 2).
+[Salmon Space](https://egispi.ent.dfo-mpo.ca/apps/SalmonSpace-Espacesaumon/) is an interactive map that lets you explore salmon information across British Columbia and Yukon. You can search by location or by salmon species to find data such as salmon escapement and stock status (Figure 2).
 
 There is strong public demand for access to salmon data to enhance transparency and build trust in departmental decision-making. Salmon Space provides up-to-date salmon counts and status information in an accessible format. By improving data transparency, this application strengthens trust and alignment between internal and external biologists, Indigenous partners, and the broader community of salmon stakeholders and enthusiasts.
 
