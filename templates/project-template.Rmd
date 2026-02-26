@@ -58,14 +58,37 @@ render_section <- function(heading, text) {
   cat("####", heading, "\n\n")
   lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
   for (line in lines) {
-    line <- trimws(line)
-    if (nchar(line) > 0) cat(line, "\n\n") else cat("\n")
+    line <- trimws(line, which = "right")  # preserve leading indent for nested bullets
+    if (nchar(trimws(line)) == 0) {
+      cat("\n")
+    } else if (grepl("^\\s*- ", line)) {
+      cat(line, "\n")                      # tight newline keeps bullet levels in one list
+    } else {
+      cat(line, "\n\n")                    # double newline for regular paragraphs
+    }
   }
+  cat("\n\n")                              # ensure blank line after section so next heading renders correctly
   return(invisible(NULL))
 }
 
-# Table rendering using kable — safe for nested knit_child Word output
-render_word_table <- function(data, caption, table_number = NULL) {
+# Table rendering using flextable — matches make_section_table styling.
+#
+# Output note: flextable_to_rmd() is used (not knitr::knit_print) because
+# knit_print() returns a knit_asis object that must be printed at the top
+# level to have any effect — it silently produces nothing when called inside
+# a function. flextable_to_rmd() writes directly to the knitr output stream
+# and works correctly from within a function in a results='asis' chunk,
+# including inside knit_child() calls.
+render_word_table <- function(
+    data,
+    caption,
+    table_number     = NULL,
+    header_bg        = "#1F497D",
+    header_fg        = "white",
+    font_size_body   = 9,
+    font_size_header = 9,
+    pad              = 3
+) {
 
   if (is.null(data) || nrow(data) == 0 || ncol(data) == 0) {
     if (!is.null(table_number)) {
@@ -80,15 +103,12 @@ render_word_table <- function(data, caption, table_number = NULL) {
   # Clean data
   clean_data <- as.data.frame(data, stringsAsFactors = FALSE)
 
-  # Fix missing column names
+  # Fix missing or blank column names
   if (any(is.na(names(clean_data))) || any(names(clean_data) == "")) {
     names(clean_data) <- paste0("Column", seq_along(clean_data))
   }
 
-  # Clean column names for display
-  names(clean_data) <- gsub("[_\\.]", " ", names(clean_data))
-
-  # Clean cell data
+  # Clean cell values
   for (i in seq_along(clean_data)) {
     clean_data[[i]] <- as.character(clean_data[[i]])
     clean_data[[i]][is.na(clean_data[[i]])] <- ""
@@ -96,31 +116,48 @@ render_word_table <- function(data, caption, table_number = NULL) {
     clean_data[[i]] <- trimws(clean_data[[i]])
   }
 
-  # Limit rows
-  max_rows <- 40
+  # Limit rows with a note if truncated
+  max_rows  <- 40
   truncated <- nrow(clean_data) > max_rows
   if (truncated) clean_data <- clean_data[1:max_rows, ]
 
-  # Caption
+  # Caption — output as plain paragraph before the table
   if (!is.null(table_number)) {
     cat("Table ", table_number, ". ", caption, "\n\n")
   } else {
     cat(caption, "\n\n")
   }
 
-  # Render via kable — pipe format is the most reliable for Word via pandoc
-  # Table style is controlled by the Table style in custom-reference.docx
-  table_output <- knitr::kable(
-    clean_data,
-    row.names = FALSE,
-    format    = "pipe",
-    align     = rep("l", ncol(clean_data))
-  )
-  cat(table_output, sep = "\n")
-  cat("\n")
+  # Build flextable styled to match make_section_table
+  ft <- flextable::flextable(clean_data) %>%
+    flextable::bold(part = "header") %>%
+    flextable::fontsize(size = font_size_header, part = "header") %>%
+    flextable::bg(bg = header_bg, part = "header") %>%
+    flextable::color(color = header_fg, part = "header") %>%
+    flextable::align(align = "left", part = "header") %>%
+    flextable::fontsize(size = font_size_body, part = "body") %>%
+    flextable::align(align = "left", part = "body") %>%
+    flextable::valign(valign = "top", part = "body") %>%
+    flextable::padding(padding = pad, part = "all") %>%
+    flextable::border_outer(
+      part   = "all",
+      border = officer::fp_border(color = "#BFBFBF", width = 1)
+    ) %>%
+    flextable::border_inner_h(
+      part   = "all",
+      border = officer::fp_border(color = "#E0E0E0", width = 0.75)
+    ) %>%
+    flextable::border_inner_v(
+      part   = "all",
+      border = officer::fp_border(color = "#E0E0E0", width = 0.75)
+    ) %>%
+    flextable::autofit() %>%
+    flextable::set_table_properties(layout = "autofit")
+
+  flextable::flextable_to_rmd(ft)
 
   if (truncated) {
-    cat("*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n\n")
+    cat("\n\n*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n\n")
   }
 
   return(invisible(NULL))
@@ -128,15 +165,15 @@ render_word_table <- function(data, caption, table_number = NULL) {
 
 # ── Metadata block ────────────────────────────────────────────────────────────
 
-metadata_items <- c()
-
+# Project Leads — rendered first so Collaborations can follow immediately after
 if (!is.null(safe_text(project$project_leads)))
-  metadata_items <- c(metadata_items,
-                      paste0("**Project Leads:** ", safe_text(project$project_leads)))
+  cat("**Project Leads:**", safe_text(project$project_leads), "\n\n")
 
-if (!is.null(safe_text(project$collaborations)))
-  metadata_items <- c(metadata_items,
-                      paste0("**Collaborations:** ", safe_text(project$collaborations)))
+# Collaborations — rendered as a section to support bullet lists
+invisible(render_section("Collaborations and External Partners", safe_text(project$collaborations)))
+
+# Remaining metadata fields
+metadata_items <- c()
 
 if (!is.null(safe_text(project$location)))
   metadata_items <- c(metadata_items,
@@ -174,8 +211,7 @@ if (length(metadata_items) > 0)
   cat(paste(metadata_items, collapse = " \n\n "), "\n\n")
 
 # ── Content sections ──────────────────────────────────────────────────────────
-
-invisible(render_section("Highlights",           safe_text(project$highlights)))
+invisible(render_section("Highlights",                           safe_text(project$highlights)))
 invisible(render_section("Background",           safe_text(project$background)))
 invisible(render_section("Methods and Findings", safe_text(project$methods_findings)))
 ```
@@ -217,7 +253,7 @@ if (has_files || !is.null(tables_figures_text)) {
   if (has_files) {
 
     all_files   <- list.files(fig_dir, full.names = TRUE)
-    img_files   <- sort(all_files[grepl("\\.(png|jpg|jpeg|gif|svg)$", all_files, ignore.case = TRUE)])
+    img_files   <- sort(all_files[grepl("\\.(png|jpg|jpeg|gif|svg|tif|tiff)$", all_files, ignore.case = TRUE)])
     table_files <- sort(all_files[grepl("\\.(csv|xlsx|xls)$",         all_files, ignore.case = TRUE)])
 
     # Track table and figure numbers
@@ -279,7 +315,7 @@ if (has_files || !is.null(tables_figures_text)) {
           
           render_word_table(csv_data, caption, table_number)
 
-        } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg")) {
+        } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg", "tif", "tiff")) {
           
           rel_path <- gsub(paste0("^", here::here()), "", file_path)
           rel_path <- gsub("^[\\\\/]+", "", rel_path)

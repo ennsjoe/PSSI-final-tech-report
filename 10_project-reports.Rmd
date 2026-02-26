@@ -185,7 +185,6 @@ if (is.null(form_df)) {
         !identical(project$section, current_section)) {
       current_section <- project$section
       
-      if (!first_section) cat("\n\n\\newpage\n\n")
       first_section <- FALSE
       
       cat("## ", current_section, "\n\n", sep = "")

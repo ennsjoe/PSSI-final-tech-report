@@ -9,6 +9,7 @@ library(tibble)
 library(stringr)
 library(readr)
 library(here)
+library(tidyr)
 
 # ----------------------------------------------------------
 # Define standard paths
@@ -63,6 +64,50 @@ PLACEHOLDER_PATTERNS <- c("^Click or tap here", "^Enter text here", "^Type here"
 
 # Set this to TRUE to see detailed extraction diagnostics
 VERBOSE_MODE <- FALSE
+
+# ----------------------------------------------------------
+# Build Numbering Lookup from numbering.xml
+# ----------------------------------------------------------
+# Returns a named list: list[numId][ilvl] = numFmt string (e.g. "bullet", "decimal")
+# Used by extract_text_from_node() to detect list paragraphs and emit Markdown prefixes.
+
+build_numbering_lookup <- function(tmp_dir) {
+  num_path <- file.path(tmp_dir, "word", "numbering.xml")
+  
+  if (!file.exists(num_path)) {
+    return(list())
+  }
+  
+  num_xml <- tryCatch(read_xml(num_path, encoding = "UTF-8"), error = function(e) NULL)
+  if (is.null(num_xml)) return(list())
+  
+  # Map abstractNumId -> list of (ilvl -> numFmt)
+  abstract_fmts <- list()
+  for (abstract in xml_find_all(num_xml, "//w:abstractNum", W_NS)) {
+    aid <- xml_attr(abstract, "abstractNumId")
+    fmts <- list()
+    for (lvl in xml_find_all(abstract, "w:lvl", W_NS)) {
+      ilvl    <- xml_attr(lvl, "ilvl")
+      numFmt  <- xml_attr(xml_find_first(lvl, "w:numFmt", W_NS), "val")
+      if (!is.na(ilvl) && !is.na(numFmt)) {
+        fmts[[ilvl]] <- numFmt
+      }
+    }
+    abstract_fmts[[aid]] <- fmts
+  }
+  
+  # Map numId -> abstractNumId, then resolve to numFmt lookup
+  lookup <- list()
+  for (num in xml_find_all(num_xml, "//w:num", W_NS)) {
+    numId      <- xml_attr(num, "numId")
+    abstractId <- xml_attr(xml_find_first(num, "w:abstractNumId", W_NS), "val")
+    if (!is.na(numId) && !is.na(abstractId) && abstractId %in% names(abstract_fmts)) {
+      lookup[[numId]] <- abstract_fmts[[abstractId]]
+    }
+  }
+  
+  return(lookup)
+}
 
 # ----------------------------------------------------------
 # Text Cleaning Function with Line Break Preservation
@@ -125,7 +170,7 @@ clean_text <- function(text) {
 # Extract text from XML node preserving paragraph structure
 # ----------------------------------------------------------
 
-extract_text_from_node <- function(node, ns) {
+extract_text_from_node <- function(node, ns, num_lookup = list()) {
   if (is.null(node) || length(node) == 0) {
     return(NA_character_)
   }
@@ -133,8 +178,22 @@ extract_text_from_node <- function(node, ns) {
   # Find all paragraph nodes within this content control
   p_nodes <- xml_find_all(node, ".//w:p", ns)
   
+  # Fallback: some content controls (e.g. inline/plain-text type) store runs
+  # directly under w:sdtContent with no wrapping w:p paragraph element.
+  # Extract the text from those runs directly rather than returning NA.
   if (length(p_nodes) == 0) {
-    return(NA_character_)
+    r_nodes <- xml_find_all(node, ".//w:r", ns)
+    if (length(r_nodes) == 0) {
+      return(NA_character_)
+    }
+    if (VERBOSE_MODE) {
+      message("    No paragraphs found; falling back to direct run extraction")
+    }
+    text <- paste(
+      sapply(xml_find_all(node, ".//w:t", ns), xml_text, USE.NAMES = FALSE),
+      collapse = ""
+    )
+    return(clean_text(enc2utf8(text)))
   }
   
   if (VERBOSE_MODE) {
@@ -146,6 +205,25 @@ extract_text_from_node <- function(node, ns) {
   
   for (i in seq_along(p_nodes)) {
     p_node <- p_nodes[[i]]
+    
+    # Detect unordered list paragraphs via w:numPr.
+    # Look up the numId + ilvl in the numbering lookup to confirm it is a
+    # bullet format, then build an indented Markdown "- " prefix.
+    bullet_prefix <- ""
+    numId_node <- xml_find_first(p_node, "w:pPr/w:numPr/w:numId", ns)
+    ilvl_node  <- xml_find_first(p_node, "w:pPr/w:numPr/w:ilvl",  ns)
+    if (!inherits(numId_node, "xml_missing") && !inherits(ilvl_node, "xml_missing")) {
+      numId <- xml_attr(numId_node, "val")
+      ilvl  <- xml_attr(ilvl_node,  "val")
+      numFmt <- num_lookup[[numId]][[ilvl]]
+      if (!is.null(numFmt) && numFmt == "bullet") {
+        indent        <- strrep("  ", as.integer(ilvl))  # 2 spaces per level
+        bullet_prefix <- paste0(indent, "- ")
+        if (VERBOSE_MODE) {
+          message("      Para ", i, ": bullet (ilvl=", ilvl, ")")
+        }
+      }
+    }
     
     # Process runs (w:r) rather than raw text nodes so we can detect italic.
     # Each run may have w:rPr/w:i set; we wrap those runs in Markdown asterisks
@@ -201,6 +279,7 @@ extract_text_from_node <- function(node, ns) {
       para_text <- trimws(para_text)
       
       if (nchar(para_text) > 0) {
+        para_text <- paste0(bullet_prefix, para_text)
         paragraphs <- c(paragraphs, para_text)
         if (VERBOSE_MODE) {
           preview <- substr(para_text, 1, 60)
@@ -208,7 +287,23 @@ extract_text_from_node <- function(node, ns) {
           message("      Para ", i, ": ", preview)
         }
       } else {
-        paragraphs <- c(paragraphs, "")
+        # Suppress blank lines between consecutive bullet items so the list
+        # is not broken into separate Markdown lists by pandoc
+        prev_is_bullet <- length(paragraphs) > 0 &&
+          grepl("^\\s*- ", paragraphs[length(paragraphs)])
+        next_is_bullet <- (i < length(p_nodes)) && {
+          next_numId <- xml_find_first(p_nodes[[i + 1]], "w:pPr/w:numPr/w:numId", ns)
+          next_ilvl  <- xml_find_first(p_nodes[[i + 1]], "w:pPr/w:numPr/w:ilvl",  ns)
+          if (!inherits(next_numId, "xml_missing") && !inherits(next_ilvl, "xml_missing")) {
+            nid <- xml_attr(next_numId, "val")
+            nil <- xml_attr(next_ilvl,  "val")
+            fmt <- num_lookup[[nid]][[nil]]
+            !is.null(fmt) && fmt == "bullet"
+          } else FALSE
+        }
+        if (!(prev_is_bullet && next_is_bullet)) {
+          paragraphs <- c(paragraphs, "")
+        }
         if (VERBOSE_MODE) {
           message("      Para ", i, ": [blank line]")
         }
@@ -251,7 +346,7 @@ extract_text_from_node <- function(node, ns) {
 # Extract Content Controls from Word Document
 # ----------------------------------------------------------
 
-extract_content_controls <- function(doc_xml) {
+extract_content_controls <- function(doc_xml, num_lookup = list()) {
   # Initialize results with NA for all fields
   results <- setNames(
     as.list(rep(NA_character_, length(OUTPUT_FIELDS))), 
@@ -288,7 +383,7 @@ extract_content_controls <- function(doc_xml) {
         message("  Processing field: ", id, " -> ", col_name)
       }
       
-      val <- extract_text_from_node(sdt, W_NS)
+      val <- extract_text_from_node(sdt, W_NS, num_lookup)
       
       # Store the value (handle multiple occurrences)
       if (!is.na(val)) {
@@ -342,8 +437,11 @@ extract_docx <- function(path) {
     # Read XML with UTF-8 encoding
     xml_obj <- read_xml(xml_path, encoding = "UTF-8")
     
+    # Build numbering lookup for bullet/list detection
+    num_lookup <- build_numbering_lookup(tmp)
+    
     # Extract content controls
-    data <- extract_content_controls(xml_obj)
+    data <- extract_content_controls(xml_obj, num_lookup)
     
     # Return as tibble with metadata
     return(bind_cols(
