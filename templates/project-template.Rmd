@@ -83,7 +83,7 @@ render_word_table <- function(
     data,
     caption,
     table_number     = NULL,
-    header_bg        = "#0D5056",
+    header_bg        = "#1F497D",
     header_fg        = "white",
     font_size_body   = 9,
     font_size_header = 9,
@@ -92,7 +92,7 @@ render_word_table <- function(
 
   if (is.null(data) || nrow(data) == 0 || ncol(data) == 0) {
     if (!is.null(table_number)) {
-      cat("Table ", table_number, ". ", caption, "\n\n")
+      cat(paste0("Table ", table_number, ". ", caption, "\n\n"))
     } else {
       cat(caption, "\n\n")
     }
@@ -123,7 +123,7 @@ render_word_table <- function(
 
   # Caption — output as plain paragraph before the table
   if (!is.null(table_number)) {
-    cat("Table ", table_number, ". ", caption, "\n\n")
+    cat(paste0("Table ", table_number, ". ", caption, "\n\n"))
   } else {
     cat(caption, "\n\n")
   }
@@ -155,8 +155,6 @@ render_word_table <- function(
     flextable::set_table_properties(layout = "autofit")
 
   flextable::flextable_to_rmd(ft)
-
-  cat("\n\n")
 
   if (truncated) {
     cat("\n\n*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n\n")
@@ -262,7 +260,7 @@ if (has_files || !is.null(tables_figures_text)) {
     table_counter <- 1
     figure_counter <- 1
 
-    for (file_path in c(img_files, table_files)) {
+    for (file_path in c(table_files, img_files)) {
 
       file_name <- basename(file_path)
       file_ext  <- tolower(tools::file_ext(file_path))
@@ -303,7 +301,6 @@ if (has_files || !is.null(tables_figures_text)) {
           }
           
           render_word_table(tbl_data, caption, table_number)
-          cat("\n\n")
 
         } else if (file_ext == "csv") {
           
@@ -317,7 +314,6 @@ if (has_files || !is.null(tables_figures_text)) {
           }
           
           render_word_table(csv_data, caption, table_number)
-          cat("\n\n")
 
         } else if (file_ext %in% c("png", "jpg", "jpeg", "gif", "svg", "tif", "tiff")) {
           
@@ -332,9 +328,8 @@ if (has_files || !is.null(tables_figures_text)) {
           }
           cat("![](", rel_path, ")\n\n", sep = "")
           cat("::: {custom-style=\"Caption\"}\n")
-          cat("Figure ", figure_number, ". ", caption, "\n")
+          cat(paste0("Figure ", figure_number, ". ", caption, "\n"))
           cat(":::\n\n")
-          cat("\n\n")
         }
 
       }, error = function(e) {
