@@ -21,7 +21,7 @@ find_csv_file <- function(filename, possible_paths = NULL) {
 
 # --- Find CSV files --------------------------------
 RAW_CSV       <- find_csv_file("report_project_list.csv")
-PROCESSED_CSV <- find_csv_file("pssi_form_data.csv")
+PROCESSED_CSV <- find_csv_file("pssi_form_data_altered.csv")
 
 # --- Project Data Loader ----------------------------------------------------
 # Merges the two source CSVs directly into projects_df -- no database needed.
