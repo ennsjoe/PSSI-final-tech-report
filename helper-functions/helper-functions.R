@@ -95,9 +95,9 @@ make_section_table <- function(
     header_fg        = "white",
     group_bg         = "bisque3",
     title_icon       = "climate-change-vulnerability.png",
-    icon_width       = 0.6,  # Width of the image in the sidebar
+    icon_width       = 0.8,  # Width of the image in the sidebar
     icon_height      = 3.5,   # Height of the image portion in the body
-    w_sidebar        = 0.7,  # Width of the sidebar column
+    w_sidebar        = 0.8,  # Width of the sidebar column
     sidebar_label    = NULL,  # Vertical text label, e.g. "Climate Change Vulnerability"
     sidebar_font_size = 9     # Font size for the vertical sidebar label
 ) {

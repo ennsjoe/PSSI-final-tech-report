@@ -397,9 +397,13 @@ flextable(fsar_table) |>
 
 # Science to support hatchery modernization {#hatcheries}
 
-Describe the enhancement pillar of PSSI, DFO Science sub-initiatives, and the priority research areas. Include a description of the SEP-SCI steering committee and process used to prioritize and develop research projects (adapt elements from the SEP hatchery science booklet).
+DFO's Salmonid Enhancement Program (SEP) was created in 1977 to build, manage, and operate hatchery facilities that artificially enhance Pacific salmon populations across British Columbia for harvest, stock assessment, conservation, and stewardship objectives. While the program has a long operational history, the scientific foundation underpinning many of its practices had not been updated to keep pace with advances in genetics, molecular biology, fish health diagnostics, or ecological understanding. PSSI investments were directed at deliberately closing these gaps by building new capacity and collaborative frameworks to target priority research questions and monitoring needs.
 
-## Hatchery fitness and genetics {#hatchery-fitness-and-genetics}
+To translate these objectives into action, a SEP-Science PSSI Steering Committee was established with subject matter experts from both SEP planning and operations and Science. The purpose of the group was to articulate joint needs, support collaborative projects, and set priorities ranging from highly operational biological support for hatcheries to long-term strategic science advice and evaluation. This co-development structure is a demonstrated way to ensure the relevancy of conservation science [@buxton2021], in this case aiming to ensure that research questions were grounded in the practical realities of hatchery management while also being scientifically rigorous.
+
+Under the Steering Committee, four cross-sectoral working groups were established to identify priority research needs in Genetics, Fish Health, Operational Assessment and Monitoring, and Ecosystem Science. Each working group brought together SEP and Science staff to identify knowledge gaps, evaluate potential projects against a standard set of criteria, and develop project plans for implementation. In the following sections we summarize research outcomes for the two largest research themes in terms of funding and capacity: Genetics and Fish Health.
+
+## Genetics {#hatchery-fitness-and-genetics}
 
 ```{r genetics-projects, tab.cap="DFO and BCSRIF projects associated with genetics.",tab.id="tbl-genetics"}
 make_section_table(projects_df,
@@ -407,31 +411,19 @@ make_section_table(projects_df,
                    title_icon = file.path(assets_path, "theme-columns", "hatchery-fitness-and-genetics.png" ))
 ```
 
-Summarize research and key findings from genetics projects. Research questions (from SEP):
+Research under the Genetics theme addressed three central questions posed by SEP: 1) how do hatchery and natural-origin fish differ? 2) what are the mechanisms driving those differences? and 3) what are the implications for long-term population fitness? These questions sit at the heart of how enhancement programs are designed and evaluated, and they bear directly on the proportionate natural influence (PNI) framework that Canada uses to manage hatchery genetic effects on wild populations [@withler2018]. To address these questions, researchers used advanced genetic techniques including genome-wide sequencing, methylation sequencing, and parentage-based tagging that were made possible through monitoring and broodstock programs at SEP hatcheries. In addition to addressing the three central research questions above, some genetics projects were focused on more operational applications to improve the accuracy of genetic stock identification (GSI) for chum salmon and develop rapid turn-around diagnostic tools to differentiate among Chinook salmon conservation units.
 
--   What are the differences between hatchery and natural origin fish?
+[Following from symposium presentation, update after report received] A coordinated series of projects focused on epigenetics in Chinook and Coho salmon provided some of the most striking findings. Genome-wide methylation profiling [(Healy et al)](#PSSI_2453) revealed that hatchery- and natural-origin fish from the same population are not strongly differentiated genetically but do show widespread differences in DNA methylation that reflect rearing environments and broodstock histories. Importantly, controlled crosses demonstrated that some methylation marks are passed to offspring in predictable ways, sometimes through paternal inheritance and sometimes additively, indicating that hatchery-origin epigenetic effects can persist for at least one generation after release. Together, these results suggest that the most consequential biological differences between hatchery and natural-origin fish are not caused by rapid genetic evolution but instead arise from environmentally induced epigenetic shifts that may influence physiological traits during early life.
 
--   Why do these differences occur and what are the mechanisms behind them?
+Complementary work on relative reproductive success (RRS) in the Sarita River clarified the feasibility of measuring relative fitness in integrated hatchery populations [(Healy et al)](#PSSI_2451). RRS is a valuable metric to compare hatchery with wild fitness [@christie2014], however, it has not been estimated to date for any integrated populations enhanced by SEP. The pilot study found it was extremely difficult to achieve the sample sizes needed for reliable parentage-based RRS estimates, even in one of the most tractable and well-monitored enhanced river systems in BC with extensive broodstock genotyping, escapement sampling, and smolt monitoring. This led to a methodological recommendation that grand-parentage based tagging methods should be developed using existing genotyping infrastructure to evaluate the fitness effects of enhancement within and across populations. Although our knowledge gaps on RRS remain, project findings provide a tractable pathway forward to address them.
 
--   What factors affect long-term population fitness?
+Another study examined genomic factors linked to age at maturity in male Chinook salmon produced in multiple hatchery facilities throughout BC [(Healy et al)](#PSSI_2452). Leveraging genome-wide sequencing of Chinook salmon samples from the Atnarko River, Chilliwack River, Big Qualicum River, and Puntledge River Fall populations, the project examined the association between single-nucleotide polymorphisms (SNPs) and variation of age of return for males, with a particular emphasis on understanding factors associated with returning at younger ages (i.e. jacks) to inform SEP broodstock management. Results show that genetic associations with age of return in males were largely population-specific, with few genetic loci being independently associated with age of return. This variation amongst enhanced populations suggests there are complex interactions between genetics, hatcheries, and environmental effects influencing age of return that require further work to resolve. Studies focusing on genetic associations with age of return for natural-origin Chinook salmon are an important next step to distinguish between environmental effects and hatchery influences. 
 
-Projects and themes include:
+Work to improve stock delineation for Chum salmon [(Tigano et al)](#PSSI_2436) used whole-genome sequencing of populations across southern BC and Washington state to develop an improved panel for genetic stock identification. Analyses of genome-wide markers revealed finer-scale differentiation among Fraser River and Strait of Georgia populations than previously recognized, and led to the creation of a more extensive SNP panel with higher assignment accuracy than the one currently in use. This work addresses a long-standing gap for Chum salmon, whose stock structure has historically been less-well characterized compared to other Pacific salmon species, and can be operationalized to support the monitoring and management of mixed-stock fisheries.
 
--   Developing and operationalizing modern genetic methods for stock identification and assessment
+[Following from symposium presentation, update after report received] A final line of work tested the feasibility of field-based, rapid genotyping using a technique known as the SHERLOCK assay [(Garver et al)](#PSSI_2434). While laboratory trials confirmed the method’s specificity, field testing showed that current platforms lack the robustness required for reliable operational use. Although not ready for deployment, the findings clarified that rapid genetic diagnostics remain promising but are not yet capable of replacing established, slower turn-around GSI pipelines.
 
-    -   Continuation/expansion of PBT programs (Eric Rondeau)
-
-    -   Improving stock delineation in Chum salmon by characterizing genome-wide genetic variation (Anna Tigano)
-
-    -   Rapid broodstock screening for improved genetic management of Pacific salmon (Kyle Wellband)
-
--   Evaluating genetic differences among hatchery and wild populations, and their implications for fitness
-
-    -   Fitness effects of hatchery enhancement and relative reproductive success (Tim Healy)
-
-    -   Epigenetic variation and inheritance in hatchery and natural origin Chinook and Coho salmon (Tim Healy, Kyle Wellband)
-
-    -   Genetic variation linked to early maturation in male Chinook salmon
+Across all genetics projects, a coherent picture emerges: the genetic architecture of hatchery and wild populations remains largely intact, but hatchery environments generate consistent epigenetic effects that may influence early-life traits; genome-wide sequencing and SNP panel development are strengthening the foundation for stock identification and broodstock management; and long-term fitness evaluation will require redesigned genetic tagging frameworks. The research sheds light on SEP's original research questions, while highlighting additional complexities and nuances that can be addressed through further work.
 
 ## Fish health and hatchery practices {#fish-health}
 
@@ -441,6 +433,23 @@ make_section_table(projects_df,
                    section_pick = 'Fish health and hatchery practices',
                    title_icon = file.path(assets_path, "theme-columns", "fish-health.png" ))
 ```
+
+Fish health projects were organized around three research questions: 1) How can we better assess and track fish condition and stress? 2) how do we advance and modernize diagnostic and health management practices? and 3) how can new molecular and technological tools help detect issues early and inform decision-making? Research in this theme addresses these questions using a variety of established and innovative methods, from pathogen surveillance and disease modelling to nutrition experiments and stress monitoring using eDNA/eRNA signals. This work is meaningful for SEP hatcheries because healthier fish have higher survival, disease resistance, and reproductive success, making enhancement programs more effective and resource efficient.
+
+Two projects were focused on understanding the factors influencing the prevalence of two endemic pathogens and their associated diseases among hatchery facilities over time. [Long et al](#PSSI_2400) modelled long-term Chinook and coho broodstock screening data to identify variables associated with bacterial kidney disease (BKD) prevalence. Results show that environmental and population factors, particularly water temperature, watershed characteristics, and overall BKD prevalence, often overshadow direct parent-to-offspring transmission in wild and enhanced stocks. Similarly, [Garver et al](#PSSI_2401) found that for the infectious hematopoietic necrosis virus (IHNV) parent to progeny transmission was unlikely among the four sockeye salmon populations analyzed. Instead, watershed or regional-specific factors are likely more important in influencing IHNV levels. Both of these pathogens can be significant sources of mortality for wild and hatchery salmon, and these results help us understand the factors driving their occurrence, which can ultimately lead to better predictions of when outbreaks may occur and how they can be proactively managed by hatcheries.
+
+Modernizing the diagnostic tools available for SEP hatcheries was the focus of [Long et al](#PSSI_2408). The project developed and validated rapid quantitative PCR (qPCR) assays for a suite of endemic pathogens, including Flavobacterium psychrophilum (cold water disease), BKD, and IHNV. The expanded qPCR tools improved detection of key pathogens in broodstock and juveniles, providing new information about salmon populations and their health. The project also emphasizes the need for standardized diagnostic practices and improved methods for pathogen detection to reduce uncertainties in disease monitoring.
+
+Stress physiology was the focus of work by [Johnson and colleagues PSSI](#PSSI_2421), which evaluated the use of cortisol measured from scales as a non-lethal biomarker for retroactive stress exposure in Chinook and Coho salmon. While scale cortisol content had been proposed as a reliable way to understand the stress history of fishes, the project determined that levels of corticosteroids in fish scales are far more dynamic than previously thought. Scale cortisol is therefore not recommended as a reliable biomarker, and although the study did not result in the recommendation of a new diagnostic tool, it has improved our understanding of scale corticosteroid dynamics in Chinook and Coho salmon. 
+
+Nutrition, growth, and survival were addressed through PSSI 2417 and 2418. PSSI 2417 evaluated the optimization of feeds used in hatchery production of Pacific salmon, examining how diet composition affects growth, health, and smoltification success. PSSI 2418 investigated whether thiamine concentrations in returning adult Chinook salmon could predict reproductive success, building on evidence that thiamine deficiency impairs egg viability and early survival. Both projects reflect a broader recognition that hatchery fish condition at release — and the physiological quality of broodstock — are as important as pathogen management in determining production outcomes and post-release survival.
+
+PSSI 2448 took the broadest view, developing a proactive and holistic approach to hatchery health and condition assessment that integrates molecular tools — including transcriptomics, proteomics, and metabolomics — with traditional health monitoring. The project drew on advances in the aquaculture industry to identify how omics tools could be adapted for SEP hatcheries, with a particular focus on early detection of stress and disease before visible symptoms appear. Tools like Fit-Chips, which simultaneously assess stress, smolt readiness, disease activation, and imminent mortality risk from gill biopsies, were highlighted as transformative for real-time hatchery health management.
+
+BCSRIF projects:
+vateritic otoliths
+nanopore technology
+
 
 Summarize research and key findings from fish health projects. Research questions (from SEP):
 
