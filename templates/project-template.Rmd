@@ -83,7 +83,7 @@ render_word_table <- function(
     data,
     caption,
     table_number     = NULL,
-    header_bg        = "#1F497D",
+    header_bg        = "#0D5056",
     header_fg        = "white",
     font_size_body   = 9,
     font_size_header = 9,
@@ -165,15 +165,16 @@ render_word_table <- function(
 
 # ── Metadata block ────────────────────────────────────────────────────────────
 
-# Project Leads — rendered first so Collaborations can follow immediately after
+# Project Leads
 if (!is.null(safe_text(project$project_leads)))
   cat("**Project Leads:**", safe_text(project$project_leads), "\n\n")
 
-# Collaborations — rendered as a section to support bullet lists
-invisible(render_section("Collaborations and External Partners", safe_text(project$collaborations)))
-
-# Remaining metadata fields
+# Metadata fields
 metadata_items <- c()
+
+if (!is.null(safe_text(project$collaborations)))
+  metadata_items <- c(metadata_items,
+                      paste0("**Collaborations:** ", safe_text(project$collaborations)))
 
 if (!is.null(safe_text(project$location)))
   metadata_items <- c(metadata_items,

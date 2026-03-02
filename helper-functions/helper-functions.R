@@ -21,7 +21,7 @@ find_csv_file <- function(filename, possible_paths = NULL) {
 
 # --- Find CSV files --------------------------------
 RAW_CSV       <- find_csv_file("report_project_list.csv")
-PROCESSED_CSV <- find_csv_file("pssi_form_data.csv")
+PROCESSED_CSV <- find_csv_file("pssi_form_data_altered.csv")
 
 # --- Project Data Loader ----------------------------------------------------
 # Merges the two source CSVs directly into projects_df -- no database needed.
@@ -156,13 +156,15 @@ make_section_table <- function(
   for (i in data_rows) {
     id_val <- display_df[[num_col]][i]
     if (!is.na(id_val) && nzchar(id_val)) {
+      bk_name <- gsub("[^A-Za-z0-9_]", "_", id_val)
+      if (!grepl("^[A-Za-z_]", bk_name)) bk_name <- paste0("pssi_", bk_name)
       ft <- compose(ft, i = i, j = num_col,
-                    value = as_paragraph(hyperlink_text(x = id_val, url = paste0("#", id_val))))
+                    value = as_paragraph(hyperlink_text(x = id_val, url = paste0("#", bk_name))))
     }
   }
   
   ft <- ft %>%
-    style(i = data_rows, j = num_col, pr_t = fp_text(underlined = TRUE, color = "#0563C1")) %>%
+    style(i = data_rows, j = num_col, pr_t = fp_text(underlined = TRUE, color = "#0D5056")) %>%
     fontsize(size = font_size_header, part = "header") %>%
     bg(bg = header_bg, part = "header") %>%
     # Re-apply sidebar bg AFTER global header bg so it isn't overwritten
@@ -388,7 +390,7 @@ inject_project_bookmarks <- function(docx_path, projects_df) {
     
     # Word bookmark names: letters, digits, underscores only; start with letter/underscore
     bk_name <- gsub("[^A-Za-z0-9_]", "_", pid)
-    if (!grepl("^[A-Za-z_]", bk_name)) bk_name <- paste0("bk_", bk_name)
+    if (!grepl("^[A-Za-z_]", bk_name)) bk_name <- paste0("pssi_", bk_name)
     
     bk_id_str <- as.character(next_bk_id)
     next_bk_id <- next_bk_id + 1L
