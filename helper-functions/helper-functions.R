@@ -632,7 +632,7 @@ add_table_row_bookmarks <- function(docx_path, project_ids) {
     # contain only letters, digits, underscores -- matches make_section_table URLs)
     bookmark_name <- gsub("[^A-Za-z0-9_]", "_", matched_id[1])
     if (!grepl("^[A-Za-z_]", bookmark_name))
-      bookmark_name <- paste0("bk_", bookmark_name)
+      bookmark_name <- paste0("pssi_", bookmark_name)
     bk_id         <- as.character(added + 1000L)
     
     bk_start <- xml2::read_xml(sprintf(

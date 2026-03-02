@@ -18,7 +18,7 @@ options(knitr.duplicate.label = "allow")
 
 # Introduction {#introduction}
 
-### Pacific Salmon Strategy Initiative Overview
+## Pacific Salmon Strategy Initiative Overview
 
 The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of \$647 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. PSSI was initiated in 2021 in response to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery. Over its five year span, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon.
 
@@ -55,7 +55,7 @@ ft
 
 ```
 
-### Scientific Research Components of PSSI
+## Scientific Research Components of PSSI
 
 The PSSI pillars were underpinned by a dual-track investment in scientific research, combining internal DFO expertise with external grants and partnerships. This new scientific capacity supported a diverse range of projects intended to inform rebuilding plans, identify factors driving population declines, better understand the impacts of climate change, and pilot new approaches for monitoring, enhancement, fisheries harvest, and restoration. By supporting research within DFO and externally, the initiative aimed to leverage and build on existing capacity within the federal government and across academic institutions, Indigenous organizations, non-governmental organizations, and industry.
 
