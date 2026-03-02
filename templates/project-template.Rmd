@@ -83,7 +83,7 @@ render_word_table <- function(
     data,
     caption,
     table_number     = NULL,
-    header_bg        = "#1F497D",
+    header_bg        = "#0D5056",
     header_fg        = "white",
     font_size_body   = 9,
     font_size_header = 9,
