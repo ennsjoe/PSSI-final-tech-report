@@ -229,9 +229,9 @@ make_project_banner <- function(
   meta_values <- sapply(meta_cols, function(col) {
     val <- as.character(project[[col]] %||% "")
     if (is.na(val) || val == "" || val == "NA" || val == "NULL") return(NULL)
-    # Clean SharePoint formatting (e.g., "Location;#123" -> "Location, 123")
     val <- gsub(";#", ", ", val)
-    return(val)
+    label <- switch(col, project_leads = "Project Leads", col)
+    return(paste0(label, ": ", val))
   })
   
   meta_string <- paste(unlist(meta_values), collapse = " | ")

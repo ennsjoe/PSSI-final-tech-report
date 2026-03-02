@@ -165,10 +165,6 @@ render_word_table <- function(
 
 # ── Metadata block ────────────────────────────────────────────────────────────
 
-# Project Leads
-if (!is.null(safe_text(project$project_leads)))
-  cat("**Project Leads:**", safe_text(project$project_leads), "\n\n")
-
 # Metadata fields
 metadata_items <- c()
 
