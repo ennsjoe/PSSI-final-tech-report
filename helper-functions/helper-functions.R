@@ -21,7 +21,7 @@ find_csv_file <- function(filename, possible_paths = NULL) {
 
 # --- Find CSV files --------------------------------
 RAW_CSV       <- find_csv_file("report_project_list.csv")
-PROCESSED_CSV <- find_csv_file("pssi_form_data_altered.csv")
+PROCESSED_XLSX <- find_csv_file("pssi_form_data_altered.xlsx")
 
 # --- Project Data Loader ----------------------------------------------------
 # Merges the two source CSVs directly into projects_df -- no database needed.
@@ -37,15 +37,17 @@ load_projects <- function() {
   if (is.null(RAW_CSV) || !file.exists(RAW_CSV)) {
     stop("report_project_list.csv not found. Check data/raw/ folder.")
   }
-  if (is.null(PROCESSED_CSV) || !file.exists(PROCESSED_CSV)) {
-    stop("pssi_form_data.csv not found. Check data/processed/ folder.")
+  if (is.null(PROCESSED_XLSX) || !file.exists(PROCESSED_XLSX)) {
+    stop("pssi_form_data_altered.xlsx not found. Check data/processed/ folder.")
   }
   
   tracking_df <- readr::read_csv(RAW_CSV, show_col_types = FALSE) %>%
     dplyr::mutate(project_id = as.character(project_id))
   
-  content_df  <- readr::read_csv(PROCESSED_CSV, show_col_types = FALSE) %>%
-    dplyr::mutate(project_id = as.character(project_id))
+  content_df  <- openxlsx::read.xlsx(PROCESSED_XLSX) %>%
+    dplyr::mutate(project_id = as.character(project_id)) %>%
+    dplyr::mutate(dplyr::across(where(is.character),
+                                ~iconv(., from = "latin1", to = "UTF-8")))
   
   ids_in_content <- unique(content_df$project_id)
   
@@ -215,28 +217,29 @@ make_project_banner <- function(
   banner_path <- file.path(banner_dir, as.character(icon_row$icon_file[1]))
   if (!file.exists(banner_path)) return(invisible(NULL))
   
-  img         <- magick::image_read(banner_path)
-  info        <- magick::image_info(img)
-  msize       <- round(info$height * meta_size_ratio)
+  img  <- magick::image_read(banner_path)
+  info <- magick::image_info(img)
+  msize <- round(info$height * meta_size_ratio)
   
   title       <- as.character(project[["project_title"]] %||% "Untitled Project")
   nchar_title <- nchar(title)
   
   # --- Dynamic font size and wrap width based on title length ---------------
-  # Keep font large; wrap more aggressively for longer titles rather than
-  # shrinking the font. Only reduce slightly for very long titles.
   dyn_font_ratio <- dplyr::case_when(
-    nchar_title <= 40 ~ 0.11,
-    nchar_title <= 80 ~ 0.10,
-    TRUE              ~ 0.09
+    nchar_title <= 40 ~ 0.13,
+    nchar_title <= 70 ~ 0.12,
+    TRUE              ~ 0.11
   )
   dyn_wrap <- dplyr::case_when(
-    nchar_title <= 40 ~ 20,
-    nchar_title <= 80 ~ 25,
-    TRUE              ~ 30
+    nchar_title <= 40 ~ 22,
+    nchar_title <= 70 ~ 28,
+    TRUE              ~ 34
   )
   fsize   <- round(info$height * dyn_font_ratio)
-  wrapped <- paste(strwrap(title, width = dyn_wrap), collapse = "\n")
+  wrapped <- paste(strwrap(title, width = dyn_wrap), collapse = "
+")
+  # Horizontal offset to centre text in the right portion (clear of icons)
+  icon_w  <- round(info$width * 0.10)
   # --------------------------------------------------------------------------
   
   # Define the meta fields to display on the banner
@@ -252,12 +255,12 @@ make_project_banner <- function(
   
   meta_string <- paste(unlist(meta_values), collapse = " | ")
   
-  # Draw Title
-  img <- magick::image_annotate(img, text = wrapped, gravity = "East",
-                                location = paste0("+", max(1L, right_pad - shadow_offset), "+", shadow_offset),
+  # Draw Title — gravity=Centre, shifted right of icons
+  img <- magick::image_annotate(img, text = wrapped, gravity = "Center",
+                                location = paste0("+", icon_w + shadow_offset, "+", shadow_offset),
                                 color = "gray15", size = fsize, font = "Arial", weight = 700)
-  img <- magick::image_annotate(img, text = wrapped, gravity = "East",
-                                location = paste0("+", right_pad, "+0"),
+  img <- magick::image_annotate(img, text = wrapped, gravity = "Center",
+                                location = paste0("+", icon_w, "+0"),
                                 color = "white", size = fsize, font = "Arial", weight = 700)
   
   # Draw Metadata string at the bottom
