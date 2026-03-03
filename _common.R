@@ -89,7 +89,9 @@ if (!dir.exists(BANNER_DIR)) {
 
 n_projects <<- nrow(projects_df)
 n_dfo_projects <<- nrow(filter(projects_df, 
-                               source == "DFO Science"))
+                               source == "DFO Science",
+                               include == "y",
+                               !is.na(extraction_date)))
 
 # ===================================================================
 # Knitr Options

@@ -261,7 +261,7 @@ make_section_table(projects_df,
                    title_icon = file.path(assets_path, "theme-columns", "climate-change-vulnerability.png" ))
 ```
 
-The significance of climate change for Pacific salmon, and biodiversity in general, cannot be overstated. Studies across their range have highlighted the vulnerability of Pacific salmon to recent and future climate changes for freshwater and marine life stages [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems PSSI initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
+The significance of climate change for Pacific salmon is well-established and has been highlighted by many studies spanning across their range in the North Pacific [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems PSSI initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
 
 Yet there is still much that is uncertain about how climate changes will unfold for Pacific salmon, such as which species and stocks will be most affected, when physiological thresholds or ecological tipping points will be reached, the relative influence of various environmental changes on productivity, and the degree to which populations will be able to evolve and adapt to changing conditions and increasing temperatures [@schoen2017; @chittenden2009; @crozier2025]. Research within this theme sought to better understand and resolve these uncertainties through a variety of approaches including downscaled climate modelling, whole genome sequencing, life-cycle modelling, and vulnerability risk assessments.
 
@@ -411,7 +411,7 @@ DFO's Salmonid Enhancement Program (SEP) was created in 1977 to build, manage, a
 
 To translate these objectives into action, a SEP-Science PSSI Steering Committee was established with subject matter experts from both SEP planning and operations, and DFO Science. The purpose of the group was to articulate joint needs, support collaborative projects, and set priorities ranging from operational support for hatcheries to long-term strategic science advice. This co-development structure is a demonstrated way to ensure the relevancy of conservation science [@buxton2021], in this case aiming to ensure that research questions were grounded in the practical realities of hatchery management while also being scientifically rigorous.
 
-Under the Steering Committee, four cross-sectoral working groups were established to identify priority research needs in Genetics, Fish Health, Operational Assessment and Monitoring, and Ecosystem Science. Each working group brought together SEP and Science staff to identify knowledge gaps, evaluate potential projects against a standard set of criteria, and develop project plans for implementation. In the following sections we summarize research outcomes for the two largest research themes in terms of funding and capacity: Genetics and Fish Health.
+Under the Steering Committee, four cross-sectoral working groups were established to identify priority research needs in Genetics, Fish Health, Operational Assessment and Monitoring, and Ecosystem Science. Each working group brought together SEP and Science staff to identify knowledge gaps, evaluate potential projects against a standard set of criteria, and develop project plans for implementation. In the following sections we summarize research outcomes for the two largest research themes in terms of funding and capacity: Genetics; and Fish Health and Hatchery Practices.
 
 ## Genetics {#hatchery-fitness-and-genetics}
 
@@ -458,7 +458,7 @@ Nutrition, growth, and survival were addressed through two studies by the DFO Nu
 
 A sometimes overlooked consequence of hatchery rearing is the formation of abnormal, vateritic otoliths, which may impair the sensory functions of the inner ears in Coho salmon. As part of [BCSRIF_2020_239](#BCSRIF_2020_239), Gaffney et al investigated the prevalence, causes, and consequences of vateritic otoliths in hatchery Coho salmon, and tested practical ways to reduce their formation. Comparisons among hatcheries and stocks revealed significant variation in the prevalence of vateritic otoliths [@gaffney2025], while experimental trials indicated that relatively simple rearing modifications, such as altering water flow patterns and adding structural enrichment, can substantially reduce vaterite formation. These results reveal that hatchery practices, rather than inherent genetic differences, are the primary drivers of the problem and that operational changes could reduce its prevalence.
 
-By addressing key questions around assessing fish condition and stress, modernizing diagnostics, and leveraging emerging molecular tools, research in this theme provides both practical solutions and new scientific insights. These advancements are particularly important in supporting SEP as it expands conservation-based hatcheries, where outbreaks and mortality events can have significant implications. Further work to integrate these tools and insights into hatchery operations, will support SEP in making informed, proactive decisions that improve fish health outcomes and strengthen conservation efforts.
+By addressing key questions around assessing fish condition and stress, modernizing diagnostics, and leveraging emerging molecular tools, research in this theme provides both practical solutions and new scientific insights. These advancements are particularly important in supporting SEP as it expands conservation-based hatcheries, where disease outbreaks and mortality events can have significant implications for population persistence. Further work to integrate these tools and insights into hatchery operations will support SEP in making informed, proactive decisions that improve fish health outcomes and strengthen conservation efforts.
 
 \newpage
 
@@ -536,15 +536,17 @@ ft <- flextable(data_projects_table) %>%
 ft
 ```
 
-# New tools, techniques, and models to support decision making {#modelling}
+# New tools and models to support decision making {#modelling}
 
-Our current era of rapid technological change presents problems and opportunities for Pacific salmon stewardship. Notwithstanding the resource demands of technological infrastructure, new technologies can enable innovation in monitoring, analytic, and communication techniques that can help support and focus conservation efforts. Innovation in scientific methods was prevalent among many PSSI-funded research projects and is a core tenet of scientific progress. In this section, we specifically highlight several projects focused on developing new tools, analytic techniques, and models to support decision-making and management of Pacific salmon.
+Our current era of rapid technological change presents problems and opportunities for Pacific salmon stewardship. Notwithstanding the resource demands of technological infrastructure, new technologies can enable innovation in monitoring, assessment, and communication that can help support and focus conservation efforts. Innovation in scientific methods was prevalent among many PSSI-funded research projects and is a core tenet of scientific progress. In this section, we highlight several projects specifically focused on developing new tools, analytic techniques, and models to support decision-making and management of Pacific salmon.
 
--   SalmonMSE
+One such tool was **salmonMSE** [(PSSI 2449)](#PSSI_2449), an open‑source decision‑support tool designed to help managers evaluate and prioritize harvest, hatchery, and habitat actions for Pacific salmon under uncertainty. Built on management strategy evaluation, salmonMSE simulates alternative management strategies across a range of biological and environmental conditions, explicitly modelling interactions between hatchery‑origin and natural‑origin fish, incorporating mark‑selective fisheries, and capturing life‑history diversity. Applied to Sarita River Chinook in collaboration with Huu‑ay‑aht First Nation and DFO, the tool revealed trade‑offs among conservation, harvest, and wildness objectives, and highlighted when habitat restoration may be necessary to meet production goals. Designed to be flexible and broadly applicable across salmon populations, salmonMSE supports DFO’s ability to transparently assess management options and quantify risks in support of Integrated Management Plans, Rebuilding Plans, SARA processes, and SEP production planning.
 
--   FT-NIRS aging
+The LAPSE project [(PSSI 3682)](#PSSI_3682) developed a systematic framework and open‑source tool that relates Pacific salmon threats to specific federal and provincial legislation. The tool parses and categorizes 40,000 legislatives clauses across 196 statutes, linking them to management domains and anthropogenic threats based on the Internation Union for Conservation of Nature threat classification system [@salafsky2008]. Results reveals structural patterns in legislation and quantifies the inter-jurisdictional nature of salmon management where many threats span federal and provincial jurisdiction. By making a large body of legislation easily searchable, the tool seeks to aid practitioners in navigating the complex regulatory landscape governing salmon stewardship in BC.
 
--   LAPSE
+Other projects leveraged AI and other new technologies to augment or improve analytic capabilities. The Alternative Age Estimation program is developing an AI‑driven pipeline to enhance and expand fish age estimation capacity in DFO's Sclerochronology Lab [(PSSI 2439)](#PSSI_2439). Using neural networks trained on more than 15,000 Chum salmon scale images, the team achieved precision rates up to 94% for the most common age classes. Complementary approaches such as Fourier Transform near-infrared spectroscopy produced reliable age predictions and strong species and stock discrimination for several rockfish species. By automating key components of scale and otolith interpretation, the program aims to augment expert age readers and address chronic bottlenecks to maintain high‑quality age data essential for stock assessment.
+
+
 
 -   AIS risk prioritization tool
 
@@ -563,8 +565,6 @@ make_section_table(projects_df,
 \newpage
 
 # Conclusions and recommendations
-
-How have PSSI Research elements met its objectives? How has work completed moved the dial for salmon conservation and understanding factors driving salmon declines?
 
 # Acknowledgements
 
