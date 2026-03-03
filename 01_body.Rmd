@@ -22,7 +22,7 @@ options(knitr.duplicate.label = "allow")
 
 The Pacific Salmon Strategy Initiative (PSSI) was a generational investment of \$647 million in habitat restoration, hatchery enhancement, fisheries management, scientific research, and other activities related to Pacific salmon. PSSI was initiated in 2021 in response to long‑standing concerns about declines in many salmon populations, increasing pressures from climate change, and the need for more integrated approaches to management and recovery. Over its five year span, the multi-faceted initiative sought to restore vulnerable populations of Pacific salmon and their habitats, support sustainable fishing opportunities while reducing impacts on at‑risk stocks, and build capacity among partners to achieve better outcomes for Pacific salmon.
 
-PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars intended to provide a framework for aligning and coordinating actions across habitat, hatcheries, fisheries, and governance. The four pillars – Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration – each involved multiple sectors within DFO and were composed of several "initiatives", which were distinct elements for funding and reporting (Table \@ref(tab:pssi-initiatives)).
+PSSI brought significant new capacity and resources to Fisheries and Oceans Canada (DFO), the lead federal agency for the initiative, enabling expanded scientific research, enhanced stewardship and restoration activities, additional capacity for enhancement and monitoring, and new collaborative approaches with Indigenous and non-Indigenous partners. The initiative was initially designed and managed across four pillars intended to provide a framework for aligning and coordinating actions across habitat, hatcheries, fisheries, and governance. The four pillars – Conservation and Stewardship, Salmon Enhancement, Harvest Transformation, and Integration and Collaboration – each involved multiple sectors within DFO and were composed of several "initiatives", which were distinct elements for funding and reporting (Table 1).
 
 The conservation and stewardship pillar focused on new activities and investments supporting the long-term persistence and rebuilding of Pacific salmon populations. Key components included a doubling of the British Columbia Salmon Restoration and Innovation Fund (BCSRIF), investing in research to improve our understanding of salmon and their ecosystems, advancing integrated planning for salmon ecosystems to mitigate pressures on freshwater habitats, developing integrated rebuilding plans for vulnerable salmon populations, improving supports for salmon stewardship activities through engagement, and capacity-building with First Nations and community partners.
 
@@ -32,7 +32,10 @@ The harvest transformation pillar was intended to change how Pacific salmon fish
 
 The integration and collaboration pillar focused on strengthening collective capacity to address Pacific salmon declines by improving how DFO worked both internally and with external partners. Key objectives were to provide capacity support to various internal and external groups involved in salmon conservation and management, to improve collaboration among federal, provincial, territorial, Indigenous, and other governments, to develop new infrastructure and tools for sharing data, and to prioritize salmon stocks for recovery through coordinated, cross-jurisdictional planning and decision-making processes.
 
-```{r pssi-table, tab.cap="The 24 major components of the PSSI (known as initiatives) and their associated pillar.  Initiatives that were led by or included DFO Science branch are shown in bold text.",tab.id="pssi-initiatives",tab.topcaption=TRUE}
+```{r pssi-table, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 1. The 24 major components of the PSSI (known as initiatives) and their associated pillar. Initiatives that were led by or included DFO Science branch are shown in bold text.\n")
+cat(":::\n\n")
 
 pillars_df <- read_csv(here(rawdata_path, "Table1_PSSI_initiatives.csv")) %>%
   mutate(across(where(is.character), ~ str_replace_all(.x, "[^[:alnum:][:punct:][:space:]]", " ")))
@@ -50,9 +53,8 @@ ft <- flextable(
   autofit() %>%
   width(j = "Pillar", width = 1.5)
 
-
-ft
-
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 ## Scientific Research Components of PSSI
@@ -67,10 +69,16 @@ The largest PSSI initiative led by DFO Science was Improved Understanding of Sal
 
 The second major DFO Science initiative, Science to Support Hatchery Modernization, was a part of the PSSI Salmon Enhancement pillar. This initiative was designed to provide scientific advice and information to inform planning and program implementation, advance the use of molecular genetics and other tools for assessment, and expand fishery and escapement sampling programs. These research activities were intended to support the expansion of hatchery programs under PSSI, informing effective enhancement for population rebuilding and providing harvest opportunities while reducing risks for wild salmon populations. Research priorities were co-developed by a steering committee representing the Salmonid Enhancement Program and DFO Science.
 
-In this report, we summarize the outcomes and findings of research projects funded through the PSSI, with a focus on work led by DFO Science in the Pacific Region. We synthesize results across several research themes aligned with the major PSSI initiatives (Figure \@ref(fig:pssi-themes)), providing an overview of findings from a diverse set of multi-disciplinary projects. For the Improved Understanding of Salmon Ecosystems initiative, we review research within five thematic areas: salmon population monitoring, life-cycle approaches, freshwater ecosystems, marine ecosystems, and climate change vulnerability. For the Science to Support Hatchery Modernization initiative, we outline research conducted under the Genetics, Fish Health, and Hatchery Practices themes. In addition, we describe broader research and monitoring activities supported by PSSI, including work related to fisheries monitoring and new harvest techniques, stock assessment advice, and new tools for data mobilization and management. We provide project summaries for `r n_dfo_projects` DFO-led research projects, offering a snapshot of the current state of Pacific salmon science under PSSI. Although some results are preliminary and the synthesis is not comprehensive of all research conducted under PSSI, this review highlights the insights, knowledge gaps, and future priorities identified during the five years of the initiative.
+In this report, we summarize the outcomes and findings of research projects funded through the PSSI, with a focus on work led by DFO Science in the Pacific Region. We synthesize results across several research themes aligned with the major PSSI initiatives (Figure 1), providing an overview of findings from a diverse set of multi-disciplinary projects. For the Improved Understanding of Salmon Ecosystems initiative, we review research within five thematic areas: salmon population monitoring, life-cycle approaches, freshwater ecosystems, marine ecosystems, and climate change vulnerability. For the Science to Support Hatchery Modernization initiative, we outline research conducted under the Genetics, Fish Health, and Hatchery Practices themes. In addition, we describe broader research and monitoring activities supported by PSSI, including work related to fisheries monitoring and new harvest techniques, stock assessment advice, and new tools for data mobilization and management. We provide project summaries for `r n_dfo_projects` DFO-led research projects, offering a snapshot of the current state of Pacific salmon science under PSSI. Although some results are preliminary and the synthesis is not comprehensive of all research conducted under PSSI, this review highlights the insights, knowledge gaps, and future priorities identified during the five years of the initiative.
 
-```{r pssi-themes, echo=FALSE, fig.cap="Conceptual diagram of research themes aligned with the major PSSI initiatives.", fig.cap.style="Table Caption", out.width="100%"}
+```{r pssi-themes, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
 knitr::include_graphics(here::here("figures/PSSI-theme-diagram.png"))
+
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Figure 1. Conceptual diagram of research themes aligned with the major PSSI initiatives.\n")
+cat(":::\n\n")
+
+cat("\n\n\\ \n\n")
 ```
 
 \newpage
@@ -98,11 +106,17 @@ By looking for common observations, results, and conclusions across multiple stu
 
 # Freshwater ecosystems {#freshwater-ecosystems}
 
-```{r freshwater-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with freshwater ecosystems theme.",tab.id="tbl-fweco"}
+```{r freshwater-ecosystem-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 2. DFO and BCSRIF projects associated with freshwater ecosystems theme.\n")
+cat(":::\n\n")
 
-make_section_table(projects_df,
+ft <- make_section_table(projects_df,
                    section_pick = 'Freshwater ecosystems',
-                   title_icon = file.path(assets_path, "theme-columns", "freshwater-ecosystems.png" ))
+                   title_icon = file.path(assets_path, "theme-columns", "freshwater-ecosystems.png"))
+
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 <br>
@@ -161,11 +175,17 @@ Geospatial cumulative threat scores show where investment will have the greatest
 
 # Marine ecosystems {#marine-ecosystems}
 
-```{r marine-ecosystem-projects, tab.cap="DFO and BCSRIF projects associated with marine ecosystems and stressors theme.",tab.id="tbl-marine-eco"}
+```{r marine-ecosystem-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 3. DFO and BCSRIF projects associated with marine ecosystems and stressors theme.\n")
+cat(":::\n\n")
 
-make_section_table(projects_df,
-                   section_pick = 'Marine ecosystems', 
-                   title_icon = file.path(assets_path, "theme-columns", "marine-ecosystems.png" ))
+ft <- make_section_table(projects_df,
+                   section_pick = 'Marine ecosystems',
+                   title_icon = file.path(assets_path, "theme-columns", "marine-ecosystems.png"))
+
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 <br>
@@ -254,11 +274,17 @@ SeaChange Marine Conservation Society assessed critical salmonid habitats in res
 
 # Climate change vulnerability {#climate-change-vulnerability}
 
-```{r climate-projects, tab.cap="DFO and BCSRIF projects associated with climate change vulnerability.", tab.id="tbl-climate"}
+```{r climate-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 4. DFO and BCSRIF projects associated with climate change vulnerability.\n")
+cat(":::\n\n")
 
-make_section_table(projects_df,
+ft <- make_section_table(projects_df,
                    section_pick = 'Climate change vulnerability',
-                   title_icon = file.path(assets_path, "theme-columns", "climate-change-vulnerability.png" ))
+                   title_icon = file.path(assets_path, "theme-columns", "climate-change-vulnerability.png"))
+
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 The significance of climate change for Pacific salmon is well-established and has been highlighted by many studies spanning across their range in the North Pacific [@mantua2010; @mcclure2023; @crozier2019; @grant2019]. Climate change emerged as a key theme during the PSSI Science planning workshop [@lagasse2024] and was a central element of the Improved Understanding of Salmon Ecosystems PSSI initiative. Discussion papers, minister mandate letters, funding initiatives, and national adaptation plans have recognized the need to make climate change considerations central to decision-making and planning [@macdonald2023]. This need follows from the understanding that climate change introduces additional risk and uncertainty into plans and decisions because expectations based on past climate relationships may not hold true.
@@ -297,13 +323,17 @@ This represents a paradigm shift from single-stage to ecosystem-based fisheries 
 
 ## Salmon population monitoring {#salmon-population-monitoring}
 
-```{r salmon-population-projects, tab.cap="DFO and BCSRIF projects associated with salmon population monitoring.",tab.id="tbl-salmon-pop"}
+```{r salmon-population-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 5. DFO and BCSRIF projects associated with salmon population monitoring.\n")
+cat(":::\n\n")
 
-make_section_table(projects_df,
+ft <- make_section_table(projects_df,
                    section_pick = "Stock assessment",
-                   title_icon = file.path(assets_path, "theme-columns", "stock-assessment.png" ))
+                   title_icon = file.path(assets_path, "theme-columns", "stock-assessment.png"))
 
-
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 <br>
@@ -326,12 +356,17 @@ Innovative solutions emerged for challenging monitoring conditions. Lil'wat Nati
 
 ## Follow the Fish Program {#follow-the-fish}
 
-```{r ftf-projects, tab.cap="DFO and BCSRIF projects associated with Follow the Fish.",tab.id="tbl-ftf"}
+```{r ftf-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 6. DFO and BCSRIF projects associated with Follow the Fish.\n")
+cat(":::\n\n")
 
-make_section_table(projects_df,
+ft <- make_section_table(projects_df,
                    section_pick = 'Life cycle approaches',
-                   title_icon = file.path(assets_path, "theme-columns", "life-cycle.png" ))
+                   title_icon = file.path(assets_path, "theme-columns", "life-cycle.png"))
 
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 <br>
@@ -364,11 +399,16 @@ The Follow the Fish program will clarify relationships between environmental con
 
 ## Bottlenecks to survival {#bottlenecks}
 
-```{r bottleneck-projects, tab.cap="DFO and BCSRIF projects associated with bottlenecks to survival.",tab.id="tbl-bottlenecks"}
+```{r bottleneck-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 7. DFO and BCSRIF projects associated with bottlenecks to survival.\n")
+cat(":::\n\n")
 
-# make_section_table(projects_df,
+# ft <- make_section_table(projects_df,
 #                    section_pick = 'Life cycle assessment - Bottlenecks to survival')
 
+# flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 <br>
@@ -391,16 +431,25 @@ A standardized national template for communicating fisheries science advice was 
 
 The more than 450 conservation units identified under the Wild Salmon Policy are aggregated into 69 stock management units (SMUs) for Pacific salmon. While only a subset of these SMUs is expected to be prescribed as major stocks under the Fisheries Act, the long‑term goal is to conduct stock assessments for all 69 SMUs and to review them on a regular, ongoing basis. Achieving this would represent a substantial shift in the type, scope, and frequency of peer‑reviewed science available to decision makers. Historically, peer‑reviewed science for Pacific salmon was produced on an ad hoc basis, often focused on specific issues such as abundance forecasts, recovery potential assessments under the *Species at Risk Act*, or periodic methodological reviews. Routine peer review of management outcomes has not historically been expected. The introduction of standardized templates that integrate biological status, management performance, and rebuilding considerations into a single document is expected to provide meaningful benefits for both managers and biologists.
 
-Pacific Region Salmon contributed to the national template pilot by convening a CSAS Salmon Sprint Week in spring 2024 to assess multiple salmon stocks, followed by a second sprint week in spring 2025. Additional individual SMU reviews were conducted outside these events. Table \@ref(tab:fsar-table) provides links to SMUs with currently available publications. SMUs that have been reviewed but do not yet have publications available as of 31 March 2026 include Fraser Chinook Spring 5‑2, Fraser Chinook Summer 5‑2, Early Stuart Sockeye, and Stikine Sockeye.
+Pacific Region Salmon contributed to the national template pilot by convening a CSAS Salmon Sprint Week in spring 2024 to assess multiple salmon stocks, followed by a second sprint week in spring 2025. Additional individual SMU reviews were conducted outside these events. Table 8 provides links to SMUs with currently available publications. SMUs that have been reviewed but do not yet have publications available as of 31 March 2026 include Fraser Chinook Spring 5‑2, Fraser Chinook Summer 5‑2, Early Stuart Sockeye, and Stikine Sockeye.
 
 Together, the implementation of the Fish Stocks provisions and the adoption of national science advice templates represent a substantial shift toward more structured, transparent, and comprehensive assessment processes for Pacific salmon. As additional SMUs undergo review and new assessments are published, the Pacific Region will be better positioned to meet legislative requirements, support ecosystem‑based management, and provide decision makers with timely, defensible, and integrated advice. Continued collaboration among scientists, managers, and Indigenous and community partners will be essential to sustaining this transition and ensuring that resulting science products support the long‑term conservation and rebuilding of salmon populations.
 
-```{r fsar-table, echo=FALSE, tab.cap="Salmon stock management units (SMUs) with published or soon-to-be-published Fisheries Science Advisory Reports or Fisheries Science Research Reports", tab.id="fsar-table", tab.topcaption=TRUE}
+```{r fsar-table, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
 library(flextable)
+
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 8. Salmon stock management units (SMUs) with published or soon-to-be-published Fisheries Science Advisory Reports or Fisheries Science Research Reports.\n")
+cat(":::\n\n")
+
 fsar_table <- read.csv("figures/FSAR-table-AMH.csv", check.names = FALSE)
-flextable(fsar_table) |>
+
+ft <- flextable(fsar_table) |>
   set_table_properties(width = 1, layout = "autofit") |>
   theme_booktabs()
+
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 <br>
@@ -415,10 +464,17 @@ Under the Steering Committee, four cross-sectoral working groups were establishe
 
 ## Genetics {#hatchery-fitness-and-genetics}
 
-```{r genetics-projects, tab.cap="DFO and BCSRIF projects associated with genetics.",tab.id="tbl-genetics"}
-make_section_table(projects_df,
+```{r genetics-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 9. DFO and BCSRIF projects associated with genetics.\n")
+cat(":::\n\n")
+
+ft <- make_section_table(projects_df,
                    section_pick = 'Hatchery Fitness and Genetics',
-                   title_icon = file.path(assets_path, "theme-columns", "hatchery-fitness-and-genetics.png" ))
+                   title_icon = file.path(assets_path, "theme-columns", "hatchery-fitness-and-genetics.png"))
+
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 Research under the Genetics theme addressed three central questions posed by SEP: 1) how do hatchery and natural-origin fish differ? 2) what are the mechanisms driving those differences? and 3) what are the implications for long-term population fitness? These questions sit at the heart of how enhancement programs are designed and evaluated, and they bear directly on the proportionate natural influence (PNI) framework that Canada uses to manage hatchery genetic effects on wild populations [@withler2018]. To address these questions, researchers used advanced genetic techniques including genome-wide sequencing, methylation sequencing, and parentage-based tagging that were made possible through monitoring and broodstock programs at SEP hatcheries. In addition to addressing the three central research questions above, some genetics projects were focused on more operational applications to improve the accuracy of genetic stock identification (GSI) for chum salmon and develop rapid turn-around diagnostic tools to differentiate among Chinook salmon conservation units.
@@ -437,11 +493,17 @@ Across all genetics projects, a coherent picture emerges: the genetic architectu
 
 ## Fish health and hatchery practices {#fish-health}
 
-```{r health-projects, tab.cap="DFO and BCSRIF projects associated with the fish health theme.",tab.id="tbl-health"}
+```{r health-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 10. DFO and BCSRIF projects associated with the fish health theme.\n")
+cat(":::\n\n")
 
-make_section_table(projects_df,
+ft <- make_section_table(projects_df,
                    section_pick = 'Fish health and hatchery practices',
-                   title_icon = file.path(assets_path, "theme-columns", "fish-health.png" ))
+                   title_icon = file.path(assets_path, "theme-columns", "fish-health.png"))
+
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 Fish health projects were organized around three research questions: 1) How can we better assess and track fish condition and stress? 2) how do we advance and modernize diagnostic and health management practices? and 3) how can new molecular and technological tools help detect issues early and inform decision-making? Research in this theme addresses these questions using a variety of established and innovative methods, from pathogen surveillance and disease modelling to nutrition experiments and stress monitoring using eDNA/eRNA signals. This work is meaningful for SEP hatcheries because healthier fish have higher survival, disease resistance, and reproductive success, making enhancement programs more effective and resource efficient.
@@ -464,10 +526,17 @@ By addressing key questions around assessing fish condition and stress, moderniz
 
 # Fishery monitoring and harvest techniques {#harvest}
 
-```{r fishery-projects, tab.cap="DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques",tab.id="tbl-harvest"}
-make_section_table(projects_df,
+```{r fishery-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 11. DFO and BCSRIF projects associated with fisheries monitoring and harvest techniques.\n")
+cat(":::\n\n")
+
+ft <- make_section_table(projects_df,
                    section_pick = 'Fishery monitoring and harvest techniques',
-                   title_icon = file.path(assets_path, "theme-columns", "harvest.png" ))
+                   title_icon = file.path(assets_path, "theme-columns", "harvest.png"))
+
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 ### Background and objectives
@@ -508,9 +577,12 @@ Complementary efforts are exploring selective harvest and monitoring tools in Fi
 
 Describe the data-related PSSI sub-initiatives and key projects to improve management and availability of data for Pacific salmon, with a focus on projects led by DFO Science
 
-```{r innovation-projects, tab.cap="Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.", tab.id="tbl-data-projects"}
-data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
+```{r innovation-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 12. Data tools and management applications developed by the Fisheries and Assessment Data Section as part of PSSI.\n")
+cat(":::\n\n")
 
+data_projects_loc <- here(rawdata_path, "PSSI_data_projects.csv")
 data_projects_table <- read_csv(data_projects_loc) %>%
   mutate(
     Title  = str_squish(Title),
@@ -533,7 +605,9 @@ ft <- flextable(data_projects_table) %>%
   width(j="Status", width=1.1) %>%
   width(j="Access", width=1.4) %>%
   width(j="URL",    width=0.8)
-ft
+
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 # New tools and models to support decision making {#modelling}
@@ -554,12 +628,17 @@ Other projects leveraged AI and other new technologies to augment or improve ana
 
 -   Pacific Salmon Explorer (BCSRIF)
 
-```{r data-projects, tab.cap="DFO and BCSRIF projects associated with data and modelling in support of decision making",tab.id="tbl-decisions"}
+```{r data-projects, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+cat("::: {custom-style=\"Caption\"}\n")
+cat("Table 13. DFO and BCSRIF projects associated with data and modelling in support of decision making.\n")
+cat(":::\n\n")
 
-make_section_table(projects_df,
+ft <- make_section_table(projects_df,
                    section_pick = 'Data and modelling to support decision making',
-                   title_icon = file.path(assets_path, "theme-columns", "modelling.png" ))
+                   title_icon = file.path(assets_path, "theme-columns", "modelling.png"))
 
+flextable_to_rmd(ft)
+cat("\n\n\\ \n\n")
 ```
 
 \newpage
