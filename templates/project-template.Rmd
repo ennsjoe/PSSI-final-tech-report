@@ -91,11 +91,13 @@ render_word_table <- function(
 ) {
 
   if (is.null(data) || nrow(data) == 0 || ncol(data) == 0) {
+    cat("::: {custom-style=\"Caption\"}\n")
     if (!is.null(table_number)) {
-      cat(paste0("Table ", table_number, ". ", caption, "\n\n"))
+      cat(paste0("Table ", table_number, ". ", caption, "\n"))
     } else {
-      cat(caption, "\n\n")
+      cat(caption, "\n")
     }
+    cat(":::\n\n")
     cat("*[No data available]*\n\n")
     return(invisible(NULL))
   }
@@ -121,12 +123,14 @@ render_word_table <- function(
   truncated <- nrow(clean_data) > max_rows
   if (truncated) clean_data <- clean_data[1:max_rows, ]
 
-  # Caption — output as plain paragraph before the table
+  # Caption — styled paragraph before the table
+  cat("::: {custom-style=\"Caption\"}\n")
   if (!is.null(table_number)) {
-    cat(paste0("Table ", table_number, ". ", caption, "\n\n"))
+    cat(paste0("Table ", table_number, ". ", caption, "\n"))
   } else {
-    cat(caption, "\n\n")
+    cat(caption, "\n")
   }
+  cat(":::\n\n")
 
   # Build flextable styled to match make_section_table
   ft <- flextable::flextable(clean_data) %>%
@@ -155,6 +159,7 @@ render_word_table <- function(
     flextable::set_table_properties(layout = "autofit")
 
   flextable::flextable_to_rmd(ft)
+  cat("\n\n&nbsp;\n\n")  # empty paragraph after table
 
   if (truncated) {
     cat("\n\n*[Showing first", max_rows, "rows of", nrow(data), "total rows]*\n\n")
