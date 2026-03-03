@@ -215,13 +215,29 @@ make_project_banner <- function(
   banner_path <- file.path(banner_dir, as.character(icon_row$icon_file[1]))
   if (!file.exists(banner_path)) return(invisible(NULL))
   
-  img    <- magick::image_read(banner_path)
-  info   <- magick::image_info(img)
-  fsize  <- round(info$height * font_size_ratio)
-  msize  <- round(info$height * meta_size_ratio)
+  img         <- magick::image_read(banner_path)
+  info        <- magick::image_info(img)
+  msize       <- round(info$height * meta_size_ratio)
   
-  title   <- as.character(project[["project_title"]] %||% "Untitled Project")
-  wrapped <- paste(strwrap(title, width = wrap_width), collapse = "\n")
+  title       <- as.character(project[["project_title"]] %||% "Untitled Project")
+  nchar_title <- nchar(title)
+  
+  # --- Dynamic font size and wrap width based on title length ---------------
+  # Keep font large; wrap more aggressively for longer titles rather than
+  # shrinking the font. Only reduce slightly for very long titles.
+  dyn_font_ratio <- dplyr::case_when(
+    nchar_title <= 40 ~ 0.11,
+    nchar_title <= 80 ~ 0.10,
+    TRUE              ~ 0.09
+  )
+  dyn_wrap <- dplyr::case_when(
+    nchar_title <= 40 ~ 20,
+    nchar_title <= 80 ~ 25,
+    TRUE              ~ 30
+  )
+  fsize   <- round(info$height * dyn_font_ratio)
+  wrapped <- paste(strwrap(title, width = dyn_wrap), collapse = "\n")
+  # --------------------------------------------------------------------------
   
   # Define the meta fields to display on the banner
   meta_cols <- c("project_leads")
