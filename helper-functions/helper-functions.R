@@ -47,7 +47,7 @@ load_projects <- function() {
   content_df  <- openxlsx::read.xlsx(PROCESSED_XLSX) %>%
     dplyr::mutate(project_id = as.character(project_id)) %>%
     dplyr::mutate(dplyr::across(where(is.character),
-                                ~iconv(., from = "latin1", to = "UTF-8")))
+                                ~iconv(., from = "UTF-8", to = "UTF-8", sub = "byte")))
   
   ids_in_content <- unique(content_df$project_id)
   
