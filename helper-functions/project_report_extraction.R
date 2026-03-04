@@ -46,6 +46,7 @@ FIELD_LABELS <- c(
   "waterbodies" = "waterbodies",
   "life_history" = "life_history",
   "region" = "region",
+  "sub_region" = "sub_region",
   "stock" = "stock",
   "population" = "population",
   "cu" = "cu",
