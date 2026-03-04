@@ -177,43 +177,27 @@ if (!is.null(safe_text(project$collaborations)))
   metadata_items <- c(metadata_items,
                       paste0("**Collaborations:** ", safe_text(project$collaborations)))
 
-if (!is.null(safe_text(project$location)))
+if (!is.null(safe_text(project$sub_region)))
   metadata_items <- c(metadata_items,
-                      paste0("**Location:** ", safe_text(project$location)))
-
-if (!is.null(safe_text(project$region)))
-  metadata_items <- c(metadata_items,
-                      paste0("**Region:** ", safe_text(project$region)))
-
-if (!is.null(safe_text(project$species)))
-  metadata_items <- c(metadata_items,
-                      paste0("**Species:** ", safe_text(project$species)))
+                      paste0("**Region:** ", safe_text(project$sub_region)))
 
 if (!is.null(safe_text(project$waterbodies)))
   metadata_items <- c(metadata_items,
                       paste0("**Waterbodies:** ", safe_text(project$waterbodies)))
 
-if (!is.null(safe_text(project$life_history)))
+if (!is.null(safe_text(project$species)))
   metadata_items <- c(metadata_items,
-                      paste0("**Life History:** ", safe_text(project$life_history)))
+                      paste0("**Species:** ", safe_text(project$species)))
 
-if (!is.null(safe_text(project$stock)))
+if (!is.null(safe_text(project$focus_population)))
   metadata_items <- c(metadata_items,
-                      paste0("**Stock:** ", safe_text(project$stock)))
-
-if (!is.null(safe_text(project$population)))
-  metadata_items <- c(metadata_items,
-                      paste0("**Population:** ", safe_text(project$population)))
-
-if (!is.null(safe_text(project$cu)))
-  metadata_items <- c(metadata_items,
-                      paste0("**Conservation Unit:** ", safe_text(project$cu)))
+                      paste0("**Populations:** ", safe_text(project$focus_population)))
 
 if (length(metadata_items) > 0)
   cat(paste(metadata_items, collapse = " \n\n "), "\n\n")
 
 # ── Content sections ──────────────────────────────────────────────────────────
-invisible(render_section("Highlights",                           safe_text(project$highlights)))
+invisible(render_section("Highlights",           safe_text(project$highlights)))
 invisible(render_section("Background",           safe_text(project$background)))
 invisible(render_section("Methods and Findings", safe_text(project$methods_findings)))
 ```
