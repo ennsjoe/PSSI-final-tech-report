@@ -105,8 +105,15 @@ make_section_table <- function(
 ) {
   
   # 1) Filter and Prep
+  source_order <- c("DFO Science", "BCSRIF")
   df_clean <- df %>%
     filter(.data$section == section_pick, .data$include %in% c("y", "Y")) %>%
+    dplyr::mutate(
+      !!source_col := factor(
+        .data[[source_col]],
+        levels = c(source_order, setdiff(unique(.data[[source_col]]), source_order))
+      )
+    ) %>%
     arrange(.data[[source_col]], .data[[num_col]])
   
   # 2) Create display dataframe
@@ -117,7 +124,8 @@ make_section_table <- function(
       !!num_col := c(as.character(.y[[source_col]]), as.character(.x[[num_col]])),
       !!title_col := c("", as.character(.x[[title_col]]))
     )) %>%
-    ungroup()
+    ungroup() %>%
+    dplyr::mutate(!!source_col := as.character(.data[[source_col]]))
   
   n_body <- nrow(df_display)
   side_col <- ".sidebar_spine"
