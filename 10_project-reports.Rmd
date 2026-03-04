@@ -53,32 +53,38 @@ find_csv <- function(filename) {
   return(NULL)
 }
 
-# Find the CSV files
 tracking_csv <- find_csv("report_project_list.csv")
-form_csv     <- find_csv("pssi_form_data.csv")
 icon_csv     <- find_csv("icon_map.csv")
 
 if (is.null(tracking_csv)) {
   stop("Could not find report_project_list.csv")
 }
 
-message("\n=== Loading Data ===")
+message("
+=== Loading Data ===")
 message("Tracking CSV: ", tracking_csv)
-message("Form CSV    : ", ifelse(is.null(form_csv), "NOT FOUND", form_csv))
 message("Icon CSV    : ", ifelse(is.null(icon_csv), "NOT FOUND", icon_csv))
 
 # Load tracking data
 tracking_df <- readr::read_csv(tracking_csv, show_col_types = FALSE) %>%
   dplyr::mutate(project_id = as.character(project_id))
 
-# Load form data (if exists)
-if (!is.null(form_csv) && file.exists(form_csv)) {
-  form_df <- readr::read_csv(form_csv, show_col_types = FALSE) %>%
+# Use projects_df from _common.R if available (preferred -- contains latest
+# edits from pssi_form_data_altered.xlsx), otherwise load the xlsx directly
+if (exists("projects_df")) {
+  form_df <- projects_df %>%
     dplyr::mutate(project_id = as.character(project_id))
-  message("Form data rows: ", nrow(form_df))
+  message("Form data: using projects_df from _common.R (", nrow(form_df), " rows)")
 } else {
-  form_df <- NULL
-  warning("pssi_form_data.csv not found - no projects will be rendered")
+  xlsx_path <- find_csv("pssi_form_data_altered.xlsx")
+  if (!is.null(xlsx_path) && file.exists(xlsx_path)) {
+    form_df <- openxlsx::read.xlsx(xlsx_path) %>%
+      dplyr::mutate(project_id = as.character(project_id))
+    message("Form data: loaded from ", xlsx_path, " (", nrow(form_df), " rows)")
+  } else {
+    form_df <- NULL
+    warning("pssi_form_data_altered.xlsx not found - no projects will be rendered")
+  }
 }
 
 # Load icon map for ordering
@@ -106,12 +112,23 @@ if (is.null(form_df)) {
   # (mirrors the logic from init_database() Set A)
   # ------------------------------------------------------------------
   
-  projects_to_render <- form_df %>%
-    dplyr::left_join(
-      tracking_df %>% 
-        dplyr::select(project_id, source, section, broad_header, include),
-      by = "project_id"
-    ) %>%
+  # If form_df came from projects_df (_common.R) it already has section/source/
+  # broad_header/include from the tracking join — skip re-joining to avoid
+  # duplicate column conflicts. Only join if those columns are missing.
+  needs_join <- !all(c("source", "section", "broad_header", "include") %in% names(form_df))
+
+  if (needs_join) {
+    projects_to_render <- form_df %>%
+      dplyr::left_join(
+        tracking_df %>%
+          dplyr::select(project_id, source, section, broad_header, include),
+        by = "project_id"
+      )
+  } else {
+    projects_to_render <- form_df
+  }
+
+  projects_to_render <- projects_to_render %>%
     dplyr::mutate(
       project_id   = as.character(project_id),
       section      = tidyr::replace_na(as.character(section), "Other"),
@@ -121,7 +138,8 @@ if (is.null(form_df)) {
       source  == "DFO Science",
       include %in% c("y", "Y"),
       !is.na(project_id),
-      !is.na(project_title)
+      !is.na(project_title),
+      !is.na(source_file)   # only projects with form data in xlsx
     )
   
   # ------------------------------------------------------------------
