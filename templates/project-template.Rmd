@@ -218,7 +218,14 @@ invisible(render_section("Background",           safe_text(project$background)))
 invisible(render_section("Methods and Findings", safe_text(project$methods_findings)))
 ```
 
-```{r proj-figures, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+```{r proj-closing, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+
+# ── Closing sections ──────────────────────────────────────────────────────────
+
+invisible(render_section("Insights",   safe_text(project$insights)))
+invisible(render_section("Next Steps", safe_text(project$next_steps)))
+
+# ── Tables and figures (after Next Steps) ─────────────────────────────────────
 
 # ── Tables and figures ────────────────────────────────────────────────────────
 
@@ -348,14 +355,6 @@ if (has_files || !is.null(tables_figures_text)) {
     }
   }
 }
-```
-
-```{r proj-closing, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
-
-# ── Closing sections ──────────────────────────────────────────────────────────
-
-invisible(render_section("Insights",   safe_text(project$insights)))
-invisible(render_section("Next Steps", safe_text(project$next_steps)))
 
 # References
 references_text <- safe_text(project$references)
