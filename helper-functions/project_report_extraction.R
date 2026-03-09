@@ -56,7 +56,16 @@ FIELD_LABELS <- c(
   "insights" = "insights",
   "next_steps" = "next_steps",
   "tables_figures" = "tables_figures",
-  "references" = "references"
+  "references" = "references",
+  # Project Metrics fields
+  "publications" = "publications",
+  "datasets" = "datasets",
+  "data_location" = "data_location",
+  "software" = "software",
+  "communications" = "communications",
+  "fieldwork" = "fieldwork",
+  "samples" = "samples",
+  "capital" = "capital"
 )
 
 OUTPUT_FIELDS <- unique(FIELD_LABELS)
