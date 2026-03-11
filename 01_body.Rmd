@@ -130,6 +130,7 @@ Science-based information was used to support salmon habitat management decision
 Watersheds throughout the BC have been heavily impacted by landscape-scale human development along with the effects of climate change, often experiencing floods and droughts within the same year [@mantua2010; @moore2025]. Environmental flow needs (EFNs) for fish have been recognized as an important consideration when making water use and watercourse alteration decisions[@railsback2016], as represented in the BC provincial Water Sustainability Act. Through PSSI funding, researchers developed and deployed flow-temperature models and field-based monitoring programs to characterize instream conditions and identify flow regimes needed to support salmon at critical life history stages.
 
 For example, PSSI funding allowed researchers to do [mechanistic modelling in the North Thompson](#pssi-2424), and integrated water temperature dynamics into hydraulic habitat assessments for juvenile coho salmon, producing tools that can guide real-time flow management and water allocation decisions. BCSRIF funded work by the Secwépemc Fisheries Commission, monitoring the Thompson-Shuswap sub-region, where hydrometric networks were established in drought-sensitive streams and cold-water refugia were identified and mapped. In the Lower Fraser and Boundary Bay, the Salish Sea Indigenous Guardians Association (Kwantlen and Semiahmoo First Nations) established Indigenous guardian programs to monitor temperature, flow, dissolved oxygen, juvenile salmon abundance, and spawner distribution across streams where systematic monitoring had lapsed. Continuous temperature records from these urban-agricultural streams revealed that summer temperatures regularly exceed 20°C and dissolved oxygen levels dip to stressful lows, particularly in the Tatalu (Little Campbell) River where extended annual drying occurs in salmon-bearing reaches.
+[@montgomery1996]
 
 #### Cumulative effects
 
@@ -168,6 +169,8 @@ Invasive predator research in the Okanagan and Cultus Lake supports species reco
 #### Land-use planning
 
 Geospatial cumulative threat scores show where investment will have the greatest effect. BCSRIF projects generated Nation-led baseline data in the Thompson-Shuswap, Broughton Archipelago, and Lower Fraser urban tributaries and developed cost-effective monitoring tools that can scale to region-wide programs.
+
+@dfo2019; @mahony2019
 
 # Marine ecosystems {#marine-ecosystems}
 

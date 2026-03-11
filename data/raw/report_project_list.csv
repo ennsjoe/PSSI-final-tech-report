@@ -1,4 +1,17 @@
 ﻿source,project_id,project_title,phase,recipient,geographic_distribution,location,description,collaborators,broad_header,section,section-2,include
+DFO Science,9001,Climate Vulnerability Indicators for Salmon (CVIS),NA,NA,,,"We developed the Climate Vulnerability Indicators for Salmon (CVIS) framework, an indicator-based, quantitative approach that integrates freshwater, migration, nearshore marine, demographic, and genetic mechanisms into 17 standardized indicators to evaluate relative climate vulnerability across Pacific salmon conservation units (CUs). The framework provides a transparent and reproducible basis for comparing climate-related risk among CUs that supports prioritization and planning by identifying which mechanisms and life stages most differentiate vulnerability.
+CVIS was applied to 5 species and 50 Pacific salmon CUs in the Fraser River basin, using downscaled climate projections, cumulative habitat stressor models, life-history timing, status assessments, and niche/genomic modelling to characterize multi-mechanism, life-stage-specific climate risk and the sensitivity of CU vulnerability rankings to emissions scenarios and scoring methods. 
+Results summary - ","DFO:
+Michael Arbeider
+Colin Bailey
+Josephine Iacarella
+Timothy Healy
+
+External:
+Pacific Salmon Foundation
+Pacific Climate Impacts Consortium
+ECCC
+University of Victoria",Understanding salmon ecosystems,Climate change vulnerability,,y
 DFO Science,3682,Legislation Applicable to Pacific Salmon and Ecosystems (LAPSE),NA,NA,,,,,Data management and tools,Data and modelling to support decision making,,y
 DFO Science,0000,Enhanced Monitoring of Chinook Salmon Mark Selective Fishery (MSF),NA,NA,,Juan de Fuca Strait;#Salish Sea;#Mainland Inlets,"In 2023, Fisheries and Oceans Canada launched a multi-year monitoring program to understand the effects of mark-selective fisheries (MSFs) on Chinook salmon in the South Coast Area. The Chinook reference fishery was initiated to independently verify Chinook salmon catch estimates, hatchery mark rates, and stock composition in MSFs and compare those estimates to those of the South Coast Area recreational catch monitoring program.",,Fishery monitoring and harvest techniques,Fishery monitoring and harvest techniques,,y
 DFO Science,1261,Salmon Marine Interactions - SMI - COE Section,NA,NA,,,,,Understanding salmon ecosystems,Marine ecosystems,,n
@@ -60,7 +73,7 @@ DFO Science,2504,Identifying and characterizing tire-related chemical (6PPD-quin
 DFO Science,2513,Characterizing and monitoring priority contaminants of concern in WCVI juvenile salmon,NA,NA,,,Recent studies found that West Coast Vancouver Island Chinook had some of the highest contaminant concentrations. This fish health monitoring project coordinates with the Follow the Fish program to sample for over 600 contaminants in juvenile Chinook to rank the results to prioritize mitigation actions.,,Understanding salmon ecosystems,Marine ecosystems,,y
 DFO Science,2522,Explanation for the Collapse of the Commercial Chum Salmon Fishery in British Columbia,NA,NA,,,,,Population monitoring,Stock assessment,,n
 DFO Science,2534,Understanding the impact of Arctic outflow winds on British Columbia fjords.,NA,NA,,Mainland Inlets,"Arctic air masses move from the interior to coastal inlets, cooling and adding oxygen to the marine habitat. Fjords where this cooling occurs can become a marine refuge for salmon. This project monitors climate conditions in BC mainland fjords to measure the impact on salmon habitat and study how these factors may impact other coastal inlets. ",,Understanding salmon ecosystems,Marine ecosystems,,n
-DFO Science,2539,Climate Downscaling for salmon conservation in Marine Ecosystems,NA,NA,,,"Ocean and climate conditions influence salmon numbers and health. While efforts have been made to model future climate conditions, these models are broad in scope which creates a scale gap when applying projections to salmon habitat. This modelling project downscales broader global climate models to include coastal environments and salmon species distribution.",,Understanding salmon ecosystems,Climate change vulnerability,,y
+DFO Science,2539,Climate Downscaling for salmon conservation in Marine Ecosystems,NA,NA,,,"Ocean and climate conditions influence salmon numbers and health. While efforts have been made to model future climate conditions, these models are broad in scope which creates a scale gap when applying projections to salmon habitat. This modelling project downscales broader global climate models to include coastal environments and salmon species distribution.",,Understanding salmon ecosystems,Climate change vulnerability,,n
 DFO Science,2540,Modelling to Support Annual Fraser River Sockeye and Pink Salmon Forecasts,NA,NA,,,,,Data management and tools,Data and modelling to support decision making,,n
 DFO Science,2545,Genetics Stock Identification and Parentage Based Tagging of Pacific salmon,NA,NA,,,,,Science to support hatchery modernization,Hatchery Fitness and Genetics,,y
 DFO Science,2546,Fishery & Assessment Data Section - Data Stewardship Unit,NA,NA,,,,,Data management and tools,Data and modelling to support decision making,,n
@@ -102,11 +115,11 @@ Fisheries and Oceans Canada
 Pacific Salmon Foundation Salmon Watersheds Program
 Pacific Salmon Foundation Salmon Watersheds Program
 Heiltsuk Integrated Resource Management Department
-Kitasoo Xai'xais Stewardship Authority",NA,NA,,y
+Kitasoo Xai'xais Stewardship Authority",NA,Fishery monitoring and harvest techniques,,y
 BCSRIF,BCSRIF_2019_058,Enhancing Sustainability of capture & release marine recreational Pacific salmon fisheries using new tools/technology,1,"University of British Columbia (Vancouver), Department of Forest and Conservation Sciences",BC Wide and Coastal Waters,Pacific Ocean,The University of British Columbia will lead a science partnership project to conduct research on improving the sustainability of capture and release marine recreational Pacific salmon fisheries using new tools and technology.,"Moss Rock Foundation
 Dr. Steve Cooke (Carleton University)
 Ocean Tracking Network Canada
-... 24 in total from year-end report",NA,NA,,y
+... 24 in total from year-end report",NA,Fishery monitoring and harvest techniques,,y
 BCSRIF,BCSRIF_2019_067,Elephant Hill Fire Riparian Restoration Project,1,Secwepemcul’ecw Restoration & Stewardship Society,Fraser and Interior,Elephant Hill Area (Ashcroft/Cache Creek) ,The Secwepemcul'ecw Restoration and Stewardship Society in partnership with Secwepemc communities and the 100 Mile Natural Resource District will undertake restoration of critical habitat affected by the 2017 Elephant Hill Wildfire in the traditional territories of the 8 Secwepemcul'ecw Nations.,"Maggie Branton
 University of British Columbia
 Secwepemcul’ecw Restoration & Stewardship Society",NA,NA,,n
@@ -291,7 +304,7 @@ BCSRIF,BCSRIF_2020_284,Technology for more sustainable fisheries in BC,1,T. Buck
 Area B Seine Association
 Commercial Fishing Caucus
 ",NA,NA,,n
-BCSRIF,BCSRIF_2020_292,First Nations-led catch monitoring to inform sustainable mixed-stock fisheries management on the Central Coast,1,Central Coast Indigenous Resource Alliance Society,Central Coast and the North,Bella Coola,This project will focus on designing and implementing a coordinated strategy to fill data gaps related to Central Coast salmon populations which will inform management measures to promote sustainable opportunities for marine and Food Social Ceremonial fisheries.,,NA,NA,,y
+BCSRIF,BCSRIF_2020_292,First Nations-led catch monitoring to inform sustainable mixed-stock fisheries management on the Central Coast,1,Central Coast Indigenous Resource Alliance Society,Central Coast and the North,Bella Coola,This project will focus on designing and implementing a coordinated strategy to fill data gaps related to Central Coast salmon populations which will inform management measures to promote sustainable opportunities for marine and Food Social Ceremonial fisheries.,,NA,Fishery monitoring and harvest techniques,,y
 BCSRIF,BCSRIF_2020_294,Collaborative Freshwater Research and Restoration Initiative in the Thompson Watershed,1,Secwepemc Fisheries Commission,Fraser and Interior,Thompson River Watershed - Deadman River,"This project aims to fill data gaps related to Fraser coho, Interior Fraser summer steelhead and Southern BC chinook populations which will be used to inform fisheries recovery and rebuilding plans. The assessment of habitat use stream flow and temperature data and other factors affecting survivability will help to inform effective recovery strategies for salmon in BC s southern interior.",,NA,NA,,n
 BCSRIF,BCSRIF_2020_298,Nanaimo Hatchery Upgrades to Improve Hatchery Performance and Assessment and Monitoring Capabilities,1,Nanaimo River Hatchery,South Coast,Nanaimo,"The Nanaimo River Stewardship Society will upgrade the Nanaimo River Hatchery to address ageing infrastructure and allow the facility to adapt to changing enhancement objectives and watershed activities. Key elements include: rebuilding the aeration tower, replacing aged incubation trays and boxes, and optimizing the water supply to improve biosecurity and marking options. In addition upgrades to the stewardship building will allow the organization to maximize public and institutional education opportunities.","Pacific Salmon Foundation
 Cabela's
